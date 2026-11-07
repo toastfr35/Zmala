@@ -63,6 +63,59 @@ reset() { echo RESET; exit 0; }
                             self.assertNotIn('BOOT=', result.stdout)
                             self.assertIn('RESET', result.stdout)
 
+    @unittest.skipUnless(os.name == 'posix', 'POSIX command adapters')
+    def test_boot_script_restores_bluetooth_flow_control_only_for_known_layout(self):
+        adapters = '''setenv() { key=$1; shift; export "$key=$*"; }
+part() { setenv zm_rootuuid fixture-uuid; }
+fatload() { setenv filesize 1234; }
+fdt() {
+    case "$1" in
+        addr) address=$2 ;;
+        get)
+            if [ "$address" = "$fdt_addr" ]; then
+                case "$5" in
+                    brcm,pins) setenv "$3" "$FIRMWARE_PINS" ;;
+                    brcm,pull) setenv "$3" 00000002000000000000000000000002 ;;
+                esac
+            else
+                case "$5" in
+                    brcm,pins) setenv "$3" "$SLOT_PINS" ;;
+                    brcm,pull) setenv "$3" 0000000000000002 ;;
+                esac
+            fi ;;
+        set) echo "FDT=$address $3 $4"; test "$EDIT_OK" = yes ;;
+    esac
+}
+wdt() { true; }
+booti() { echo "BOOT=$3"; exit 0; }
+reset() { echo RESET; exit 0; }
+'''
+        firmware_pins = '0000001e0000001f0000002000000021'
+        slot_pins = '0000002000000021'
+        for firmware, slot, edit_ok, expected in (
+            (firmware_pins, slot_pins, 'yes', 'fix'),
+            (slot_pins, slot_pins, 'yes', 'boot'),
+            (firmware_pins, firmware_pins, 'yes', 'boot'),
+            (firmware_pins, slot_pins, 'no', 'reset'),
+        ):
+            with self.subTest(firmware=firmware, slot=slot, edit_ok=edit_ok):
+                result = subprocess.run(
+                    ['/bin/sh', '-c', adapters+image_payload.boot_script()],
+                    env={**boot_state.State('terminal', 'A').fields(), 'fdt_addr': '0x100000',
+                         'FIRMWARE_PINS': firmware, 'SLOT_PINS': slot, 'EDIT_OK': edit_ok},
+                    capture_output=True, text=True, check=True, timeout=5,
+                )
+                lines = result.stdout.splitlines()
+                boot = 'BOOT=0x05600000'
+                pins = 'FDT=0x05600000 brcm,pins <30 31 32 33>'
+                pulls = 'FDT=0x05600000 brcm,pull <2 0 0 2>'
+                if expected == 'fix':
+                    self.assertEqual(lines, [pins, pulls, 'Enabled firmware Bluetooth UART flow control', boot])
+                elif expected == 'reset':
+                    self.assertEqual(lines, [pins, 'RESET'])
+                else:
+                    self.assertEqual(lines, [boot])
+
     def test_wsl_capacity_is_limited_by_physical_backing_volume(self):
         with patch.object(build_space.shutil, 'disk_usage', return_value=SimpleNamespace(free=10**12)), \
                 patch.object(build_space.Path, 'is_file', return_value=True), \

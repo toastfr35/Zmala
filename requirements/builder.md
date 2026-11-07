@@ -9,6 +9,8 @@ runtime requirements in Doorstop.
   terminal or combined role. Build and provision in an isolated offline root.
 - Record the retained inputs, image digest, image geometry and qualification
   status alongside every image candidate.
+- Preserve firmware-selected onboard Bluetooth UART flow control on Pi 4 when
+  the selected slot device tree has the known TX/RX-only pin group.
 - Require physical boot, enrollment, persisted identity and state, recovery,
   and power interruption evidence for the supported hardware matrix before
   publishing production images.
