@@ -86,6 +86,8 @@ def bindings(role):
                                'state/'+role, uid=1000, gid=1000)))
     if role in ('server', 'combined'):
         result.append(Binding('etc/letsencrypt', 'host/certificates'))
+    if role in ('terminal', 'combined'):
+        result.append(Binding('var/lib/zmalacall-pairing', 'host/presenter'))
     return tuple(result)
 
 

@@ -17,7 +17,8 @@ references:
 reviewed: null
 scope: Experimental
 text: The image-managed storage helper shall bind only its fixed role-specific application state,
-  network profiles/identity, Bluetooth state, SSH host-key storage, product operator configuration
+  network profiles/identity, Bluetooth state, the Presenter pairing service's bond token,
+  SSH host-key storage, product operator configuration
   and server certificate state from the validated data mount. Saved machine identity and hostname
   shall be exposed read-only. Newly required directories shall use declared stable owners and private
   modes; existing data shall be preserved and incompatible ownership, modes or linked binding roots/parents

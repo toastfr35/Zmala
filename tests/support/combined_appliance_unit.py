@@ -19,11 +19,12 @@ class CombinedPolicyScenario(unittest.TestCase):
             b = bindings['etc/zmalacall/operator/'+component]
             self.assertEqual((b.saved, b.uid, b.gid, b.mode), ('host/operator/'+component, 0, uid, 0o750))
         self.assertNotIn('etc/zmalacall/operator', bindings)
-        for target in ('etc/ssh/keys', 'etc/letsencrypt'):
+        for target in ('etc/ssh/keys', 'etc/letsencrypt', 'var/lib/zmalacall-pairing'):
             b = bindings[target]
             self.assertEqual((b.uid, b.gid, b.mode), (0, 0, 0o700))
-        self.assertEqual(len(bindings), 11)
-        self.assertEqual(len({b.saved for b in bindings.values()}), 11)
+        self.assertEqual(bindings['var/lib/zmalacall-pairing'].saved, 'host/presenter')
+        self.assertEqual(len(bindings), 12)
+        self.assertEqual(len({b.saved for b in bindings.values()}), 12)
         for role in ('server', 'terminal'):
             self.assertEqual(host_layout.profile(role)['application_uid'], 1000)
             for decoder, builder in ((host_layout.decode_profile, host_layout.profile),
