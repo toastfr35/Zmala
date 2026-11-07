@@ -20,22 +20,14 @@ permissions:
 concurrency:
   group: terminal-system-release
 jobs:
-  sign:
-    if: github.ref == 'refs/heads/main'
+  stage:
+    if: github.ref == 'refs/heads/main' && inputs.mode == 'sign'
     runs-on: ubuntu-24.04
-    container: debian:13-slim
-    environment: release
-    timeout-minutes: 45
+    timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Install signing tools
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends rauc squashfs-tools openssl python3 gh zstd ca-certificates
       - name: Stage qualified release inputs
-        if: inputs.mode == 'sign'
         env:
           GH_TOKEN: ${{ github.token }}
           DRAFT_ID: ${{ inputs.draft_id }}
@@ -57,6 +49,35 @@ jobs:
             digest_var="SLOT_${slot}_SHA256"
             printf '%s  %s\n' "${!digest_var}" "$path" | sha256sum --check --strict
           done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terminal-system-signing-inputs
+          path: ${{ runner.temp }}/system-inputs/*.tar.zst
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 3
+  sign:
+    needs: stage
+    if: >-
+      ${{ !cancelled() && github.ref == 'refs/heads/main' &&
+          (needs.stage.result == 'success' || (inputs.mode == 'check-key' && needs.stage.result == 'skipped')) }}
+    runs-on: ubuntu-24.04
+    container: debian:13-slim
+    environment: release
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install signing tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends rauc squashfs-tools openssl python3 zstd ca-certificates
+      - uses: actions/download-artifact@v4
+        if: inputs.mode == 'sign'
+        with:
+          name: terminal-system-signing-inputs
+          path: ${{ runner.temp }}/system-inputs
       - name: Verify signing key and produce signed bundles
         env:
           RAUC_KEY: ${{ secrets.ZMALA_RAUC_SIGNING_KEY }}
