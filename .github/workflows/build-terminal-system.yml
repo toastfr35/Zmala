@@ -1,0 +1,135 @@
+name: Build and sign Terminal system update
+on:
+  workflow_dispatch:
+    inputs:
+      terminal_commit:
+        description: Full commit on ZmalaTerminal main (blank uses its current head)
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: terminal-system-build
+jobs:
+  fetch-cache:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fetch the pinned package cache from its draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          pin=zmala_images/terminal-build-cache.json
+          draft=$(jq -er .draft_id "$pin")
+          asset=$(jq -er .asset_id "$pin")
+          digest=$(jq -er .sha256 "$pin")
+          [[ $draft =~ ^[1-9][0-9]*$ && $asset =~ ^[1-9][0-9]*$ && $digest =~ ^[a-f0-9]{64}$ ]]
+          api="repos/$GITHUB_REPOSITORY/releases/$draft"
+          [[ $(gh api "$api" --jq .draft) == true ]]
+          name=ZmalaTerminal-Package-Cache.tar
+          [[ $(gh api "$api" --jq ".assets[] | select(.name == \"$name\" and .state == \"uploaded\") | .id") == "$asset" ]]
+          path="$RUNNER_TEMP/$name"
+          gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset" -H 'Accept: application/octet-stream' > "$path"
+          printf '%s  %s\n' "$digest" "$path" | sha256sum --check --strict
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terminal-os-package-cache
+          path: ${{ runner.temp }}/ZmalaTerminal-Package-Cache.tar
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+  build:
+    needs: fetch-cache
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: toastfr35/ZmalaTerminal
+          ref: refs/heads/main
+          fetch-depth: 0
+          path: .terminal-source
+          persist-credentials: false
+      - name: Select the Terminal source
+        env:
+          REQUESTED_COMMIT: ${{ inputs.terminal_commit }}
+        shell: bash
+        working-directory: .terminal-source
+        run: |
+          commit=${REQUESTED_COMMIT:-$(git rev-parse HEAD)}
+          [[ $commit =~ ^[a-f0-9]{40}$ ]]
+          git merge-base --is-ancestor "$commit" HEAD
+          git checkout --detach "$commit"
+      - name: Make room on the disposable hosted runner
+        shell: bash
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet /usr/share/swift \
+            /usr/local/.ghcup /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          sudo docker system prune --all --force
+          df -h "$RUNNER_TEMP" /tmp
+          for path in "$RUNNER_TEMP" /tmp; do
+            free=$(df -B1 --output=avail "$path" | tail -1)
+            if (( free < 44*1024**3 )); then
+              echo "::error::Terminal image build requires 44 GiB free on the runner"
+              exit 1
+            fi
+          done
+      - name: Install and verify the Linux build tools
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            bc binfmt-support bison build-essential dosfstools dpkg-dev e2fsprogs fdisk flex \
+            gcc-aarch64-linux-gnu libgnutls28-dev libssl-dev mmdebstrap mtools \
+            python3-dev python3-pyelftools python3-setuptools qemu-user-static swig uidmap zstd
+          sudo update-binfmts --enable qemu-aarch64
+          grep -Eq '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64
+          if sysctl -n kernel.apparmor_restrict_unprivileged_userns >/dev/null 2>&1; then
+            sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          fi
+          account=$(id -un)
+          if ! grep -q "^$account:" /etc/subuid; then
+            sudo usermod --add-subuids 1000000-1065535 "$account"
+          fi
+          if ! grep -q "^$account:" /etc/subgid; then
+            sudo usermod --add-subgids 1000000-1065535 "$account"
+          fi
+          unshare --user --map-root-user --map-auto --net --mount --pid --fork --mount-proc true
+      - uses: actions/download-artifact@v4
+        with:
+          name: terminal-os-package-cache
+          path: ${{ runner.temp }}/package-cache
+      - name: Reverify the retained package inputs
+        shell: bash
+        run: |
+          path="$RUNNER_TEMP/package-cache/ZmalaTerminal-Package-Cache.tar"
+          digest=$(jq -er .sha256 zmala_images/terminal-build-cache.json)
+          printf '%s  %s\n' "$digest" "$path" | sha256sum --check --strict
+          python3 -m zmala_images.terminal_build_cache unpack "$path" "$RUNNER_TEMP/os-caches"
+      - name: Build and audit both system slots
+        shell: bash
+        run: |
+          bash build_tools/build-terminal-system.sh "$GITHUB_WORKSPACE/.terminal-source" \
+            "$RUNNER_TEMP/os-caches" "$RUNNER_TEMP/terminal-release"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terminal-system-signing-inputs
+          path: ${{ runner.temp }}/terminal-release/artifacts/
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+  sign:
+    needs: build
+    uses: ./.github/workflows/sign-terminal-bundles.yml
+    with:
+      mode: sign

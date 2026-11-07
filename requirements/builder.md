@@ -9,6 +9,9 @@ runtime requirements in Doorstop.
   terminal or combined role. Build and provision in an isolated offline root.
 - Record the retained inputs, image digest, image geometry and qualification
   status alongside every image candidate.
+- The hosted Terminal release workflow shall build both slots from reviewed
+  package caches and an identified Terminal main commit. Only the separate
+  release signing job shall receive the private signing key.
 - Preserve firmware-selected onboard Bluetooth UART flow control on Pi 4 when
   the selected slot device tree has the known TX/RX-only pin group.
 - Require physical boot, enrollment, persisted identity and state, recovery,
