@@ -190,6 +190,14 @@ def worker(parent, role):
                     capacity = os.statvfs(path)
                     assert capacity.f_blocks*capacity.f_frsize == mib*1024**2
                 assert all('ro' in facts[root/b.target].flags for b in layout.bindings(role) if b.readonly)
+                if role in ('terminal', 'combined'):
+                    token = root/'var/lib/zmalacall-pairing/bond.json'
+                    if number == 0:
+                        assert not token.exists()
+                        fixture.file(token, b'{"token":"bond-fixture"}', 0o600)
+                    else:
+                        assert token.read_bytes() == b'{"token":"bond-fixture"}'
+                    assert token.samefile(data/'host/presenter/bond.json')
                 try:
                     storage.prepare(root, data, area, role)
                 except ValueError:

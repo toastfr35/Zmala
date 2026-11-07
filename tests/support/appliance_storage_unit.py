@@ -119,6 +119,9 @@ class StorageScenario(unittest.TestCase):
                     'var/lib/zmalacall-server' if self.role == 'server' else 'var/lib/zmalacall'}
         if self.role == 'server':
             expected.add('etc/letsencrypt')
+        else:
+            expected.add('var/lib/zmalacall-pairing')
+            self.assertIn(layout.Binding('var/lib/zmalacall-pairing', 'host/presenter'), values)
         self.assertEqual({v.target for v in values}, expected)
         self.assertEqual('etc/letsencrypt' in {v.target for v in values}, self.role == 'server')
         app = next(v for v in values if v.saved == 'state/'+self.role)
