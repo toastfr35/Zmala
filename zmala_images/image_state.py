@@ -18,6 +18,10 @@ from . import base_intent, inspect_root, package_lock, project, root_build
 
 RUNTIME = Path(layout.__file__).parent
 INSTALLED = 'usr/lib/python3/dist-packages/zmala_system'
+EARLY_BOOT_FILES = ('__init__.py', 'host_layout.py', 'host_storage.py', 'device_identity.py',
+                    'boot_layout.py', 'boot_devices.py', 'boot_storage.py', 'boot_entry.py', 'boot_gate.py',
+                    'boot_state.py', 'boot_media.py', 'boot_capacity.py', 'boot_environment.py', 'boot_backend.py',
+                    'boot_select.sh')
 JOURNAL = 'etc/systemd/journald.conf.d/50-zmala-volatile.conf'
 BOOT_GATE = 'usr/lib/systemd/system/zmala-host-storage.service'
 BOOT_DEPENDENCY = 'usr/lib/systemd/system/sysinit.target.d/50-zmala-host-storage.conf'
@@ -77,11 +81,7 @@ def payloads(role):
         special['rauc-appliance.conf'] = 'usr/lib/systemd/system/rauc.service'
         special['rauc-appliance-dbus.conf'] = 'etc/dbus-1/system.d/99-zmala-rauc.conf'
         special['terminal-update-boot.conf'] = 'etc/systemd/system/zmalacall-terminal.service.d/40-update-boot.conf'
-    for filename in ('__init__.py', 'host_layout.py', 'host_storage.py', 'device_identity.py',
-                     'boot_layout.py', 'boot_devices.py', 'boot_storage.py', 'boot_entry.py', 'boot_gate.py',
-                     'boot_state.py', 'boot_media.py', 'boot_capacity.py', 'boot_environment.py', 'boot_backend.py',
-                     'boot_select.sh',
-                     *special):
+    for filename in (*EARLY_BOOT_FILES, *special):
         source = RUNTIME/filename
         if source.is_symlink() or not source.is_file() or source.stat().st_size > 128*1024:
             raise ValueError('Expected a bounded authored storage runtime file')

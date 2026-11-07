@@ -42,8 +42,8 @@ def inspect_initramfs(root, extracted, role):
         if 'Theme=zmala' not in config or not list(main.glob('usr/lib/*/plymouth/script.so')):
             raise ValueError('Boot theme selection or script plugin is missing')
     payload = image_state.payloads(role)
-    expected = {name: body for name, body in payload.items()
-                if name.startswith(image_state.INSTALLED+'/') or name == 'usr/lib/zmala/role'}
+    paths = [f'{image_state.INSTALLED}/{name}' for name in image_state.EARLY_BOOT_FILES]
+    expected = {name: payload[name] for name in (*paths, 'usr/lib/zmala/role')}
     for name, body in expected.items():
         target = host_storage.safe(main, name)
         info = target.lstat()
