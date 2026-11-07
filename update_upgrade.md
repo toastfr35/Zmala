@@ -1325,8 +1325,8 @@ in validated policy rather than scattered constants:
 
 | Operation | Proposed default |
 | --- | --- |
-| Check after boot | Random delay of 2–10 minutes after ordinary readiness |
-| Check for new qualified system release | Every 6 hours with jitter and capped retry backoff |
+| Check after boot | Once after five minutes if the local day has not been checked |
+| Check for new qualified system release | Local midnight daily, plus Settings > Updates on demand |
 | Resume interrupted transfer | Automatically after network/storage eligibility returns |
 | Terminal activation eligibility | At least 2 minutes of genuine safe inactivity |
 | Server activation eligibility | No owned ringing/connected calls, active relay allocations or protected jobs, then 2 minutes of stable idle |

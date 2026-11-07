@@ -1,0 +1,18 @@
+[Unit]
+Description=Check for a signed Zmala Terminal system release
+Requires=zmala-host-storage.service
+After=zmala-host-storage.service network-online.target time-sync.target
+Wants=network-online.target time-sync.target
+ConditionPathExists=/usr/lib/zmala/system-update-keyring.pem
+
+[Service]
+# @llr LLR-TERM-MAINT-060
+Type=oneshot
+ExecStart=/usr/bin/python3 -IB -m zmala_system.update_discovery
+UMask=0077
+TimeoutStartSec=45s
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/data/host

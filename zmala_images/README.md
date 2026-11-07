@@ -761,6 +761,38 @@ use NetworkManager; the server intent/lock includes it explicitly. Ordinary SSH 
 application updaters are masked. Secure relay/TLS onboarding and first-owner
 claim are not supplied by this development provisioning path.
 
+### Appliance update discovery
+
+Standalone Terminal roots package a systemd timer at local midnight. The
+boot trigger catches up after a missed day. The root-owned record at
+`/data/host/update-discovery/status.json` prevents duplicate checks across
+reboots. The Pi's time zone determines when midnight occurs.
+
+The service requires the approved public RAUC certificate chain in
+`zmala_images/system-update-keyring.pem` at build time. The builder installs
+it at `/usr/lib/zmala/system-update-keyring.pem`. Release signing keys belong
+in the release workflow. The timer skips checks until the public chain is
+provisioned. The checker verifies the opposite-slot bundle with RAUC 1.13.
+
+An image release combines the OS and Terminal application. Use separate
+`ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` assets to
+preserve distinct filesystem labels. An application-only change advances the
+image release version. Bundle metadata also records the Terminal version.
+Prepare the two unsigned bundle inputs from an audited regular image and an
+reviewed digest of its `READY.json`:
+
+```sh
+python3 -m zmala_images.system_bundle --image /path/to/image-directory \
+  --manifest-sha256 REVIEWED_READY_SHA256 --output /path/to/new-bundle-inputs
+```
+
+The release job signs each input with RAUC verity. Each input includes just
+its matching boot and root filesystems. Discovery records verified metadata.
+Settings integration, idle admission, trial health confirmation and hardware
+rollback qualification remain prerequisites for automatic activation.
+
+### Developer Access
+
 Developer Access has separate service units. Preparation creates a unique host
 key after persistent storage mounts; generic artifacts contain neither host keys
 nor operator login credentials. The terminal shell binds only to loopback and

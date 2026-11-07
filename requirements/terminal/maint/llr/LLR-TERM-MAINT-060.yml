@@ -1,0 +1,26 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Verify and record a complete slot-specific release offer
+level: 60.0
+links:
+- HLR-TERM-MAINT-059: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/update_discovery.py
+  type: file
+- path: zmala_system/zmala-system-update-check.service
+  type: file
+- path: tests/terminal/LLT/test_update_discovery.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Use bounded RAUC signature inspection with the installed public keyring and
+  fixed release origin. Accept only newer verity bundles for the inactive slot
+  with a complete boot and root pair and no bundle hooks or handlers. Persist
+  the verification outcome once per local calendar day. Discovery shall not
+  offer installation until a qualified coordinator owns that operation.
+verification: Reject mismatched slots, hook-bearing and incomplete pairs, old
+  system versions and malformed identity. Verify one check per day, catch-up,
+  backwards-date suppression and bounded signed inspection invocation.
