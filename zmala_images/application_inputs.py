@@ -101,18 +101,23 @@ def valid_pin(pin):
             ('sha256', r'[0-9a-f]{64}')))
 
 
-def component_packages(role, lock_file, packages):
-    """Read only role-selected packages pinned to reviewed commits and hashes."""
-    selected = role_components(role)
+def read_component_lock(role, lock_file):
     lock = json.loads(Path(lock_file).read_text(encoding='utf-8'))
     if (not isinstance(lock, dict) or lock.get('schema') != 1
             or not isinstance(lock.get('components'), dict) or set(lock['components']) - COMPONENTS):
         raise ValueError('Unknown component lock schema or component')
-    records, components = {}, {}
-    for component in selected:
-        pin = lock['components'].get(component)
-        if not valid_pin(pin):
+    selected = {}
+    for component in role_components(role):
+        if not valid_pin(lock['components'].get(component)):
             raise ValueError('Missing or invalid '+component+' package pin')
+        selected[component] = lock['components'][component]
+    return selected
+
+
+def component_packages(role, lock_file, packages):
+    """Read only role-selected packages pinned to reviewed commits and hashes."""
+    records, components = {}, {}
+    for component, pin in read_component_lock(role, lock_file).items():
         version, commit, digest = (pin[key] for key in ('version', 'commit', 'sha256'))
         name = 'Zmala'+component.title()+'-'+version+'-linux-arm64.tar.gz'
         package = Path(packages)/name

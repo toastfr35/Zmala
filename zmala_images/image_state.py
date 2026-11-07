@@ -178,7 +178,8 @@ def audit(path, role, selected, expected_payloads):
         if record['Architecture'] != selected[record['Package']][0][1]:
             raise ValueError('Prepared package architecture changed')
     return {'packages': len(expected), 'variable_seed_entries': seed_count, 'variable_seed_bytes': seed_bytes,
-            'application_installed': application is not None}
+            'application_installed': application is not None,
+            'components': application.get('components', {}) if application is not None else {}}
 
 
 def prepare(source, expected_sha256, selected, role, output):

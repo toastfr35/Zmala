@@ -103,6 +103,11 @@ def main():
             sources.pins()
             bootloader.profile()
             locks = project.package_locks()
+            print('Image version: '+project.image_version())
+            components_lock = project.ROOT/'components.lock.json'
+            if components_lock.is_file():
+                components = application_inputs.read_component_lock('combined', components_lock)
+                print('Application pins: '+', '.join(name+' '+pin['version'] for name, pin in components.items()))
             print('common base: '+str(len(project.common_base()['requested']))+' exact installed selections; '
                   +str(locks['base']['archives'])+' locked dependency archives')
             for role in project.profiles()['roles']:

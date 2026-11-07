@@ -1,7 +1,6 @@
 # Zmala engineering
 
-Read the [technical guide](../zmala_images/README.md) and [migration inventory](migration/path-map.csv).
-The source commit and copied inputs are recorded in [provenance.json](migration/provenance.json).
+Read the [technical guide](../zmala_images/README.md).
 
 ## Requirements and tests
 

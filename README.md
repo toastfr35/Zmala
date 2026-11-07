@@ -4,7 +4,6 @@ This repository contains the Zmala SD-card image builder and host platform.
 
 - [Technical guide](zmala_images/README.md)
 - [Development and requirements](docs/general.md)
-- [Migration provenance](docs/migration/provenance.json)
 - [Downloads](https://github.com/toastfr35/Zmala/releases)
 
 ## Related repositories
