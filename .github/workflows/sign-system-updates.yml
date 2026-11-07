@@ -49,10 +49,11 @@ jobs:
             digest_var="SLOT_${slot}_SHA256"
             printf '%s  %s\n' "${!digest_var}" "$path" | sha256sum --check --strict
           done
+          printf '%s  A.tar.zst\n%s  B.tar.zst\n' "$SLOT_A_SHA256" "$SLOT_B_SHA256" > "$RUNNER_TEMP/system-inputs/SHA256SUMS"
       - uses: actions/upload-artifact@v4
         with:
           name: terminal-system-signing-inputs
-          path: ${{ runner.temp }}/system-inputs/*.tar.zst
+          path: ${{ runner.temp }}/system-inputs/
           if-no-files-found: error
           compression-level: 0
           retention-days: 3
@@ -61,49 +62,6 @@ jobs:
     if: >-
       ${{ !cancelled() && github.ref == 'refs/heads/main' &&
           (needs.stage.result == 'success' || (inputs.mode == 'check-key' && needs.stage.result == 'skipped')) }}
-    runs-on: ubuntu-24.04
-    container: debian:13-slim
-    environment: release
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Install signing tools
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends rauc squashfs-tools openssl python3 zstd ca-certificates
-      - uses: actions/download-artifact@v4
-        if: inputs.mode == 'sign'
-        with:
-          name: terminal-system-signing-inputs
-          path: ${{ runner.temp }}/system-inputs
-      - name: Verify signing key and produce signed bundles
-        env:
-          RAUC_KEY: ${{ secrets.ZMALA_RAUC_SIGNING_KEY }}
-          SIGN_MODE: ${{ inputs.mode }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          umask 077
-          key=$(mktemp /dev/shm/zmala-rauc.XXXXXXXX)
-          trap 'rm -f "$key"' EXIT
-          printf '%s\n' "$RAUC_KEY" > "$key"
-          unset RAUC_KEY
-          cert=zmala_images/system-update-keyring.pem
-          cmp <(openssl pkey -in "$key" -pubout) <(openssl x509 -in "$cert" -pubkey -noout)
-          mkdir "$RUNNER_TEMP/probe"
-          printf '[update]\ncompatible=zmala-signing-check\nversion=0.0.1\n\n[bundle]\nformat=verity\n\n[image.test]\nfilename=probe.img\n' > "$RUNNER_TEMP/probe/manifest.raucm"
-          dd if=/dev/urandom of="$RUNNER_TEMP/probe/probe.img" bs=4096 count=16 status=none
-          rauc --cert="$cert" --key="$key" bundle "$RUNNER_TEMP/probe" "$RUNNER_TEMP/probe.raucb"
-          rauc --keyring="$cert" info --output-format=json-2 "$RUNNER_TEMP/probe.raucb"
-          if [[ $SIGN_MODE == sign ]]; then
-            python3 -m zmala_images.sign_system_bundles "$RUNNER_TEMP/system-inputs" "$RUNNER_TEMP/system-bundles" "$cert" "$key"
-          fi
-      - uses: actions/upload-artifact@v4
-        if: inputs.mode == 'sign'
-        with:
-          name: signed-terminal-system-bundles
-          path: ${{ runner.temp }}/system-bundles/*.raucb
-          if-no-files-found: error
-          compression-level: 0
+    uses: ./.github/workflows/sign-terminal-bundles.yml
+    with:
+      mode: ${{ inputs.mode }}

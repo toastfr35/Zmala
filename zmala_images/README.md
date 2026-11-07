@@ -904,6 +904,30 @@ has no READY marker; preserve its log and use a new output directory after repai
 
 ## Standalone Terminal system updates
 
+Run **Build and sign Terminal system update** on `main` to build the ARM64
+Terminal from its current main commit, or specify an exact commit on that
+branch. The workflow verifies the retained OS package caches, builds the root,
+application, loader and initramfs, assembles the image and packages both slots.
+The separate signing job uses the release environment key and uploads
+`signed-terminal-system-bundles` with both RAUC bundles and their SHA-256
+checksums. The unsigned artifact includes the image `READY.json` for review.
+Physical A/B qualification is required before publishing the signed assets.
+
+The hosted build uses the pinned package cache asset in
+[`terminal-build-cache.json`](terminal-build-cache.json). When the reviewed
+base or Terminal package locks change, pack the matching retained caches and
+upload the archive to a draft used only for build inputs:
+
+```sh
+python3 -m zmala_images.terminal_build_cache pack BASE_CACHE TERMINAL_CACHE ZmalaTerminal-Package-Cache.tar
+sha256sum ZmalaTerminal-Package-Cache.tar
+```
+
+Update the draft ID, asset ID and digest in the cache pin through a PR.
+Only the reviewed public package archives, keyrings, signed repository metadata
+and lock files go into this archive. Keep the draft and pinned asset available
+for future builds.
+
 The image embeds the public RAUC certificate in `system-update-keyring.pem`.
 Every day at local midnight the host looks for a newer signed appliance
 release, with a catch-up check after boot. Settings → Updates checks on demand
