@@ -25,6 +25,7 @@ EARLY_BOOT_FILES = ('__init__.py', 'host_layout.py', 'host_storage.py', 'device_
 JOURNAL = 'etc/systemd/journald.conf.d/50-zmala-volatile.conf'
 BOOT_GATE = 'usr/lib/systemd/system/zmala-host-storage.service'
 BOOT_DEPENDENCY = 'usr/lib/systemd/system/sysinit.target.d/50-zmala-host-storage.conf'
+IDENTITY_COMMIT = 'usr/lib/systemd/system/systemd-machine-id-commit.service.d/50-zmala-identity.conf'
 BOOT_BACKEND = 'usr/lib/zmala/bin/boot-backend'
 UPDATE_TIMER = 'zmala-system-update-check.timer'
 UPDATE_TIMER_LINK = 'etc/systemd/system/timers.target.wants/'+UPDATE_TIMER
@@ -60,6 +61,7 @@ def payloads(role):
               'usr/lib/zmala/role': (role+'\n').encode()}
     special = {'journald.conf': JOURNAL, 'zmala-host-storage.service': BOOT_GATE,
                'sysinit-storage.conf': BOOT_DEPENDENCY,
+               'machine-id-commit.conf': IDENTITY_COMMIT,
                'trial-watchdog.conf': 'usr/lib/systemd/system.conf.d/99-zmala-trial.conf'}
     if role == 'terminal':
         result[update_discovery.IDENTITY] = (json.dumps({'schema': 1, 'role': role, 'version': project.image_version()})+'\n').encode()

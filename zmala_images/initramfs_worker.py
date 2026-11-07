@@ -192,7 +192,7 @@ def worker(request_file):
         version = versions[0]
         # Validate the gate against this role's actual vendor-unit graph. This
         # checks offline configuration only; it does not start PID1 or services.
-        units = ['zmala-host-storage.service', 'sysinit.target']
+        units = ['zmala-host-storage.service', 'sysinit.target', 'systemd-machine-id-commit.service']
         if (request['role'] == 'terminal'
                 and (root/'usr/lib/systemd/system/zmalacall-terminal.service').is_file()):
             units += ['zmala-system-updater.service', 'zmalacall-terminal.service',
