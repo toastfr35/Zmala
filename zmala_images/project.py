@@ -9,6 +9,14 @@ from zmala_system.host_layout import ROLES
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def image_version():
+    metadata = json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))
+    version = metadata.get('version') if isinstance(metadata, dict) else None
+    if not isinstance(version, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){2}', version):
+        raise ValueError('Invalid SD image version in VERSION.json')
+    return version
+
+
 def profiles():
     value = json.loads((ROOT/'zmala_images/profiles.json').read_text())
     if (value['schema'] != 1 or value['architecture'] != 'arm64'

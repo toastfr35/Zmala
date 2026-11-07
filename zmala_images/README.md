@@ -809,6 +809,10 @@ the root and both component READY manifests. It rejects an OS-only root or an
 initramfs belonging to a different role/root. No command accepts a device path,
 flashes a card or alters a running Pi.
 
+The image version comes from [VERSION.json](../VERSION.json) independently of
+the component versions. The candidate `READY.json` records that image version
+and the exact application component identities.
+
 The six GPT partitions are 32 MiB common FAT16, two 512 MiB FAT32 boot slots,
 two 4 GiB ext4 system slots and 4 GiB ext4 factory data, preceded by the fixed
 8 MiB boot-state gap. Each slot has its matched kernel, checked initramfs and
