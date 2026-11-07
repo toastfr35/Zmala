@@ -10,7 +10,7 @@ import subprocess
 import sys
 import uuid
 
-from zmala_system import boot_media, device_identity, host_storage
+from zmala_system import boot_capacity, boot_media, device_identity, host_storage
 from . import factory_data, image_assembly, image_case, image_payload, inspect_boot, package_lock
 from .initramfs_worker import unpack_root
 
@@ -135,7 +135,9 @@ def worker(request_file):
                          'type': 'EBD0A0A2-B9E5-4433-87C0-68B6B72699C7' if index < 3 else
                                  '0FC63DAF-8483-4772-8E79-3D69D8477DE4'})
             offset += count
-        table = 'label: gpt\nunit: sectors\n\n'+''.join(
+        # Keep the first usable LBA immediately after the primary array so
+        # Windows GPT recovery does not redirect the array into the boot gap.
+        table = f'label: gpt\nunit: sectors\nfirst-lba: {boot_capacity.GPT_FIRST_USABLE}\n\n'+''.join(
             f'start={row["offset"]//512}, size={row["bytes"]//512}, type={row["type"]}, '
             f'uuid={row["uuid"]}, name="{row["label"]}"\n' for row in rows)
         run(['sfdisk', '--no-reread', '--no-tell-kernel', image], input=table, text=True)
@@ -181,6 +183,9 @@ def worker(request_file):
         geometry = inspect_boot.audit(image)
         with image.open('rb') as stream:
             boot_media.environment_ranges(boot_media.inspect(stream, size))
+            _, header = boot_capacity.checked_header(stream, 1, size)
+            if header['first'] != boot_capacity.GPT_FIRST_USABLE:
+                raise ValueError('The assembled GPT did not retain its first usable LBA')
         result = {'schema': 1, 'role': request['role'], 'argon_one': argon_one,
                   'source_root_sha256': request['sha256'],
                   'initramfs_manifest_sha256': request['initramfs_manifest'],

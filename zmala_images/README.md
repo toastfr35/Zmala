@@ -860,7 +860,11 @@ the compiled fallback cannot fabricate it. Factory data is mode 0700 with a
 mode-0600 role marker and no device identity. Data expansion is not implemented.
 
 The default compact image is 14,001,635,328 bytes, intended for 16 GB and 32 GB
-cards whose measured capacity is at least that value. New prepared roots carry
+cards whose measured capacity is at least that value. The primary GPT array
+starts at LBA 2 and the first usable LBA is 34 so Windows GPT recovery leaves
+the array pointer valid. The first partition still starts at 8 MiB. The boot
+gate also accepts and preserves the legacy first usable LBA of 2048.
+New prepared roots carry
 the immutable `compact-fixed-data-v1` policy. Before device identity is created,
 early boot validates the Pi 4 onboard SD parent, kernel root/data extents and
 UUIDs, fixed six-partition layout and factory data. It moves backup GPT metadata

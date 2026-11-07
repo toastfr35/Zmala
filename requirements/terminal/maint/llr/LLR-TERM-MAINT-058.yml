@@ -21,7 +21,8 @@ text: Before identity initialization, compact-policy terminal roots shall bind c
   and root/data UUIDs. Only the fixed compact six-partition layout, 512-byte sectors
   and media from 14,001,635,328 bytes through 128 GiB shall be admitted. Required
   metadata writes shall require factory data without saved identity or application
-  state. The runtime shall retain the primary partition array and commit backup
+  state. The runtime shall preserve either the current LBA 34 or legacy LBA 2048
+  first usable GPT sector. It shall retain the primary partition array and commit backup
   array, backup header, primary header and protective-MBR length in that order,
   synchronizing and checking each write. Retry shall require a valid original GPT
   pair or valid new backup matching the unchanged primary array. A consistent

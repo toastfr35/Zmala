@@ -14,6 +14,9 @@ runtime requirements in Doorstop.
   release signing job shall receive the private signing key.
 - Preserve firmware-selected onboard Bluetooth UART flow control on Pi 4 when
   the selected slot device tree has the known TX/RX-only pin group.
+- Place the primary GPT array at LBA 2 and declare LBA 34 as the first usable
+  sector so Windows keeps the primary GPT bootable. Keep the first partition
+  and raw boot state at their fixed offsets.
 - Require physical boot, enrollment, persisted identity and state, recovery,
   and power interruption evidence for the supported hardware matrix before
   publishing production images.
