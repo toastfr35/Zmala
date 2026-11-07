@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "components": {
+    "server": {
+      "version": "0.4.0",
+      "commit": "4cacd090d1828e2caca57ec7b9233f1b83f6c97e",
+      "sha256": "c1c0a88a232dbaf5c9c690996c0ea2d85518706a495aa2a87d784c6ef388b6b6"
+    },
+    "terminal": {
+      "version": "0.4.0",
+      "commit": "f501bdd23f7141886e264a27d867033ef40d97fe",
+      "sha256": "70e2ad07f0bae4bfdf981c4b084a5d55a13d7392d1bf3ca25b4d2267fea77605"
+    }
+  }
+}
