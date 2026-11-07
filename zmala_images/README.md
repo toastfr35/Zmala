@@ -850,8 +850,12 @@ two 4 GiB ext4 system slots and 4 GiB ext4 factory data, preceded by the fixed
 8 MiB boot-state gap. Each slot has its matched kernel, checked initramfs and
 Pi 4 device tree. The locked target `dtmerge` applies the Pi-specific KMS overlay;
 generic `fdtoverlay` cannot substitute for Raspberry Pi dormant-fragment handling.
-The pinned loader copies firmware fixups into the selected slot's tree. Initial
-factory state explicitly confirms A in two CRC-protected raw environment copies;
+The pinned loader copies firmware fixups into the selected slot's tree. The boot
+script also adds the onboard Bluetooth RTS/CTS pins when the Pi firmware enables
+them and the slot tree still contains the known TX/RX-only group. Confirm
+Bluetooth initializes and a remote can pair on the affected Pi 4 revision before
+qualifying the image. Initial factory state explicitly confirms A in two
+CRC-protected raw environment copies;
 the compiled fallback cannot fabricate it. Factory data is mode 0700 with a
 mode-0600 role marker and no device identity. Data expansion is not implemented.
 

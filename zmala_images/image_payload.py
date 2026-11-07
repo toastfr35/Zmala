@@ -55,6 +55,17 @@ else
     setenv zm_bootpart 3
     setenv zm_rootpart 5
 fi
+# Pi firmware enables RTS/CTS for the onboard Bluetooth UART on some revisions.
+# Recognize the firmware pin group before loading the selected slot.
+setenv zm_uart_flow_control
+setenv zm_uart_pins /soc/gpio@7e200000/uart0_pins
+if test -n "${fdt_addr}" && fdt addr ${fdt_addr}; then
+    if fdt get value zm_pins ${zm_uart_pins} brcm,pins && fdt get value zm_pulls ${zm_uart_pins} brcm,pull; then
+        if test "${zm_pins}" = "0000001e0000001f0000002000000021" && test "${zm_pulls}" = "00000002000000000000000000000002"; then
+            setenv zm_uart_flow_control 1
+        fi
+    fi
+fi
 if part uuid mmc 0:${zm_rootpart} zm_rootuuid; then
     setenv kernel_addr_r 0x00080000
     setenv ramdisk_addr_r 0x02100000
@@ -65,8 +76,19 @@ if part uuid mmc 0:${zm_rootpart} zm_rootuuid; then
         if fatload mmc 0:${zm_bootpart} ${ramdisk_addr_r} initramfs.img; then
             setenv zm_initrd_bytes ${filesize}
             if fatload mmc 0:${zm_bootpart} ${fdt_addr_r} board.dtb; then
-                fdt addr ${fdt_addr_r}
-                if fdt resize 0x10000; then
+                if fdt addr ${fdt_addr_r} && fdt resize 0x10000; then
+                    # Keep the slot DTB and adjust only the known TX/RX-only layout.
+                    if test "${zm_uart_flow_control}" = "1"; then
+                        if fdt get value zm_pins ${zm_uart_pins} brcm,pins && fdt get value zm_pulls ${zm_uart_pins} brcm,pull; then
+                            if test "${zm_pins}" = "0000002000000021" && test "${zm_pulls}" = "0000000000000002"; then
+                                if fdt set ${zm_uart_pins} brcm,pins "<30 31 32 33>" && fdt set ${zm_uart_pins} brcm,pull "<2 0 0 2>"; then
+                                    echo "Enabled firmware Bluetooth UART flow control"
+                                else
+                                    reset
+                                fi
+                            fi
+                        fi
+                    fi
                     setenv bootargs "console=tty1 root=PARTUUID=${zm_rootuuid} rootfstype=ext4 rootwait ro rauc.slot=${zm_selected} watchdog.handle_boot_enabled=1 watchdog.open_timeout=60"
                     if test "${zm_role}" = "terminal" || test "${zm_role}" = "combined"; then
                         setenv bootargs "root=PARTUUID=${zm_rootuuid} rootfstype=ext4 rootwait ro rauc.slot=${zm_selected} watchdog.handle_boot_enabled=1 watchdog.open_timeout=60 quiet splash plymouth.ignore-serial-consoles loglevel=3 logo.nologo vt.global_cursor_default=0"
