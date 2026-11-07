@@ -1,0 +1,28 @@
+active: true
+area: Image-managed host storage
+derived: false
+header: Explicit persistent state bindings
+level: 38.0
+links:
+- HLR-TERM-MAINT-035: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/host_layout.py
+  type: file
+- path: zmala_system/host_storage.py
+  type: file
+- path: tests/terminal/LLT/test_appliance_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The image-managed storage helper shall bind only its fixed role-specific application state,
+  network profiles/identity, Bluetooth state, SSH host-key storage, product operator configuration
+  and server certificate state from the validated data mount. Saved machine identity and hostname
+  shall be exposed read-only. Newly required directories shall use declared stable owners and private
+  modes; existing data shall be preserved and incompatible ownership, modes or linked binding roots/parents
+  shall be rejected rather than silently rewritten. Distribution configuration defaults shall remain
+  from the selected root.
+verification: Check exact per-role bindings and owner/mode/read-only specifications; exercise existing/new
+  directory checks, preserved bytes and rejection of unlisted or linked state using controlled inputs,
+  then verify real bindings in HLT.

@@ -1,0 +1,13 @@
+[Unit]
+Description=Ethernet-only SSH access for ZmalaCall
+Requires=nftables.service
+After=nftables.service
+Before=ssh.service ssh.socket
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/zmala-ssh-guard.py
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

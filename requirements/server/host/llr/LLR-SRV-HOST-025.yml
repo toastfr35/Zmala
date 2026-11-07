@@ -1,0 +1,25 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: Durable trial selection before launch
+level: 25.0
+links:
+- HLR-SRV-HOST-022: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_select.sh
+  type: file
+- path: tests/server/LLT/test_boot_state.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The authored selector shall clear stale outputs, require supported role/schema and valid decision
+  fields, select only an eligible confirmed system or its distinct eligible trial, and persist consumption
+  of the single trial attempt before selecting that trial. Failed consumption shall select the confirmed
+  system. An already consumed trial shall fall back to the confirmed system without another environment
+  write. Invalid decision fields shall produce no boot target.
+verification: Run the actual authored shell-compatible selector with controlled environment operations
+  for both slots/roles, failed save and restart after consumption. Assert selected slot, trial marker,
+  exact save count and no target for corrupt decision fields. This execution is not an actual U-Boot
+  interpreter qualification.

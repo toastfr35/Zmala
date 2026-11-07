@@ -1,0 +1,25 @@
+active: true
+area: Image-managed first boot
+derived: false
+header: Interrupted initialization preserves committed identity
+level: 16.0
+links:
+- HLR-SRV-HOST-013: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/device_identity.py
+  type: file
+- path: tests/server/LLT/test_device_identity.py
+  type: file
+reviewed: null
+scope: Experimental
+text: On retry, the initializer shall revalidate and preserve any committed identity even when the
+  initialized-data marker was not committed. Only known bounded partial staging before identity commit
+  may be retried; unexpected, linked, special, hard-linked or incompatible state shall be retained
+  and rejected. A valid initialized record shall not cause identity regeneration or modify saved
+  application data. Missing or corrupt committed identity shall not trigger a factory reset.
+verification: Inject failures and process exits at every identity/marker synchronization boundary,
+  resume and compare committed identity bytes. Exercise partial/complete staging, missing marker,
+  corrupt committed identity and malicious staging. Assert no entropy call for an existing identity,
+  no replacement of invalid saved records and retained application bytes.

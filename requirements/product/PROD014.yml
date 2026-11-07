@@ -1,0 +1,18 @@
+active: true
+area: Product specification
+derived: false
+header: |
+  Controlled appliance resource use
+level: 14.0
+links: []
+normative: true
+ref: ''
+references: []
+reviewed: null
+scope: Core
+text: |
+  The Pi implementation shall limit background work and retained resources, reduce routine
+  microSD writes and control supported peripherals according to application activity.
+verification: |
+  Inspect worker/cache limits and storage configuration, then exercise active and idle
+  peripheral policies and fault handling.

@@ -1,0 +1,19 @@
+settings:
+  digits: 3
+  itemformat: yaml
+  prefix: HLR-SRV-HOST
+  sep: '-'
+  parent: PROD
+attributes:
+  defaults:
+    doc:
+      name: HLR-SRV-HOST
+      title: Host access and storage — HLR
+  publish:
+  - area
+  - scope
+  - verification
+  reviewed:
+  - area
+  - scope
+  - verification

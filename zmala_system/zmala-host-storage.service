@@ -1,0 +1,15 @@
+[Unit]
+Description=Verify Zmala image-managed boot storage
+DefaultDependencies=no
+After=systemd-remount-fs.service systemd-tmpfiles-setup.service
+Before=sysinit.target
+OnFailure=emergency.target
+OnFailureJobMode=isolate
+
+[Service]
+Type=oneshot
+# @llr LLR-SRV-HOST-021, LLR-TERM-MAINT-048
+ExecStart=/usr/bin/python3 -I -B -m zmala_system.boot_gate
+RemainAfterExit=yes
+TimeoutStartSec=30s
+UMask=0077

@@ -1,0 +1,92 @@
+[
+  {
+    "file": "PNG/a1-wordmark-light-256.png",
+    "width": 256,
+    "height": 171
+  },
+  {
+    "file": "PNG/a1-wordmark-light-512.png",
+    "width": 512,
+    "height": 341
+  },
+  {
+    "file": "PNG/a1-wordmark-light-1024.png",
+    "width": 1024,
+    "height": 683
+  },
+  {
+    "file": "PNG/a1-wordmark-dark-256.png",
+    "width": 256,
+    "height": 171
+  },
+  {
+    "file": "PNG/a1-wordmark-dark-512.png",
+    "width": 512,
+    "height": 341
+  },
+  {
+    "file": "PNG/a1-wordmark-dark-1024.png",
+    "width": 1024,
+    "height": 683
+  },
+  {
+    "file": "PNG/a1-mark-light-256.png",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "file": "PNG/a1-mark-light-512.png",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "file": "PNG/a1-mark-light-1024.png",
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "file": "PNG/a1-mark-dark-256.png",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "file": "PNG/a1-mark-dark-512.png",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "file": "PNG/a1-mark-dark-1024.png",
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "file": "PNG/a3-app-dark-256.png",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "file": "PNG/a3-app-dark-512.png",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "file": "PNG/a3-app-dark-1024.png",
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "file": "PNG/a3-app-light-256.png",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "file": "PNG/a3-app-light-512.png",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "file": "PNG/a3-app-light-1024.png",
+    "width": 1024,
+    "height": 1024
+  }
+]

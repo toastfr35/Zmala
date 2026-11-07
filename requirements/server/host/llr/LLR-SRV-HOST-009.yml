@@ -1,0 +1,27 @@
+active: true
+area: Image-managed host storage
+derived: false
+header: Marked layout and prepared-mount validation
+level: 9.0
+links:
+- HLR-SRV-HOST-008: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/host_layout.py
+  type: file
+- path: zmala_system/host_storage.py
+  type: file
+- path: tests/server/LLT/test_appliance_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: For image-managed host storage preparation, the helper shall accept only a bounded, root-owned
+  regular supported layout profile for the selected server or terminal role, a read-only marked image
+  root, a separate writable validated data mount and a RAM working area. It shall reject linked policy
+  parents, unsupported or mismatched schemas/roles/owners, unsafe paths and invalid saved machine
+  identity or hostname before mounting mutable views. Physical data-device selection and first identity
+  creation are caller preconditions, not performed by this helper.
+verification: Validate valid and malformed profiles and mount facts, size/schema/role/UID bounds,
+  links, ownership, identity formats and unsupported roots using controlled metadata and temporary
+  files; assert refusal precedes mount or readiness operations.

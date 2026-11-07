@@ -1,0 +1,30 @@
+active: true
+area: Image-managed early boot
+derived: false
+header: Same-parent data partition discovery
+level: 19.0
+links:
+- HLR-SRV-HOST-017: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_layout.py
+  type: file
+- path: zmala_system/boot_devices.py
+  type: file
+- path: zmala_system/boot_storage.py
+  type: file
+- path: tests/server/LLT/test_boot_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The early-boot helper shall identify the mounted root by kernel major/minor topology and validate
+  its slot partition number, GPT entry identity and ext4 filesystem metadata against the boot contract
+  and kernel PARTUUID. It shall select data only as the unique declared sibling under the same kernel
+  parent, validate its block-node identity, GPT entry and filesystem metadata, and reject ambiguous,
+  cross-parent, missing or mismatched state. It shall not select data through a global label search
+  or an assumed physical device name.
+verification: Control topology and bounded block-probe records to exercise valid Pi-style and loop-style
+  names, matching parent/device identities and metadata. Reject aliases, duplicate/missing siblings,
+  cross-parent records, changed block nodes, unsupported filesystem/GPT fields and kernel UUID mismatch
+  before mounting data. Confirm real discovery on partitioned loop-image fixtures.

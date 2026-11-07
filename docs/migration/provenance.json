@@ -1,0 +1,127 @@
+{
+  "commit": "0731446f8cd6fcbafb93bbda104a2c3a6765b5fb",
+  "path_map_sha256": "e52a927dd294cf85dd13ece4f95f9076f13c219bd582b69e3be2e058f6686623",
+  "shared_source_copies": {
+    "docs/branding/Android-mask-preview.png": {
+      "from": "docs/branding/Android-mask-preview.png",
+      "sha256": "cea0dcfdb825c1252ffcc05d3e7a03e84d694cce04b140f8573d0a67cec2141a"
+    },
+    "docs/branding/Masters/a1-mark-dark-master.png": {
+      "from": "docs/branding/Masters/a1-mark-dark-master.png",
+      "sha256": "c20d27fda3df8c99cc34004ac041b4420df6348c71528e932df1c496481f4be9"
+    },
+    "docs/branding/Masters/a1-mark-light-master.png": {
+      "from": "docs/branding/Masters/a1-mark-light-master.png",
+      "sha256": "9c49e29909c67968dd2e19be2c7e46fb4e0e32c7d8a209bb885c843a29058199"
+    },
+    "docs/branding/Masters/a1-wordmark-dark-master.png": {
+      "from": "docs/branding/Masters/a1-wordmark-dark-master.png",
+      "sha256": "4c8bf79599cc5fd09fb45194735171e8489467a3663f8f741b2be7ae4543f58f"
+    },
+    "docs/branding/Masters/a1-wordmark-light-master.png": {
+      "from": "docs/branding/Masters/a1-wordmark-light-master.png",
+      "sha256": "2bf67c6d1c7f13701812d073378bc2242f4d265a44b428404affaf0015d1f837"
+    },
+    "docs/branding/Masters/a3-app-dark-master.png": {
+      "from": "docs/branding/Masters/a3-app-dark-master.png",
+      "sha256": "de044ef39a0980d862343a8ddf3cbe14617491afa00fa2d5db2e4cfc86cda703"
+    },
+    "docs/branding/Masters/a3-app-light-master.png": {
+      "from": "docs/branding/Masters/a3-app-light-master.png",
+      "sha256": "8168b326935c122bac24eefdf393ca00773472ba2d9a2af230304909bf08ff37"
+    },
+    "docs/branding/PNG/a1-mark-dark-1024.png": {
+      "from": "docs/branding/PNG/a1-mark-dark-1024.png",
+      "sha256": "898472c6edbdfa11d9698522227a5b6d799573b5cd77411f19f7d5c23644f980"
+    },
+    "docs/branding/PNG/a1-mark-dark-256.png": {
+      "from": "docs/branding/PNG/a1-mark-dark-256.png",
+      "sha256": "e4bc20313eefbc34b59800011568bf21bcaa34d81ba9da236fc2dea97e381f27"
+    },
+    "docs/branding/PNG/a1-mark-dark-512.png": {
+      "from": "docs/branding/PNG/a1-mark-dark-512.png",
+      "sha256": "fcef6e7f6cf97afba6f27ef44ab7c845aa523bdc331d734752b45a1bacd506c8"
+    },
+    "docs/branding/PNG/a1-mark-light-1024.png": {
+      "from": "docs/branding/PNG/a1-mark-light-1024.png",
+      "sha256": "604706071dadaaf1293c0064a64127a34900e571f04b556ccd48e2ba24a29829"
+    },
+    "docs/branding/PNG/a1-mark-light-256.png": {
+      "from": "docs/branding/PNG/a1-mark-light-256.png",
+      "sha256": "69921279f9ccba5a0042cf1853c8d57b76985adaee94dc76fed8e1edb739819b"
+    },
+    "docs/branding/PNG/a1-mark-light-512.png": {
+      "from": "docs/branding/PNG/a1-mark-light-512.png",
+      "sha256": "3dc33b043361c9f267391472235844f80793f465c66df573c7b4de67ae6e14e9"
+    },
+    "docs/branding/PNG/a1-wordmark-dark-1024.png": {
+      "from": "docs/branding/PNG/a1-wordmark-dark-1024.png",
+      "sha256": "404a24f28e8a76cf696456153704a0d4b1a944d611b46137411d1d6bbb123144"
+    },
+    "docs/branding/PNG/a1-wordmark-dark-256.png": {
+      "from": "docs/branding/PNG/a1-wordmark-dark-256.png",
+      "sha256": "4d15e8592680d0d8f163b396df04acfaaf14be6e07749fa92896f0de47ee8327"
+    },
+    "docs/branding/PNG/a1-wordmark-dark-512.png": {
+      "from": "docs/branding/PNG/a1-wordmark-dark-512.png",
+      "sha256": "327afda5ee210341e89a70e05649396889cc4e62a510f6115b065e5b6dfdce97"
+    },
+    "docs/branding/PNG/a1-wordmark-light-1024.png": {
+      "from": "docs/branding/PNG/a1-wordmark-light-1024.png",
+      "sha256": "11358bfd63f757c7c1fcaec062878ab8677195e436d57180459d0ba4fa0aa4d1"
+    },
+    "docs/branding/PNG/a1-wordmark-light-256.png": {
+      "from": "docs/branding/PNG/a1-wordmark-light-256.png",
+      "sha256": "56d7ce73c31cd7d8faa2b3cc9d7d64dfb38a9cdea3cac44b7ec146386f87b5b0"
+    },
+    "docs/branding/PNG/a1-wordmark-light-512.png": {
+      "from": "docs/branding/PNG/a1-wordmark-light-512.png",
+      "sha256": "a02efdd334745b48cfc88f1a4af874f72ee7c73d79342d128364e78c4b74376b"
+    },
+    "docs/branding/PNG/a3-app-dark-1024.png": {
+      "from": "docs/branding/PNG/a3-app-dark-1024.png",
+      "sha256": "e5f64bf56899b6ec4d48ec87dd92be5aea7561e8acca133b4bab8e3cb03ab68a"
+    },
+    "docs/branding/PNG/a3-app-dark-256.png": {
+      "from": "docs/branding/PNG/a3-app-dark-256.png",
+      "sha256": "120af84d4ebfa72304d8b9f764fd57be7f278eb765abd010c436509b896ceb9e"
+    },
+    "docs/branding/PNG/a3-app-dark-512.png": {
+      "from": "docs/branding/PNG/a3-app-dark-512.png",
+      "sha256": "eb537c9f81ff9d295e6802450f94bd150a8ebf96f420c9d95681bb5bb4bdc176"
+    },
+    "docs/branding/PNG/a3-app-light-1024.png": {
+      "from": "docs/branding/PNG/a3-app-light-1024.png",
+      "sha256": "5c1605223cc8a437d77051333eb205445705c85a5e205007ac189a2be8a304a4"
+    },
+    "docs/branding/PNG/a3-app-light-256.png": {
+      "from": "docs/branding/PNG/a3-app-light-256.png",
+      "sha256": "ecf73d5ed3a310ac6d5a96e35131cbb713d757602cc65844b471a5d3fa1e49bb"
+    },
+    "docs/branding/PNG/a3-app-light-512.png": {
+      "from": "docs/branding/PNG/a3-app-light-512.png",
+      "sha256": "a8e53751a27bf33a3061f4f1a8aef12207d5fed6eeab4ad8de32cc6d10f09595"
+    },
+    "docs/branding/Preview.png": {
+      "from": "docs/branding/Preview.png",
+      "sha256": "37b779b0a2236acbf6972ffb0c12b5bb8474212d7d4231e81cbcb4dde7c5f743"
+    },
+    "docs/branding/README.md": {
+      "from": "docs/branding/README.md",
+      "sha256": "8efe0056436115ac33b853f20cf3fd5769d0a47d514fe981eacab22ab26dbb96"
+    },
+    "docs/branding/boot-artwork.md": {
+      "from": "docs/branding/boot-artwork.md",
+      "sha256": "bcbb7838ee4b352faffdbfafed9e79c932e59bd6b1b20410e590032fe86069f4"
+    },
+    "docs/branding/generation-prompts.json": {
+      "from": "docs/branding/generation-prompts.json",
+      "sha256": "a3355b125f26b6031585ec49daf5c6887a10ad9fd14d0d55527cd478c5a7eba6"
+    },
+    "docs/branding/sizes.json": {
+      "from": "docs/branding/sizes.json",
+      "sha256": "2bef1bea4d7192acf672165ded25a6cf4b6c869fd21368260c148b2cb37681b9"
+    }
+  },
+  "source": "https://github.com/toastfr35/ZmalaCall"
+}

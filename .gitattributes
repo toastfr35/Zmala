@@ -1,0 +1,15 @@
+* text=auto
+*.sh text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.3mf binary
+*.stl binary
+# Preserve document bytes and avoid text diffs or line-ending conversion.
+*.pdf binary
+*.docx binary
+# Content-addressed package locks must have identical bytes on Windows and Linux.
+zmala_images/locks/*.json text eol=lf
+zmala_images/bootloader-profile.json text eol=lf

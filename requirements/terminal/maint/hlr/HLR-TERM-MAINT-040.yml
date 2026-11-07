@@ -1,0 +1,27 @@
+active: true
+area: Image-managed first boot
+derived: false
+header: Durable image-managed first-device identity
+level: 40.0
+links:
+- PROD017: null
+- PROD013: null
+- PROD014: null
+normative: true
+ref: ''
+references:
+- path: tests/terminal/HLT/test_device_identity_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Given a prevalidated separate writable ext4 data mount for an image-managed terminal, first-device
+  initialization shall create and preserve a unique machine identity and default hostname using an
+  explicitly marked factory layout. Interrupted initialization shall resume without rotating a committed
+  identity, and unsupported or corrupt state shall fail rather than reset data. Readiness shall follow
+  complete durable identity and initialized-data records. This helper does not select disks, format
+  or expand filesystems, generate SSH keys, perform owner claim or qualify a full boot/update path.
+verification: Use fresh temporary ext4 file images in isolated Linux namespaces. Interrupt initializer
+  processes at actual synchronization boundaries, resume, and assert preserved committed identity,
+  exact ownership, initialization records and normal saved data. Verify invalid state remains unchanged.
+  Record actual boot and physical power-loss tests separately; process interruption is not power-loss
+  qualification.

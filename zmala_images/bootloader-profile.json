@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "qualification": "development-only",
+  "source": "bootloader_audit",
+  "defconfig": "rpi_arm64_defconfig",
+  "first_partition_bytes": 8388608,
+  "environment": {
+    "offsets": [1048576, 5242880],
+    "bytes": 65536,
+    "device_index": 0,
+    "hardware_partition": 0
+  },
+  "watchdog": {
+    "hardware_timeout_ms": 15000,
+    "userspace_open_timeout_seconds": 60,
+    "runtime_seconds": 15
+  },
+  "boot_command": "if fatload mmc 0:1 ${scriptaddr} boot.scr; then source ${scriptaddr}; fi; reset"
+}

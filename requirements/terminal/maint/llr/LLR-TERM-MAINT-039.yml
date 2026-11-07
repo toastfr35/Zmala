@@ -1,0 +1,26 @@
+active: true
+area: Image-managed host storage
+derived: false
+header: Ordered preparation and truthful failure cleanup
+level: 39.0
+links:
+- HLR-TERM-MAINT-035: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/host_storage.py
+  type: file
+- path: tests/terminal/LLT/test_appliance_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The image-managed storage helper shall serialize preparation in its private RAM working area,
+  create readiness only after all declared views and bindings succeed, and reject conflicting repeated
+  preparation. On an operation failure it shall attempt to unmount only mounts created by that preparation
+  in reverse order, retain the original error and report failure without new readiness. It shall
+  not unmount the supplied image/data volumes, invoke package managers or start application, TV or
+  media services.
+verification: Drive successful, repeated and injected-failure operation sequences with controlled
+  mount/filesystem adapters; assert ordering, reverse owned-mount cleanup, preserved input mounts/data,
+  unchanged error outcome and absence of readiness on failure. Verify assembled cleanup in isolated
+  mount namespaces.

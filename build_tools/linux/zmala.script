@@ -1,0 +1,24 @@
+
+Window.SetBackgroundTopColor(0.051, 0.071, 0.106);
+Window.SetBackgroundBottomColor(0.051, 0.071, 0.106);
+background = Image("boot-family.png");
+scale = Math.Min(Window.GetWidth() / background.GetWidth(), Window.GetHeight() / background.GetHeight());
+background = background.Scale(background.GetWidth() * scale, background.GetHeight() * scale);
+sprite = Sprite(background);
+sprite.SetX((Window.GetWidth() - background.GetWidth()) / 2);
+sprite.SetY((Window.GetHeight() - background.GetHeight()) / 2);
+
+
+version_sprite = Sprite();
+version_sprite.SetZ(100);
+fun display_version(text) {
+    if (text.SubString(0, 7) != "Zmala v") return;
+    image = Image.Text(text, 0.9, 0.94, 1, 1, "Sans 16");
+    size = Math.Max(0.75, Window.GetHeight() / 720);
+    image = image.Scale(image.GetWidth() * size, image.GetHeight() * size);
+    margin = Math.Max(12, Window.GetHeight() / 30);
+    version_sprite.SetImage(image);
+    version_sprite.SetX(Window.GetWidth() - image.GetWidth() - margin);
+    version_sprite.SetY(Window.GetHeight() - image.GetHeight() - margin);
+}
+Plymouth.SetDisplayMessageFunction(display_version);

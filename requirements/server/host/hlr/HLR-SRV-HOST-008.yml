@@ -1,0 +1,27 @@
+active: true
+area: Image-managed host storage
+derived: false
+header: Image-managed host storage preparation
+level: 8.0
+links:
+- PROD017: null
+- PROD013: null
+- PROD014: null
+normative: true
+ref: ''
+references:
+- path: tests/server/HLT/test_appliance_storage_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Given a validated image-managed server root, separate data mount and RAM working area, host
+  storage preparation shall expose slot-local package/default state, fresh volatile configuration
+  and transient writes, and only explicitly selected persistent identity, network, host-key and application
+  state. Replacing the prepared root shall preserve that selected data without carrying forward an
+  uncontrolled configuration overlay. Invalid or incomplete preparation shall be reported as failure
+  rather than readiness. This experimental helper does not by itself qualify early-boot integration,
+  data initialization or whole-system updates.
+verification: Use real isolated Linux mount namespaces and two read-only root generations to verify
+  selected persistent bytes, fresh defaults and volatile changes, slot-local package state, identity
+  and permissions, invalid-input refusal and failure cleanup. Record physical boot, restart and power-cut
+  evidence separately; namespace execution is not that evidence.

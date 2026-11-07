@@ -1,0 +1,18 @@
+[tool.ruff]
+target-version = "py311"
+extend-exclude = ["build_tools/runtime", "build_tools/tmp", "build_tools/dist", "tests/adhoc/tmp", "tmp", "data"]
+
+[tool.ruff.lint]
+# Check correctness without imposing a new formatting style on existing Python.
+select = ["E4", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# Standalone test/probe entry points locate the source tree before importing it.
+"tests/**/*.py" = ["E402"]
+# These compatibility modules deliberately expose the platform's public API.
+"zmala_terminal/common/connectivity.py" = ["F403"]
+"zmala_terminal/common/process_job.py" = ["F403"]
+"zmala_terminal/common/text_renderer.py" = ["F403"]
+"zmala_terminal/common/wifi.py" = ["F403"]
+# GI requires version selection before its namespace imports are evaluated.
+"zmala_terminal/linux/text_renderer.py" = ["E402"]

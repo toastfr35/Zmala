@@ -1,0 +1,25 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: Experimental confirmed and trial boot control
+level: 22.0
+links:
+- PROD017: null
+- PROD013: null
+- PROD014: null
+normative: true
+ref: ''
+references:
+- path: tests/server/HLT/test_boot_state_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The experimental image-managed server boot control shall retain an explicit confirmed system
+  while admitting at most one durably consumed trial attempt. Linux control shall use validated redundant
+  boot state, refuse corrupt or mismatched state without factory guesses, and separate candidate
+  eligibility and activation from explicit transaction-bound confirmation. This helper boundary does
+  not qualify full image installation, product health, watchdog handover or physical power-loss recovery.
+verification: Execute the authored selector and Linux state transitions against actual environment
+  tools on newly created isolated GPT fixtures. Verify trial consumption, fallback, confirmation,
+  corrupt-copy refusal, stale-state rejection and unchanged bytes outside the declared raw environment
+  ranges. Record real U-Boot/Pi boot and physical power cuts separately.

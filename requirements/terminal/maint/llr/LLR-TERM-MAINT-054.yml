@@ -1,0 +1,29 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: RAUC backend without automatic confirmation
+level: 54.0
+links:
+- HLR-TERM-MAINT-049: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/trial-watchdog.conf
+  type: file
+- path: zmala_system/boot_state.py
+  type: file
+- path: zmala_system/boot_backend.py
+  type: file
+- path: tests/terminal/LLT/test_boot_state.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The custom backend shall expose only the supported RAUC slot/state operations and explicit
+  transaction control, reject malformed arguments before mutation, and return generic nonzero failures
+  without saved environment contents. Setting eligibility shall not confirm health. The runtime boot-control
+  policy shall forbid automatic installed-slot activation or unconditional mark-good; trial watchdog
+  ownership shall remain unclaimed until the separate qualified health handover is implemented.
+verification: Exercise allowed commands and invalid counts/values, current/primary/good/bad results,
+  transaction-bound stage/confirm and generic failures. Validate experimental runtime policy for
+  disabled automatic activation/mark-good and unclaimed PID1 runtime watchdog. Keep actual product
+  health and watchdog qualification visibly pending.

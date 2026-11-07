@@ -1,0 +1,30 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: Explicit candidate and confirmation transitions
+level: 51.0
+links:
+- HLR-TERM-MAINT-049: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_state.py
+  type: file
+- path: zmala_system/boot_environment.py
+  type: file
+- path: zmala_system/boot_backend.py
+  type: file
+- path: tests/terminal/LLT/test_boot_state.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Candidate staging shall require the booted confirmed system, a distinct eligible inactive slot,
+  no existing pending trial and a fresh transaction. Confirmation shall require the currently booted
+  consumed trial and the matching transaction and generation; generic eligibility changes shall not
+  confirm a trial. Linux mutations shall compare the expected complete prior state under serialization,
+  advance a bounded generation, and verify the committed state by readback. Refusal or ambiguous
+  writes shall not report successful activation or confirmation.
+verification: Assert staged, consumed, confirmed, failed and cancelled transitions; reject active-slot
+  staging, stale transaction/generation, unconsumed or wrong-slot confirmation and generation exhaustion.
+  Inject stale reads, write failures and mismatched readback; verify conservative results and retained
+  confirmed state.

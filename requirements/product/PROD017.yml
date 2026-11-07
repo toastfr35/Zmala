@@ -1,0 +1,19 @@
+active: true
+area: System maintenance
+derived: false
+header: Image-managed system maintenance
+level: 17.0
+links: []
+normative: true
+ref: ''
+references: []
+reviewed: null
+scope: Experimental
+text: Image-managed Pi Terminal and Pi Server installations shall support automatic verified whole-system
+  updates, including qualified OS and distribution-package upgrades, at practical idle windows that
+  preserve calling, device identity and supported saved data. They shall retain a recoverable confirmed
+  system across interrupted preparation and trials and show localized maintenance progress on a visible
+  terminal. This policy is separate from legacy application-only maintenance.
+verification: Qualify signed update trust, idle admission, boot/root grouping, interrupted preparation
+  and trial recovery, identity/data compatibility, major-version transitions and translated visible
+  progress. A package/root build or planned hardware scenario is not full qualification.

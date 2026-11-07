@@ -1,0 +1,26 @@
+active: true
+area: Combined appliance storage and boot
+derived: false
+header: Experimental combined appliance identity and isolation
+level: 28.0
+links:
+- PROD017: null
+- PROD013: null
+normative: true
+ref: ''
+references:
+- path: tests/server/HLT/test_combined_appliance_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The experimental combined Terminal + Server appliance shall use one explicit
+  combined host identity and boot role while retaining separate server and terminal
+  application and operator state. Standalone state shall not be accepted as combined
+  state. Both application trees shall survive replacement of a synthetic root generation
+  without exposing private server, terminal or host credentials to the other application.
+  This boundary does not qualify application provisioning, onboarding, coordinated
+  maintenance, physical boot or power-loss recovery.
+verification: Run combined factory identity, GPT startup gate and native boot-state
+  fixtures, plus two read-only ext4 root generations with real mounts and separate
+  UID/GID 1000 and 1001 children. Assert persistence and denied cross-component credential
+  reads/writes; distinguish root-only skips and synthetic fixtures from hardware qualification.

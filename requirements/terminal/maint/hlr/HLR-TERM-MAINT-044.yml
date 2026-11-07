@@ -1,0 +1,28 @@
+active: true
+area: Image-managed early boot
+derived: false
+header: Image-managed early-boot storage preparation
+level: 44.0
+links:
+- PROD017: null
+- PROD013: null
+- PROD014: null
+normative: true
+ref: ''
+references:
+- path: tests/terminal/HLT/test_boot_storage_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: For the experimental image-managed terminal boot path, normal userspace startup shall depend
+  on complete validated host-storage preparation. Given an already mounted marked read-only root,
+  the helper shall validate its selected slot and actual block identity, locate data only on the
+  declared sibling partition of that same parent device, initialize compatible identity and prepare
+  volatile/persistent views. Unsupported or incomplete preparation shall fail without formatting,
+  resetting identity or admitting normal startup. This path does not itself qualify full watchdog
+  recovery, boot selection, application provisioning or system updates.
+verification: Use actual temporary GPT-partitioned loop files in private Linux namespaces, controlled
+  boot command lines and real block probes/mounts. Verify both selected roots, same-parent data,
+  identity/application preservation, refusals and owned failure cleanup. Exercise the installed startup
+  barrier separately. Record actual initramfs boot and physical power-loss evidence separately; synthetic
+  namespace execution is not that qualification.

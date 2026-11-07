@@ -1,0 +1,26 @@
+[
+  {
+    "name": "a1-wordmark-light",
+    "prompt": "Edit this APPROVED A1 Zmala logo into a clean production master, on pure white #FFFFFF background. Preserve the EXACT current geometric speech bubbles, spacing, white negative-space Z and rounded navy wordmark Zmala. Keep the same shapes and font, no redesign. Use crisp flat solid lavender #AA91F0, mint #55BA91 and wordmark navy #172033. Remove any tiny gradient/shading so fills are completely solid. Icon above wordmark, centered, compact balanced lockup with moderate clean outer margin, nothing cropped. No extra labels/text. High resolution."
+  },
+  {
+    "name": "a1-wordmark-dark",
+    "prompt": "Create the DARK BACKGROUND production version of this exact APPROVED A1 Zmala logo. Change background to uniform deep navy #172033 and the wordmark Zmala to solid near-white #F7F8FC. Keep the EXACT same geometric speech-bubble mark, shapes, proportions and icon-above-wordmark placement. Keep icon lavender #AA91F0 and mint #55BA91 with a SOLID WHITE negative-space Z (do not make the Z navy). Same rounded wordmark font, no redesign. Flat fills only, no glow, gradient, shadow, texture or other text. Moderate outer margins, centered compact balanced lockup, nothing cropped. High resolution."
+  },
+  {
+    "name": "a1-mark-light",
+    "prompt": "Edit this APPROVED A1 logo: remove the Zmala wordmark entirely. Output ONLY the same precise geometric two-bubble mark with white negative-space Z, centered on pure white #FFFFFF. Preserve EXACT geometry, corner radii, little speech tails, proportions and shapes. Solid flat lavender #AA91F0 upper-left and mint #55BA91 lower-right, white Z. No redesign, no gradients, no shadows, no text. Square composition, mark occupies approximately72% of width, balanced moderate margins. High-resolution clean production logo master."
+  },
+  {
+    "name": "a1-mark-dark",
+    "prompt": "Edit this APPROVED A1 logo: remove the Zmala wordmark entirely and set background to uniform deep navy #172033. Output ONLY the same precise geometric two-bubble mark with SOLID WHITE negative-space Z centered on navy. Preserve EXACT geometry, corner radii, little speech tails, proportions and shapes. Solid flat lavender #AA91F0 upper-left and mint #55BA91 lower-right. No redesign, no gradients, no shadows, no glow, no text. Square composition, mark occupies approximately72% of width, balanced moderate margins. High-resolution clean production logo master."
+  },
+  {
+    "name": "a3-app-dark",
+    "prompt": "Adapt this APPROVED A3 compact Zmala logo for an Android launcher icon. REMOVE the Zmala text completely. Keep EXACT same compact near-square overlapping speech bubbles and strong rounded WHITE Z; preserve geometry and short speech tails. Uniform deep navy #172033 full-bleed square background, NO rounded outside tile corners because Android supplies its own mask. Purple bubble flat #AA91F0 and green bubble flat #55BA91, white Z. Center logo in square, with the entire colored mark and tails inside the central64% width and64% height safe region, generous even padding to survive circle/squircle launcher crops. No labels, no text, no border, no shadow, no glow, no gradients. High-resolution flat app-icon master."
+  },
+  {
+    "name": "a3-app-light",
+    "prompt": "Adapt this APPROVED A3 compact Zmala logo for an Android launcher icon. REMOVE the Zmala text completely. Keep EXACT same compact near-square overlapping speech bubbles and strong rounded WHITE Z; preserve geometry and short speech tails. Pure white #FFFFFF full-bleed square background, NO rounded outside tile corners because Android supplies its own mask. Purple bubble flat #AA91F0 and green bubble flat #55BA91, white Z. Center logo in square, with the entire colored mark and tails inside the central64% width and64% height safe region, generous even padding to survive circle/squircle launcher crops. No labels, no text, no border, no shadow, no glow, no gradients. High-resolution flat app-icon master."
+  }
+]
