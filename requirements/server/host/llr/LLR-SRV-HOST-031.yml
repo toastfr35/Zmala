@@ -1,0 +1,35 @@
+active: true
+area: Image-managed media capacity
+derived: false
+header: Bound and commit factory GPT relocation
+level: 31.0
+links:
+- HLR-SRV-HOST-030: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_capacity.py
+  type: file
+- path: zmala_system/boot_storage.py
+  type: file
+- path: tests/server/LLT/test_boot_capacity.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Before identity initialization, compact-policy server roots shall bind capacity
+  adaptation to their selected Pi 4 onboard SD parent, kernel partition geometry
+  and root/data UUIDs. Only the fixed compact six-partition layout, 512-byte sectors
+  and media from 14,001,635,328 bytes through 128 GiB shall be admitted. Required
+  metadata writes shall require factory data without saved identity or application
+  state. The runtime shall retain the primary partition array and commit backup
+  array, backup header, primary header and protective-MBR length in that order,
+  synchronizing and checking each write. Retry shall require a valid original GPT
+  pair or valid new backup matching the unchanged primary array. A consistent
+  already-adapted medium shall incur no writes. Unknown state, short writes or
+  failed readback shall fence identity and normal startup. No partition, filesystem
+  or redundant environment extent shall be changed.
+verification: Direct LLT covers typed policy, same-parent/transport/model/geometry
+  admission, initialized data refusal, corrupt or wrong identities, insufficient
+  capacity, every modeled partial/complete metadata write, failed write/readback,
+  repeat no-op and startup fencing. HLT uses native sfdisk regular files; hardware
+  power-loss behavior requires separate evidence.

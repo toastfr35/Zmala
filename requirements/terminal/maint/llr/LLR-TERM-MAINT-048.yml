@@ -1,0 +1,38 @@
+active: true
+area: Image-managed early boot
+derived: false
+header: Startup barrier and bounded boot tools
+level: 48.0
+links:
+- HLR-TERM-MAINT-044: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_storage.py
+  type: file
+- path: zmala_system/boot_devices.py
+  type: file
+- path: zmala_system/boot_entry.py
+  type: file
+- path: tests/terminal/LLT/test_boot_storage.py
+  type: file
+- path: zmala_system/boot_gate.py
+  type: file
+- path: zmala_system/zmala-host-storage.service
+  type: file
+- path: zmala_system/sysinit-storage.conf
+  type: file
+- path: zmala_system/host_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The installed early-boot entry shall invoke the role-specific storage helper before normal
+  userspace startup and shall not continue normal startup when it fails or remains incomplete. Runtime
+  block/mount helpers shall use only fixed bounded operations and return generic failure diagnostics
+  without saved identity or secret contents. Boot preparation shall not interpret arbitrary commands
+  from kernel arguments or saved data.
+verification: Execute the startup entry with controlled success/failure helper outcomes; assert success
+  can return while failure remains fenced and no normal-start sentinel runs. Accept the installed
+  canonical root path before policy validation while refusing unsafe paths. Exercise command allowlists,
+  bounded probe output/timeouts and generic CLI diagnostics with adversarial argument/data fixtures.
+  Audit actual generated initramfs payloads separately as build tooling.

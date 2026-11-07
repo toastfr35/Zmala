@@ -1,0 +1,19 @@
+active: true
+area: Product specification
+derived: false
+header: |
+  Persistence and failure recovery
+level: 13.0
+links: []
+normative: true
+ref: ''
+references: []
+reviewed: null
+scope: Core
+text: |
+  The product shall retain configuration and relevant contact history across ordinary
+  restarts, reject stale or invalid changes, and expose failures without reporting
+  incomplete work as successful.
+verification: |
+  Restart with saved state; inject invalid configuration, interrupted work and storage
+  errors and verify recovery and explicit failure reporting.

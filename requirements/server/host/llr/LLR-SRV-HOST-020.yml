@@ -1,0 +1,28 @@
+active: true
+area: Image-managed early boot
+derived: false
+header: Ordered preparation and owned mount cleanup
+level: 20.0
+links:
+- HLR-SRV-HOST-017: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_storage.py
+  type: file
+- path: tests/server/LLT/test_boot_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: After complete boot/data validation, the helper shall mount only the selected data partition,
+  initialize its compatible identity and prepare the declared host-storage views in that order. It
+  shall generate the selected root's read-only mount entry in the volatile configuration so normal
+  PID1 remount handling preserves root immutability. Complete readiness shall follow successful preparation.
+  Failures shall retain the original error and attempt cleanup of only owned partial mounts while
+  preserving the supplied root and committed identity; data needed by residual mutable views shall
+  remain mounted for recovery. It shall not format, expand or reset filesystems or invoke application,
+  TV or media services.
+verification: Observe successful mount/initialize/view/read-only configuration/readiness ordering
+  and inject failures before and after mount creation, initialization and view preparation. Assert
+  preserved input root and identity, truthful failure, reverse owned cleanup and retained data when
+  dependent views remain. Repeat with actual ext4 namespaces.

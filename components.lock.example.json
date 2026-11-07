@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "components": {
+    "server": {
+      "version": "0.3.103",
+      "commit": "<40 lowercase hexadecimal digits>",
+      "sha256": "<64 lowercase hexadecimal digits>"
+    },
+    "terminal": {
+      "version": "0.3.103",
+      "commit": "<40 lowercase hexadecimal digits>",
+      "sha256": "<64 lowercase hexadecimal digits>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: Closed boot-state contract
+level: 23.0
+links:
+- HLR-SRV-HOST-022: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_environment.py
+  type: file
+- path: zmala_system/boot_state.py
+  type: file
+- path: tests/server/LLT/test_boot_state.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Boot control shall accept only a bounded complete unique-key state record of the supported
+  schema and role, confirmed slot, optional distinct trial, literal attempt count, eligibility flags,
+  canonical transaction identity and bounded generation. The confirmed slot shall remain eligible.
+  Missing, duplicate, malformed, oversized or inconsistent records shall fail without initializing
+  a default.
+verification: Round-trip factory and staged records for both roles; reject duplicate/missing/unknown
+  keys, invalid encodings, booleans, overflows, invalid eligibility and incompatible trial/transaction
+  combinations.

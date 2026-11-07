@@ -1,0 +1,30 @@
+active: true
+area: Image-managed boot control
+derived: false
+header: Fenced redundant environment access
+level: 26.0
+links:
+- HLR-SRV-HOST-022: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_state.py
+  type: file
+- path: zmala_system/boot_media.py
+  type: file
+- path: zmala_system/boot_environment.py
+  type: file
+- path: tests/server/LLT/test_boot_state.py
+  type: file
+reviewed: null
+scope: Experimental
+text: Before raw environment access, Linux boot control shall validate its marked read-only current
+  image and declared slot, same-parent block topology, primary and backup GPT integrity, six-partition
+  identities and both fixed disjoint environment ranges outside GPT metadata and partitions. Production
+  access shall require the supported Pi 4 SD transport. Only fixed tool paths, keys, bounded commands,
+  root-private generated configuration and nonblocking root-owned serialization shall be used; arbitrary
+  devices, offsets, shell commands or operator configuration shall not select writes.
+verification: Test GPT corruption, wrong parent/partition/transport, overlapping or changed geometry,
+  symlinks/permissions, fixed command arguments, bounded output/timeouts and lock contention. Exercise
+  actual environment tools on newly created fixture files/loops only; compare surrounding bytes before/after
+  mutations.

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "imagegen": {
+    "repository": "raspberrypi/rpi-image-gen",
+    "commit": "ff5fb451fac47debf441a5a2b39aa3ade7988bd6",
+    "sha256": "728eb2a90efec199f08a267047f22d13aa60be23d9efed8605653506f9f960fd"
+  },
+  "backend_audit": {
+    "repository": "Rtone/raspberrypi-firmware-rauc-bootloader-backend",
+    "commit": "c8aa8ab78f9eb12c42d5b45f7d27c430bce8b7ef",
+    "sha256": "53b21d1754e98adc5d2abd39fa03a76f1b57e99afe8d5bb950d1e243005590fd"
+  },
+  "bootloader_audit": {
+    "repository": "u-boot/u-boot",
+    "commit": "5508406582f6f7120dce0c4b3059819a41788db2",
+    "sha256": "9af5655e09851ece729f4bcdf36ab0c3617dbbbd2ea9f54afa3e1b01b1d589d9"
+  }
+}

@@ -1,0 +1,27 @@
+active: true
+area: Image-managed early boot
+derived: false
+header: Marked boot policy and selected slot
+level: 45.0
+links:
+- HLR-TERM-MAINT-044: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/boot_layout.py
+  type: file
+- path: zmala_system/boot_storage.py
+  type: file
+- path: zmala_system/boot_devices.py
+  type: file
+- path: tests/terminal/LLT/test_boot_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The early-boot helper shall require Linux root, a bounded exact root-owned boot-layout policy
+  matching the selected role, a marked read-only ext4 root and exactly one supported slot and PARTUUID
+  root argument. It shall reject duplicate or malformed relevant kernel arguments, unsupported policies
+  and conflicting mounts before data initialization or mutable-view preparation.
+verification: Validate policy byte/type/role/owner bounds, kernel argument parsing, missing/duplicate
+  keys, malformed UUIDs, platform/privilege guards and read-only mount admission. Assert refusal
+  precedes data mount or identity initialization.

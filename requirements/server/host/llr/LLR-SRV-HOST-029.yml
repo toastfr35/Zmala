@@ -1,0 +1,37 @@
+active: true
+area: Combined appliance storage and boot
+derived: false
+header: Exact combined role and private component bindings
+level: 29.0
+links:
+- HLR-SRV-HOST-028: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/host_layout.py
+  type: file
+- path: zmala_system/boot_state.py
+  type: file
+- path: zmala_system/device_identity.py
+  type: file
+- path: zmala_system/boot_environment.py
+  type: file
+- path: zmala_system/boot_select.sh
+  type: file
+- path: tests/server/LLT/test_combined_appliance.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The experimental host policy shall accept exactly server, terminal and combined
+  roles. Combined root, factory data, initialized data and confirmed/trial boot records
+  shall carry the combined role and reject other-role records without conversion.
+  Combined persistent terminal state shall use UID/GID 1000 and server state UID/GID
+  1001, both mode 0700. Component operator directories shall be root-owned, mode 0750
+  with their respective component group. Host SSH and server certificate directories
+  shall remain root-private. One shared host identity and one confirmed/trial state
+  shall cover both components. Standalone roles shall retain their existing UID/GID
+  1000 and binding policy.
+verification: Assert exact typed profiles and binding paths, owners and permissions;
+  reject cross-role root/factory/data/boot records. Run existing identity, startup
+  and boot transition unit scenarios using combined, including selector trial consumption/fallback
+  and no implicit confirmation. HLT separately proves actual mount/UID isolation.

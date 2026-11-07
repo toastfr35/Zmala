@@ -1,0 +1,26 @@
+active: true
+area: Image-managed media capacity
+derived: false
+header: Compact media capacity adaptation
+level: 111.0
+links:
+- PROD017: null
+- PROD013: null
+normative: true
+ref: ''
+references:
+- path: tests/server/HLT/test_boot_capacity_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The experimental image-managed server, including the combined role, shall
+  admit its compact factory layout on supported SD media of sufficient capacity,
+  relocating GPT backup metadata to the actual medium end before initializing
+  device identity. Adaptation shall preserve partition extents and identities,
+  filesystems and redundant boot state. It shall fence unknown or initialized
+  media requiring repair. Extra capacity may remain unallocated.
+verification: On newly created sparse regular-file GPT fixtures representing
+  16 GB and 32 GB media, exercise relocation, retry after interrupted metadata
+  writes, repeat boot, capacity refusal and byte preservation. Record actual Pi
+  boot and physical power interruption separately; fixture results are not
+  hardware qualification.

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "purpose": "requested-package-closure",
+  "image_qualified": false,
+  "roles": {
+    "server": {
+      "file": "server.json",
+      "sha256": "d081820aa249fe185693f9c8c2f87378cab75d58e68c83307a316487b30404c2",
+      "archives": 197,
+      "archive_bytes": 84407998
+    },
+    "terminal": {
+      "file": "terminal.json",
+      "sha256": "3d0eb0f637d83638080e6d511d52420dc273ea172a17145fc987fa6c6a4534cb",
+      "archives": 725,
+      "archive_bytes": 530367300
+    },
+    "combined": {
+      "file": "combined.json",
+      "sha256": "2989c84c53c07cb383b4c0f8f52588102f996216d5778560ce3e78dd86868ab3",
+      "archives": 740,
+      "archive_bytes": 543354356
+    }
+  },
+  "base": {
+    "intent_file": "base-intent.json",
+    "intent_sha256": "f7a3978a869197ad556e0448c812f0267b9ccdb33699136a6a73b7b4156be7d1",
+    "lock_file": "base.json",
+    "lock_sha256": "9ac89ec60e5d04191fcc3dce36b0b91a0d8a954b6901eadb44aacd6769b91f77",
+    "archives": 259,
+    "archive_bytes": 164614914
+  }
+}

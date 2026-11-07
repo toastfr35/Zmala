@@ -1,0 +1,60 @@
+node_modules/
+.venv/
+.ruff_cache/
+build_tools/.npm-cache/
+build_tools/runtime/
+data/
+# Requirement theme, not private application state.
+!/requirements/server/data/
+__pycache__/
+*.so
+*.o
+*.log
+build_tools/tmp/
+build_tools/dist/
+/requirements/output/
+
+# Local scratch work and generated test output.
+/tmp/
+/tests/adhoc/tmp/
+/.codex-remote-attachments/
+*.pyc
+*.pyo
+*.dll
+*.exe
+*.bak
+*.tmp
+~$*.docx
+/zmala_terminal/linux/media/framing-runtime/
+/zmala_terminal/linux/media/models/*.tflite
+
+# Keep local configuration and credentials out of commits.
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+*.p12
+*.key
+*.jks
+*.keystore
+**/*release-signing*.json
+
+# Personal portrait drafts are local account assets, not application source.
+/zmala_server/assets/account-pictures/
+
+# Generated requirement-based execution coverage.
+/tests/coverage/
+
+# Native TURN correction and retained upstream build sources
+zmala_terminal/linux/turn-runtime/
+
+# Android machine configuration and generated outputs.
+/zmala_phone/.gradle/
+/zmala_phone/**/build/
+/zmala_phone/local.properties
+/zmala_phone/.idea/
+
+# Firebase application configuration and server credentials remain local.
+/zmala_phone/app/google-services.json
+**/*service-account*.json

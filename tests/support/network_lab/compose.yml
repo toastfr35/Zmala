@@ -1,0 +1,73 @@
+name: zmala-network-lab
+x-node: &node
+  image: zmala-network-lab:local
+  cap_add: [NET_ADMIN]
+  volumes: [credentials:/lab, '.:/app/tests/support/network_lab:ro']
+  init: true
+services:
+  seed:
+    <<: *node
+    command: [seed]
+    network_mode: none
+  router-a:
+    <<: *node
+    command: [router, '10.231.10.254', '10.231.100.11']
+    sysctls: { net.ipv4.ip_forward: '1' }
+    networks:
+      home-a: { ipv4_address: 10.231.10.254 }
+      internet: { ipv4_address: 10.231.100.11 }
+  router-b:
+    <<: *node
+    command: [router, '10.231.20.254', '10.231.100.12']
+    sysctls: { net.ipv4.ip_forward: '1' }
+    networks:
+      home-b: { ipv4_address: 10.231.20.254 }
+      internet: { ipv4_address: 10.231.100.12 }
+  router-server:
+    <<: *node
+    command: [router, '10.231.30.254', '10.231.100.13', server]
+    sysctls: { net.ipv4.ip_forward: '1' }
+    networks:
+      server-lan: { ipv4_address: 10.231.30.254 }
+      internet: { ipv4_address: 10.231.100.13 }
+  server:
+    <<: *node
+    command: [server, '10.231.30.254']
+    depends_on:
+      seed: { condition: service_completed_successfully }
+      router-server: { condition: service_started }
+    networks:
+      server-lan: { ipv4_address: 10.231.30.10 }
+  terminal-a:
+    <<: *node
+    command: [terminal, '10.231.10.254', a]
+    depends_on:
+      seed: { condition: service_completed_successfully }
+      router-a: { condition: service_started }
+      server: { condition: service_started }
+    networks:
+      home-a: { ipv4_address: 10.231.10.10 }
+  terminal-b:
+    <<: *node
+    command: [terminal, '10.231.20.254', b]
+    depends_on:
+      seed: { condition: service_completed_successfully }
+      router-b: { condition: service_started }
+      server: { condition: service_started }
+    networks:
+      home-b: { ipv4_address: 10.231.20.10 }
+networks:
+  home-a:
+    internal: true
+    ipam: { config: [{ subnet: 10.231.10.0/24 }] }
+  home-b:
+    internal: true
+    ipam: { config: [{ subnet: 10.231.20.0/24 }] }
+  server-lan:
+    internal: true
+    ipam: { config: [{ subnet: 10.231.30.0/24 }] }
+  internet:
+    internal: true
+    ipam: { config: [{ subnet: 10.231.100.0/24 }] }
+volumes:
+  credentials:

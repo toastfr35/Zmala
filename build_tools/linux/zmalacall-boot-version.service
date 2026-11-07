@@ -1,0 +1,16 @@
+[Unit]
+Description=Show the confirmed Zmala version on the boot screen
+DefaultDependencies=no
+After=local-fs.target plymouth-start.service
+Before=sysinit.target plymouth-quit.service plymouth-quit-wait.service
+ConditionPathExists=/run/plymouth/pid
+
+[Service]
+
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/lib/zmalacall-terminal-host/boot-version.py
+Environment=PYTHONDONTWRITEBYTECODE=1
+TimeoutStartSec=5
+
+[Install]
+WantedBy=sysinit.target

@@ -1,0 +1,24 @@
+active: true
+area: Image-managed first boot
+derived: false
+header: Entropy and ordered durable identity commit
+level: 42.0
+links:
+- HLR-TERM-MAINT-040: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/device_identity.py
+  type: file
+- path: tests/terminal/LLT/test_device_identity.py
+  type: file
+reviewed: null
+scope: Experimental
+text: For fresh marked data, the initializer shall obtain a 128-bit machine identifier from blocking
+  kernel entropy without a weak fallback and derive a role-specific default hostname. It shall synchronize
+  bounded regular identity files and their private staging directory, publish the identity directory
+  atomically and synchronize its data parent before synchronizing and publishing the initialized-data
+  marker. It shall report readiness only after final validation and data-directory synchronization.
+verification: Control entropy short reads, empty/invalid results and errors. Observe write/sync/rename
+  ordering, fixed modes under a restrictive umask and the generated role/identifier relationship.
+  Inject file, rename and synchronization errors and assert no successful result is returned.

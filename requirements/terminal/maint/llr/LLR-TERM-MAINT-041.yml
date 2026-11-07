@@ -1,0 +1,24 @@
+active: true
+area: Image-managed first boot
+derived: false
+header: Marked data and serialized initialization
+level: 41.0
+links:
+- HLR-TERM-MAINT-040: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/device_identity.py
+  type: file
+- path: tests/terminal/LLT/test_device_identity.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The image-managed initializer shall require Linux root with root group, a canonical root-private
+  separate writable ext4 data mount and either a supported matching root-owned factory-data record
+  on fresh data or a fully valid initialized identity. It shall reject unsupported roles, schemas,
+  owners, modes, links, missing identity and unknown fresh data before changing identity. Concurrent
+  initialization shall fail immediately under a shared nonblocking lock whose inode is not removed.
+verification: Exercise factory/initialized records, mount facts, platform and privilege guards, paths,
+  owners/modes, links, unknown data and competing lock acquisitions. Assert refusal precedes identity
+  writes and retained unknown bytes are unchanged.

@@ -1,0 +1,28 @@
+services:
+  seed:
+    environment: {ZMALA_LAB_TLS: '1'}
+  router-server:
+    environment: {ZMALA_LAB_TLS: '1'}
+  server:
+    environment:
+      ZMALA_LAB_TLS: '1'
+      ZMALA_SECURE_CALLS_FILE: /lab/secure-calls.json
+      VIDEOCALL_DEBUG: '1'
+      ZMALA_TLS_CERT: /lab/server.pem
+      ZMALA_TLS_KEY: /lab/server.key
+      ZMALA_HTTPS_PORT: '443'
+      ZMALA_SERVER_NAME: '10.231.100.15'
+  terminal-a:
+    environment: {ZMALA_LAB_TLS: '1', SSL_CERT_FILE: /lab/ca.pem}
+  terminal-b:
+    environment: {ZMALA_LAB_TLS: '1', SSL_CERT_FILE: /lab/ca.pem}
+  turn:
+    image: zmala-network-lab:local
+    init: true
+    cap_add: [NET_ADMIN]
+    volumes: [credentials:/lab, '.:/app/tests/support/network_lab:ro']
+    command: [turn]
+    depends_on:
+      seed: {condition: service_completed_successfully}
+    networks:
+      internet: {ipv4_address: 10.231.100.14}

@@ -1,0 +1,30 @@
+active: true
+area: Image-managed host storage
+derived: false
+header: Fresh volatile views and slot-local package state
+level: 37.0
+links:
+- HLR-TERM-MAINT-035: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/journald.conf
+  type: file
+- path: zmala_system/host_layout.py
+  type: file
+- path: zmala_system/host_storage.py
+  type: file
+- path: tests/terminal/LLT/test_appliance_storage.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The image-managed storage helper shall prepare a fresh RAM-backed configuration overlay from
+  the selected root defaults, a bounded RAM-backed variable-state view from that root seed and a
+  bounded RAM temporary directory. It shall retain package status and package alternatives in the
+  selected read-only root rather than the shared data mount. It shall not reuse a saved configuration
+  upper layer or package database from another root generation. Ordinary journals shall use volatile
+  storage with a 32 MiB runtime budget and 4 MiB file limit.
+verification: Assert overlay/temporary mount options and bounds, seed source and preserved metadata,
+  package-state source constraints and rejection of unsafe seed/link layouts; compare two real root
+  generations in HLT. Verify the authored journald policy limits; actual daemon/boot behavior remains
+  part of physical role qualification.

@@ -1,0 +1,8 @@
+# Install into a local virtual environment; runtime dependencies remain separate.
+ruff==0.16.10
+# Exercise SSH deployment validation in CI as well as on the installer PC.
+paramiko==5.0.0
+# LLT statement/function coverage reports.
+coverage==7.13.4
+# Folded-leaflet publishing-tool regression checks.
+pypdf==6.10.0
