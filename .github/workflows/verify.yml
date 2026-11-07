@@ -32,7 +32,7 @@ jobs:
       - name: Install Linux runtime and display test libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-venv python3-tk python3-pil python3-pil.imagetk python3-gi python3-gi-cairo python3-cairo python3-websocket gir1.2-pango-1.0 xvfb xauth nftables iproute2 fdisk util-linux e2fsprogs libubootenv-tool
+          sudo apt-get install -y python3-venv python3-tk python3-pil python3-pil.imagetk python3-gi python3-gi-cairo python3-cairo python3-websocket gir1.2-pango-1.0 xvfb xauth nftables iproute2 fdisk util-linux e2fsprogs libubootenv-tool rauc squashfs-tools
           /usr/bin/python3 -m venv --system-site-packages "$RUNNER_TEMP/zmala"
           "$RUNNER_TEMP/zmala/bin/pip" install -r requirements-dev.txt -r build_tools/doorstop-requirements.txt
           echo "$RUNNER_TEMP/zmala/bin" >> "$GITHUB_PATH"
