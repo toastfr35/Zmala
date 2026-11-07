@@ -3,6 +3,7 @@
 # @environment portable
 # @plan Check the packaged Terminal-only service graph and exercise RAUC's native signature verification on disposable verity bundles when RAUC is available. Physical slot writes and watchdog resets require a Pi.
 # @pass The normal and trial services are mutually gated, candidate code cannot write persistent data, and the wrong certificate is rejected by RAUC.
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -48,14 +49,16 @@ class SystemUpdateTests(unittest.TestCase):
             (source/'manifest.raucm').write_text(
                 '[update]\ncompatible=zmala-verify\nversion=0.0.1\n\n[bundle]\nformat=verity\n'
                 '\n[image.test]\nfilename=test.img\n', encoding='ascii')
-            (source/'test.img').write_bytes(bytes(range(256))*256)
+            # The SquashFS payload must exceed one block for dm-verity.
+            (source/'test.img').write_bytes(os.urandom(65536))
             for identity in ('trusted', 'foreign'):
                 subprocess.run(['openssl', 'req', '-new', '-newkey', 'rsa:2048', '-nodes', '-x509',
                                 '-subj', f'/CN={identity}', '-keyout', root/(identity+'.key'),
                                 '-out', root/(identity+'.pem')], check=True, capture_output=True, timeout=20)
             bundle = root/'test.raucb'
-            subprocess.run(['rauc', f'--cert={root}/trusted.pem', f'--key={root}/trusted.key', 'bundle',
-                            source, bundle], check=True, capture_output=True, timeout=45)
+            result = subprocess.run(['rauc', f'--cert={root}/trusted.pem', f'--key={root}/trusted.key',
+                                     'bundle', source, bundle], capture_output=True, timeout=45)
+            self.assertEqual(result.returncode, 0, result.stderr.decode())
             for identity, success in (('trusted', True), ('foreign', False)):
                 result = subprocess.run(['rauc', f'--keyring={root}/{identity}.pem', 'info', bundle],
                                         capture_output=True, timeout=15)
