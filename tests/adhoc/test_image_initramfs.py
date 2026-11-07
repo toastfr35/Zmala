@@ -15,16 +15,30 @@ from tests.adhoc.test_image_state import fixture
 from tests.support.appliance_storage_unit import controlled_ownership
 
 
-def copied_tree(base, main_subdirectory=True):
+def copied_tree(base, main_subdirectory=True, role='server'):
     root = base/'source'; root.mkdir()
     extracted = base/'extracted'; extracted.mkdir()
     main = extracted/'main' if main_subdirectory else extracted
     main.mkdir(exist_ok=True)
-    for name, body in image_state.payloads('server').items():
-        if not (name.startswith(image_state.INSTALLED+'/') or name == 'usr/lib/zmala/role'):
-            continue
+    payload = image_state.payloads(role)
+    # The shell hook copies the same early-boot files for every role.
+    paths = [name for name in image_state.payloads('server')
+             if name.startswith(image_state.INSTALLED+'/') or name == 'usr/lib/zmala/role']
+    for name in paths:
         target = main/name; target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(body); target.chmod(0o644)
+        target.write_bytes(payload[name]); target.chmod(0o644)
+    if role == 'terminal':
+        for folder in (root, main):
+            theme = folder/'usr/share/plymouth/themes/zmala'
+            theme.mkdir(parents=True)
+            for name in ('zmala.plymouth', 'zmala.script', 'boot-family.png'):
+                (theme/name).write_bytes(name.encode())
+        config = main/'etc/plymouth/plymouthd.conf'
+        config.parent.mkdir(parents=True)
+        config.write_text('Theme=zmala\n')
+        plugin = main/'usr/lib/aarch64-linux-gnu/plymouth/script.so'
+        plugin.parent.mkdir(parents=True)
+        plugin.touch()
     entry = main/'scripts/local-bottom/zmala-host'; entry.parent.mkdir(parents=True)
     entry.write_bytes(Path(worker.__file__).with_name('initramfs_entry.sh').read_bytes()); entry.chmod(0o755)
     order = entry.parent/'ORDER'
@@ -97,6 +111,15 @@ class InitramfsToolTests(unittest.TestCase):
                 self.assertEqual(actual, main)
                 self.assertIn(image_state.INSTALLED+'/boot_gate.py', checked)
                 self.assertEqual(set(binaries), {'python3.13', 'mount', 'umount', 'blkid'})
+
+    @unittest.skipIf(os.name == 'nt', 'Unix copied-payload modes and modeled root ownership')
+    def test_terminal_initramfs_does_not_require_system_updater(self):
+        with tempfile.TemporaryDirectory() as temporary, controlled_ownership():
+            root, extracted, main = copied_tree(Path(temporary), role='terminal')
+            actual, checked, _ = worker.inspect_initramfs(root, extracted, 'terminal')
+            self.assertEqual(actual, main)
+            self.assertIn(image_state.INSTALLED+'/boot_gate.py', checked)
+            self.assertNotIn(image_state.INSTALLED+'/update_coordinator.py', checked)
 
     @unittest.skipIf(os.name == 'nt', 'Unix payload integrity/modes and symlink refusal')
     def test_runtime_entry_binary_and_link_tampering_is_rejected(self):
