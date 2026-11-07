@@ -922,6 +922,49 @@ workflow artifacts for review. After physical qualification, publish both
 `ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` on the same
 latest release. Keep the signing key in the main-only release environment.
 
+## Test a Terminal package through Developer Access
+
+Use the existing operator SSH tunnel on a standalone A/B Terminal. Enable
+Developer Access for the enrolled Terminal and verify that the operator key
+logs in as `zmala` through the server. For a factory card, provision the
+operator public key after the first boot initializes the card. From a local
+root session, install the public key at `/etc/ssh/keys/authorized_keys` with
+root ownership and mode `0600`. You can also shut down the Pi and mount the
+card's `persistent` partition on Linux, then write the key to
+`host/ssh/authorized_keys` on that partition with the same ownership and mode.
+Read `host/ssh/ssh_host_ed25519_key.pub` there to pin the fresh card's SSH host
+key on your workstation. The deploy tool works with image 0.4.1.
+
+Build the ARM64 package from the Terminal checkout with
+`python3 build_tools/linux/package-terminal.py --output ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz`,
+or use the package and SHA-256 from a Terminal Verify run. Set `digest` to the
+first field of the package's `.sha256` file. From the image-builder checkout,
+use an executable wrapper that forwards its command arguments and standard input
+to the authenticated Pi SSH session without allocating a terminal.
+
+```sh
+python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh deploy \
+    ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz --sha256 "$digest"
+python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh status
+python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh restore
+```
+
+For an OpenSSH host alias, use `--ssh-arg=terminal-dev` in place of the wrapper.
+Close Settings and let calls, setup and pending device operations finish
+before deploying. The tool checks the package on both ends and uses the normal
+Terminal maintenance acknowledgement before switching. A test version can
+include Python, assets and TV plugins. It reuses the installed native libraries,
+so a change to the native build inputs requires a system image build.
+
+The test service runs for up to 30 minutes and uses a separate RAM copy of the
+Terminal profile, including the existing enrollment and TV settings. Restoring
+the stock service discards test configuration changes. The stock service also
+returns after the test exits, the Developer Access shell stops, or the Pi
+reboots. Test logs are available with
+`sudo -n journalctl -u zmalacall-terminal-test.service` in the operator shell.
+The OTA settings are unavailable during the test session. Use **restore** to
+return to normal operation before trying a second package.
+
 ## Next-image acceptance contract
 
 These are image packaging and test-delivery gates, kept outside the normative
