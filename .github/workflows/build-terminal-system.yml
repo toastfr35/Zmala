@@ -89,11 +89,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            bc binfmt-support bison build-essential dosfstools dpkg-dev e2fsprogs fdisk flex \
+            arch-test bc binfmt-support bison build-essential dosfstools dpkg-dev e2fsprogs fdisk flex \
             gcc-aarch64-linux-gnu libgnutls28-dev libssl-dev mmdebstrap mtools \
             python3-dev python3-pyelftools python3-setuptools qemu-user-static swig uidmap zstd
           sudo update-binfmts --enable qemu-aarch64
           grep -Eq '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64
+          arch-test arm64
           if sysctl -n kernel.apparmor_restrict_unprivileged_userns >/dev/null 2>&1; then
             sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           fi
