@@ -933,7 +933,8 @@ root ownership and mode `0600`. You can also shut down the Pi and mount the
 card's `persistent` partition on Linux, then write the key to
 `host/ssh/authorized_keys` on that partition with the same ownership and mode.
 Read `host/ssh/ssh_host_ed25519_key.pub` there to pin the fresh card's SSH host
-key on your workstation. The deploy tool works with image 0.4.1.
+key on your workstation. Deployment requires a running stock Terminal and
+system update coordinator.
 
 Build the ARM64 package from the Terminal checkout with
 `python3 build_tools/linux/package-terminal.py --output ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz`,

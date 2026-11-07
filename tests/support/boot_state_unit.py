@@ -228,13 +228,19 @@ class BootStateScenario(unittest.TestCase):
 
     @unittest.skipUnless(os.name == 'posix', 'Requires Linux privilege and topology adapters')
     def test_startup_gate_refusal_prevents_any_lock_or_raw_environment_access(self):
-        with patch.object(boot_environment.platform, 'system', return_value='Linux'), \
-                patch.object(boot_environment.os, 'geteuid', return_value=0), \
-                patch.object(boot_environment.boot_gate, 'verify', side_effect=ValueError('not ready')), \
-                patch.object(boot_environment, 'lock') as locked, \
-                patch.object(boot_environment, 'medium') as medium, self.assertRaises(ValueError):
+        with (
+            patch.object(boot_environment.platform, 'system', return_value='Linux'),
+            patch.object(boot_environment.os, 'geteuid', return_value=0),
+            patch.object(boot_environment.boot_devices, 'NativeBoot') as adapter,
+            patch.object(boot_environment.boot_gate, 'verify', side_effect=ValueError('not ready')),
+            patch.object(boot_environment, 'lock') as locked,
+            patch.object(boot_environment, 'medium') as medium,
+            self.assertRaises(ValueError),
+        ):
             with boot_environment.open_control():
                 self.fail('Missing current boot readiness was admitted')
+        adapter.assert_called_once_with(tools={'mount': '/usr/bin/mount', 'umount': '/usr/bin/umount',
+                                                'blkid': '/usr/sbin/blkid'})
         locked.assert_not_called(); medium.assert_not_called()
 
     def test_reserved_ranges_refuse_partition_overlap_and_unsupported_geometry(self):

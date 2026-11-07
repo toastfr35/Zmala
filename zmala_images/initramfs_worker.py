@@ -101,8 +101,10 @@ def check_target_environment_tools(root, role):
     bootloader interpretation and physical power-loss qualification.
     """
     script = '''from pathlib import Path
-import os, struct, sys, tempfile, zlib
+import os, struct, subprocess, sys, tempfile, zlib
 from zmala_system import boot_environment, boot_media, boot_state
+for tool in boot_environment.RUNNING_BOOT_TOOLS.values():
+    subprocess.run([tool, '--version'], check=True, timeout=10)
 Path('/run/lock').mkdir(mode=0o700, exist_ok=True)
 state = boot_state.State(sys.argv[1], 'A')
 with tempfile.TemporaryDirectory(prefix='zmala-env-check-') as folder:
