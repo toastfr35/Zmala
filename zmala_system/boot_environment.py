@@ -22,6 +22,7 @@ from . import (boot_devices, boot_gate, boot_layout, boot_media, boot_state,
                boot_storage, host_layout, host_storage)
 
 TOOLS = {'print': '/usr/bin/fw_printenv', 'set': '/usr/bin/fw_setenv'}
+RUNNING_BOOT_TOOLS = {'mount': '/usr/bin/mount', 'umount': '/usr/bin/umount', 'blkid': '/usr/sbin/blkid'}
 
 
 # @llr LLR-SRV-HOST-026, LLR-TERM-MAINT-053
@@ -134,7 +135,7 @@ def medium(system, root, data, root_uuid, selected, *, model_path=Path('/proc/de
 def open_control():
     if platform.system() != 'Linux' or os.geteuid() != 0:
         raise ValueError('Boot control requires the image-managed Linux root context')
-    system = boot_devices.NativeBoot()
+    system = boot_devices.NativeBoot(tools=RUNNING_BOOT_TOOLS)
     # The independent startup gate rechecks marked policy, all mounts and identity.
     boot_gate.verify(system=system)
     role = boot_storage.configured_role()
