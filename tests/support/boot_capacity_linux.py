@@ -32,7 +32,8 @@ class CapacityLinuxScenario(unittest.TestCase):
                                 rows.append(f'start={offset//512}, size={length//512}, type={kind}, uuid={IDS[index]}, name="{label}"')
                                 offset += length
                             subprocess.run(['sfdisk', '--no-reread', '--no-tell-kernel', str(path)],
-                                           input='label: gpt\nunit: sectors\n\n'+'\n'.join(rows)+'\n',
+                                           input=f'label: gpt\nunit: sectors\nfirst-lba: {capacity.GPT_FIRST_USABLE}\n\n'
+                                                 +'\n'.join(rows)+'\n',
                                            text=True, capture_output=True, check=True, timeout=30)
                             # The guard precedes every writable open; the fixture owns the new inode.
                             info = path.lstat()
@@ -41,6 +42,8 @@ class CapacityLinuxScenario(unittest.TestCase):
                             with path.open('r+b', buffering=0) as stream:
                                 self.assertEqual(os.fstat(stream.fileno()).st_ino, info.st_ino)
                                 old = boot_media.inspect(stream, capacity.IMAGE_BYTES)
+                                _, header = capacity.checked_header(stream, 1, capacity.IMAGE_BYTES)
+                                self.assertEqual(header['first'], 34)
                                 sentinels = {offset: (self.role.encode()+b'-boot-state').ljust(65536, b'X')
                                              for offset in boot_media.ENV_OFFSETS}
                                 for row in old['partitions']:
@@ -60,6 +63,9 @@ class CapacityLinuxScenario(unittest.TestCase):
                                 self.assertEqual(capacity.plan(stream, *arguments), ())
                                 new = boot_media.inspect(stream, size)
                                 self.assertEqual(old['partitions'], new['partitions'])
+                                for lba in (1, size//512-1):
+                                    _, header = capacity.checked_header(stream, lba, size)
+                                    self.assertEqual(header['first'], 34)
                                 for offset, body in sentinels.items():
                                     self.assertEqual(capacity.read_at(stream, offset, len(body)), body)
                             result = subprocess.run(['sfdisk', '--verify', str(path)],

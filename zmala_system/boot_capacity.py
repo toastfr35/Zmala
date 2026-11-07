@@ -19,6 +19,8 @@ SIZES = tuple(n*1024**2 for n in (32, 512, 512, 4096, 4096, 4096))
 IMAGE_BYTES = boot_media.FIRST_PARTITION_BYTES+sum(SIZES)+1024**2
 MAX_BYTES = 128*1024**3
 TABLE_BYTES = 128*128
+GPT_FIRST_USABLE = 2+TABLE_BYTES//512
+LEGACY_GPT_FIRST_USABLE = 2048
 FAT_TYPE = 'ebd0a0a2-b9e5-4433-87c0-68b6b72699c7'
 
 
@@ -59,7 +61,8 @@ def read_at(stream, offset, count):
 def make_header(template, size, backup=False):
     body = bytearray(template)
     last = size//512-1
-    struct.pack_into('<4Q', body, 24, last if backup else 1, 1 if backup else last, 2048, last-33)
+    struct.pack_into('<2Q', body, 24, last if backup else 1, 1 if backup else last)
+    struct.pack_into('<Q', body, 48, last-33)
     struct.pack_into('<Q', body, 72, last-32 if backup else 2)
     struct.pack_into('<I', body, 16, 0)
     struct.pack_into('<I', body, 16, zlib.crc32(body[:92]))
@@ -72,7 +75,8 @@ def checked_header(stream, lba, size):
     value, table_range = boot_media.header(stream, lba, 512, size//512)
     if (struct.unpack_from('<I', raw, 12)[0] != 92 or raw[92:] != bytes(420)
             or value['count'] != 128 or value['width'] != 128
-            or value['first'] != 2048 or value['last'] != size//512-34
+            or value['first'] not in (GPT_FIRST_USABLE, LEGACY_GPT_FIRST_USABLE)
+            or value['last'] != size//512-34
             or table_range != ((2, 34) if lba == 1 else (size//512-33, size//512-1))):
         raise ValueError('Not the compact factory GPT format')
     return raw, value
