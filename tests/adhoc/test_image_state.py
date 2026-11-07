@@ -40,6 +40,11 @@ class PreparedArchiveTests(unittest.TestCase):
                     self.assertFalse(any(n.startswith('var/') for n in members))
                     self.assertEqual(members[layout.VAR_SEED+'/lib/dpkg'].linkname, '/'+layout.PACKAGE_DB)
                     self.assertEqual(archive.extractfile(layout.PACKAGE_DB+'/alternatives/probe').read(), b'slot alternative')
+                    if role == 'terminal':
+                        self.assertEqual(members[image_state.UPDATE_TIMER_LINK].linkname,
+                                         '/usr/lib/systemd/system/'+image_state.UPDATE_TIMER)
+                    else:
+                        self.assertNotIn(image_state.UPDATE_TIMER_LINK, members)
                     self.assertEqual(archive.extractfile(layout.VAR_SEED+'/log/vendor').read(), b'public initial log fixture')
                     profile = archive.extractfile(layout.PROFILE).read()
                     self.assertEqual(json.loads(profile), layout.profile(role))

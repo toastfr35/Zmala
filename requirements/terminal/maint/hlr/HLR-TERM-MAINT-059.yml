@@ -1,0 +1,22 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Discover signed appliance releases at local midnight
+level: 59.0
+links:
+- PROD017: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/zmala-system-update-check.timer
+  type: file
+- path: tests/terminal/HLT/test_update_schedule_linux.py
+  type: file
+reviewed: null
+scope: Experimental
+text: A standalone Terminal appliance with an approved release keyring shall check
+  for a complete signed OS and Terminal release at local midnight. The check shall
+  retain a daily record and catch up once after a missed day. Discovery shall not
+  write a system slot, interrupt calls or reboot.
+verification: Inspect the packaged timer and use isolated signed-metadata and calendar
+  fixtures to check accepted releases and duplicate or backwards-date suppression.
