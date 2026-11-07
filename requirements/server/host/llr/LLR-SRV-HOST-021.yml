@@ -22,6 +22,8 @@ references:
   type: file
 - path: zmala_system/sysinit-storage.conf
   type: file
+- path: zmala_system/machine-id-commit.conf
+  type: file
 - path: zmala_system/host_storage.py
   type: file
 reviewed: null
@@ -30,7 +32,8 @@ text: The installed early-boot entry shall invoke the role-specific storage help
   userspace startup and shall not continue normal startup when it fails or remains incomplete. Runtime
   block/mount helpers shall use only fixed bounded operations and return generic failure diagnostics
   without saved identity or secret contents. Boot preparation shall not interpret arbitrary commands
-  from kernel arguments or saved data.
+  from kernel arguments or saved data. After appliance storage has provided the persistent
+  machine ID, the system shall skip the distribution's transient machine-ID commit.
 verification: Execute the startup entry with controlled success/failure helper outcomes; assert success
   can return while failure remains fenced and no normal-start sentinel runs. Accept the installed
   canonical root path before policy validation while refusing unsafe paths. Exercise command allowlists,

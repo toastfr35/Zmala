@@ -48,6 +48,8 @@ class PreparedArchiveTests(unittest.TestCase):
                     self.assertEqual(archive.extractfile(layout.VAR_SEED+'/log/vendor').read(), b'public initial log fixture')
                     profile = archive.extractfile(layout.PROFILE).read()
                     self.assertEqual(json.loads(profile), layout.profile(role))
+                    commit = archive.extractfile(image_state.IDENTITY_COMMIT).read()
+                    self.assertIn(b'ConditionPathExists=!/run/zmala-host/boot-ready.json\n', commit)
                     for name, content in image_state.payloads(role).items():
                         self.assertEqual(archive.extractfile(name).read(), content)
                         mode = 0o755 if name == image_state.BOOT_BACKEND else 0o644
