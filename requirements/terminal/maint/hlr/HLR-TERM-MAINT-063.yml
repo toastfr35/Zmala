@@ -1,0 +1,22 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Confirm a healthy system trial and recover from candidate failure
+level: 63.0
+links:
+- PROD017: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/update_coordinator.py
+  type: file
+- path: tests/terminal/HLT/test_system_update.py
+  type: file
+reviewed: null
+scope: Experimental
+text: A standalone Terminal shall try the candidate boot and system pair once.
+  Trial processes shall preserve persistent appliance state and defer media
+  and call activity. The host shall confirm the pair only after native and UI
+  health checks. A failed trial shall fall back to the confirmed pair.
+verification: Verify the isolated trial unit graph and simulated slot recovery.
+  Physical watchdog, power-cut and healthy boot qualification remain required.

@@ -26,7 +26,7 @@ class DiscoveryTests(unittest.TestCase):
         data = fixture()
         result = update_discovery.release(json.dumps(data), 'B', '0.4.0')
         self.assertEqual(result, {'system_version': '0.4.1', 'terminal_version': '0.4.4',
-                                  'release': 'a'*64, 'target': 'B'})
+                                  'release': 'a'*64, 'target': 'B', 'images': {'boot': 'b'*64, 'rootfs': 'b'*64}})
         self.assertIsNone(update_discovery.release(json.dumps(data), 'B', '0.4.1'))
         with self.assertRaises(ValueError):
             update_discovery.release(json.dumps(data), 'A', '0.4.0')
@@ -39,13 +39,19 @@ class DiscoveryTests(unittest.TestCase):
     def test_probe_requires_local_keyring_and_fixed_feed(self):
         probe = Mock(return_value=json.dumps(fixture()).encode())
         with patch.object(update_discovery.host_storage, 'read_record') as keyring:
-            update_discovery.inspect_release('B', '0.4.0', probe)
+            update_discovery.inspect_release('B', '0.4.0', probe, exists=lambda url: True)
         keyring.assert_called_once_with(Path('/'), update_discovery.KEYRING, 0o644, 65536)
         command = probe.call_args.args[0]
         self.assertIn('info', command)
         self.assertIn('--keyring=/'+update_discovery.KEYRING, command)
         self.assertEqual(command[-1], update_discovery.FEED+'/ZmalaTerminal-System-B.raucb')
         self.assertLess(probe.call_args.kwargs['timeout'], 40)
+
+    def test_missing_release_is_current_without_running_rauc(self):
+        probe = Mock()
+        with patch.object(update_discovery.host_storage, 'read_record'):
+            self.assertIsNone(update_discovery.inspect_release('B', '0.4.0', probe, exists=lambda url: False))
+        probe.assert_not_called()
 
     def test_once_per_local_day_with_catch_up_and_backwards_clock(self):
         with tempfile.TemporaryDirectory() as directory:

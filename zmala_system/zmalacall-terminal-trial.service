@@ -1,0 +1,33 @@
+[Unit]
+Description=Validate the Terminal application during a system trial
+Requires=zmala-system-update-boot.service zmalacall-display.service zmalacall-terminal-trial-probe.service
+After=zmala-system-update-boot.service zmalacall-display.service zmalacall-terminal-trial-probe.service NetworkManager.service
+ConditionPathExists=/run/zmalacall-updater/trial.json
+
+[Service]
+# @llr LLR-TERM-MAINT-064
+Type=simple
+User=zmalaterminal
+SupplementaryGroups=audio video render input
+EnvironmentFile=/etc/zmalacall/terminal.conf
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/zmalacall-display/Xauthority
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+Environment=ZMALA_LOG_STDERR=1
+Environment=ZMALA_RUNTIME_DIR=/run/zmalacall
+Environment=ZMALA_PAIRING_STATUS=/run/zmalacall-pairing/status.json
+Environment=ZMALA_C20_SETUP=1
+RuntimeDirectory=zmalacall
+RuntimeDirectoryMode=0700
+WorkingDirectory=/opt/zmalacall/current
+ExecStart=/usr/bin/python3 /opt/zmalacall/current/build_tools/linux/kiosk-session.py
+ReadOnlyPaths=/data /var/lib/zmalacall
+ProtectSystem=strict
+ReadWritePaths=/run/zmalacall
+NoNewPrivileges=yes
+RestrictAddressFamilies=AF_UNIX
+Restart=no
+TimeoutStopSec=15s
+KillMode=control-group
+UMask=0077

@@ -1,0 +1,21 @@
+[Unit]
+Description=Own signed standalone Terminal system update activation
+Requires=zmala-system-update-boot.service
+After=zmala-system-update-boot.service
+Wants=zmalacall-terminal-trial.service
+ConditionPathExists=|/usr/lib/zmala/system-update-keyring.pem
+ConditionPathExists=|/data/host/system-updates/journal.json
+
+[Service]
+# @llr LLR-TERM-MAINT-062, LLR-TERM-MAINT-064
+Type=simple
+ExecStart=/usr/bin/python3 -IB -m zmala_system.update_coordinator serve
+Restart=on-failure
+RestartSec=2s
+UMask=0077
+Nice=10
+NoNewPrivileges=yes
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target

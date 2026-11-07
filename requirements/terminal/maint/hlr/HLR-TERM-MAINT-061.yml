@@ -1,0 +1,22 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Install the signed operating system and Terminal application at safe idle
+level: 61.0
+links:
+- PROD017: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/update_coordinator.py
+  type: file
+- path: tests/terminal/HLT/test_system_update.py
+  type: file
+reviewed: null
+scope: Experimental
+text: A standalone Terminal shall queue a newer signed appliance release after
+  the local midnight check or when the user accepts the current offer in
+  Settings. Installation shall wait until the Terminal can fence calls and
+  interaction safely and shall replace only the inactive boot and system pair.
+verification: Exercise the admission handshake and signed release inspection,
+  including rejection of wrong-slot and untrusted bundles.

@@ -1,0 +1,19 @@
+[Unit]
+Description=Display Zmala system update progress on the terminal HDMI output
+After=zmalacall-display.service
+PartOf=zmalacall-display.service
+
+[Service]
+# @llr LLR-TERM-MAINT-064
+Type=simple
+User=zmalaterminal
+WorkingDirectory=/opt/zmalacall/current
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/zmalacall-display/Xauthority
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m zmala_terminal.linux.update_screen
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+MemoryMax=256M
+UMask=0077
