@@ -1,6 +1,5 @@
 # Appliance image development tools
 
-Implementation issue [#140](https://github.com/toastfr35/ZmalaCall/issues/140).
 See [the staged system-update plan](../update_upgrade.md). These tools are
 build/deployment tooling, not an installed updater. **There is no production SD
 installer or automatic system-update feed yet.**
@@ -709,11 +708,12 @@ changes belong with the eventual qualified installation workflow.
 
 ## Offline applications and development media
 
-Download the selected versioned packages from [Server releases](https://github.com/toastfr35/ZmalaServer/releases)
+Download the versions in [the reviewed component lock](../components.lock.json)
+from [Server releases](https://github.com/toastfr35/ZmalaServer/releases)
 and [Terminal releases](https://github.com/toastfr35/ZmalaTerminal/releases).
-Copy [the lock template](../components.lock.example.json) and record each
-package's exact version, release commit and archive SHA-256. Then retain the
-packages and their build dependencies:
+For another development input set, copy [the lock template](../components.lock.example.json)
+and record each package's exact version, release commit and archive SHA-256.
+Then retain the packages and their build dependencies:
 
 ```sh
 python3 -m zmala_images application-inputs combined --components-lock components.lock.json \
