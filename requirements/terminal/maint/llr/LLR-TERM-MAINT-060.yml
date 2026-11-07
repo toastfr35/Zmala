@@ -16,11 +16,11 @@ references:
   type: file
 reviewed: null
 scope: Experimental
-text: Use bounded RAUC signature inspection with the installed public keyring and
-  fixed release origin. Accept only newer verity bundles for the inactive slot
+text: The discovery service shall use bounded RAUC signature inspection with the
+  installed public keyring and fixed release origin. Accept only newer verity bundles for the inactive slot
   with a complete boot and root pair and no bundle hooks or handlers. Persist
-  the verification outcome once per local calendar day. Discovery shall not
-  offer installation until a qualified coordinator owns that operation.
+  the verification outcome once per local calendar day. Provide the verified
+  offer to the separate maintenance coordinator.
 verification: Reject mismatched slots, hook-bearing and incomplete pairs, old
   system versions and malformed identity. Verify one check per day, catch-up,
   backwards-date suppression and bounded signed inspection invocation.

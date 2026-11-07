@@ -1,0 +1,33 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Authenticate maintenance and install the authorized inactive pair
+level: 62.0
+links:
+- HLR-TERM-MAINT-061: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/update_coordinator.py
+  type: file
+- path: zmala_system/update_ipc.py
+  type: file
+- path: zmala_system/update_install.py
+  type: file
+- path: zmala_system/zmala-system-updater.service
+  type: file
+- path: zmala_system/rauc-appliance.conf
+  type: file
+- path: zmala_system/rauc-appliance-dbus.conf
+  type: file
+- path: tests/terminal/LLT/test_update_coordinator.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The coordinator shall validate the Terminal process, fresh nonce acknowledgement and protected
+  activity state before enabling installation. Immediate mode may waive the
+  ordinary idle interval. Reverify the downloaded bundle against the exact
+  offer, bind RAUC to the validated on-board slot layout, disable RAUC slot
+  activation and verify both installed partition digests before staging.
+verification: Exercise missing admission, valid and invalid manual offers,
+  interrupted installation and readback before trial selection.

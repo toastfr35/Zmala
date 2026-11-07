@@ -1,0 +1,37 @@
+active: true
+area: Appliance system updates
+derived: false
+header: Journal the trial and confirm a single stable candidate process
+level: 64.0
+links:
+- HLR-TERM-MAINT-063: null
+normative: true
+ref: ''
+references:
+- path: zmala_system/update_coordinator.py
+  type: file
+- path: zmala_system/update_health.py
+  type: file
+- path: zmala_system/zmalacall-terminal-trial.service
+  type: file
+- path: zmala_system/zmalacall-terminal-trial-probe.service
+  type: file
+- path: zmala_system/zmala-system-update-boot.service
+  type: file
+- path: zmala_system/zmala-system-updater.service
+  type: file
+- path: zmala_system/zmalacall-system-update-screen.service
+  type: file
+- path: zmala_system/terminal-update-boot.conf
+  type: file
+- path: tests/terminal/LLT/test_update_coordinator.py
+  type: file
+reviewed: null
+scope: Experimental
+text: The coordinator shall record the selected release and former slot durably before staging. Admit
+  only its matching consumed trial to a passive UI and an isolated native
+  probe. Confirm after eight seconds of stable fresh process health within a
+  bounded trial. Cancel an interrupted or failed trial on the confirmed slot
+  and suppress another attempt of the rejected offer.
+verification: Exercise matching, foreign, interrupted, healthy and failed trial
+  transitions with a controlled clock and boot environment.

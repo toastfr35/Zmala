@@ -1,0 +1,24 @@
+[Unit]
+Description=Check candidate Terminal native libraries without using persistent data
+Requires=zmala-system-update-boot.service
+After=zmala-system-update-boot.service
+ConditionPathExists=/run/zmalacall-updater/trial.json
+
+[Service]
+# @llr LLR-TERM-MAINT-064
+Type=oneshot
+User=zmalaterminal
+WorkingDirectory=/opt/zmalacall/current
+ExecStart=/usr/bin/python3 -Bs /usr/lib/python3/dist-packages/zmala_system/update_health.py
+Environment=PYTHONPATH=/opt/zmalacall/current
+PrivateNetwork=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+InaccessiblePaths=/data
+TemporaryFileSystem=/var/lib/zmalacall:rw,nosuid,nodev,mode=1777
+NoNewPrivileges=yes
+MemoryMax=512M
+TimeoutStartSec=18s
+RemainAfterExit=yes

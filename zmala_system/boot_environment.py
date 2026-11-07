@@ -151,4 +151,6 @@ def open_control():
             # Empty explicit defaults make two invalid CRC copies a failure,
             # rather than allowing the tool to import a host default environment.
             private_file(directory/'no-default-env', b'')
-            yield ToolEnvironment(directory, role), selected
+            environment = ToolEnvironment(directory, role)
+            environment.storage = system, root, data, node, identity
+            yield environment, selected

@@ -1,0 +1,88 @@
+name: Sign Terminal system updates
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [check-key, sign]
+        default: check-key
+      draft_id:
+        description: ID of the draft release holding both qualified input archives
+        type: string
+      slot_a_sha256:
+        description: SHA-256 of ZmalaTerminal-System-Inputs-A.tar.zst
+        type: string
+      slot_b_sha256:
+        description: SHA-256 of ZmalaTerminal-System-Inputs-B.tar.zst
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: terminal-system-release
+jobs:
+  sign:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    container: debian:13-slim
+    environment: release
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install signing tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends rauc squashfs-tools openssl python3 gh zstd ca-certificates
+      - name: Stage qualified release inputs
+        if: inputs.mode == 'sign'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAFT_ID: ${{ inputs.draft_id }}
+          SLOT_A_SHA256: ${{ inputs.slot_a_sha256 }}
+          SLOT_B_SHA256: ${{ inputs.slot_b_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ $DRAFT_ID =~ ^[1-9][0-9]*$ && $SLOT_A_SHA256 =~ ^[a-f0-9]{64}$ && $SLOT_B_SHA256 =~ ^[a-f0-9]{64}$ ]]
+          api="repos/$GITHUB_REPOSITORY/releases/$DRAFT_ID"
+          [[ $(gh api "$api" --jq .draft) == true ]]
+          mkdir "$RUNNER_TEMP/system-inputs"
+          for slot in A B; do
+            name="ZmalaTerminal-System-Inputs-$slot.tar.zst"
+            id=$(gh api "$api" --jq ".assets[] | select(.name == \"$name\") | .id")
+            [[ $id =~ ^[1-9][0-9]*$ ]]
+            path="$RUNNER_TEMP/system-inputs/$slot.tar.zst"
+            gh api "repos/$GITHUB_REPOSITORY/releases/assets/$id" -H 'Accept: application/octet-stream' > "$path"
+            digest_var="SLOT_${slot}_SHA256"
+            printf '%s  %s\n' "${!digest_var}" "$path" | sha256sum --check --strict
+          done
+      - name: Verify signing key and produce signed bundles
+        env:
+          RAUC_KEY: ${{ secrets.ZMALA_RAUC_SIGNING_KEY }}
+          SIGN_MODE: ${{ inputs.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          key=$(mktemp /dev/shm/zmala-rauc.XXXXXXXX)
+          trap 'rm -f "$key"' EXIT
+          printf '%s\n' "$RAUC_KEY" > "$key"
+          unset RAUC_KEY
+          cert=zmala_images/system-update-keyring.pem
+          cmp <(openssl pkey -in "$key" -pubout) <(openssl x509 -in "$cert" -pubkey -noout)
+          mkdir "$RUNNER_TEMP/probe"
+          printf '[update]\ncompatible=zmala-signing-check\nversion=0.0.1\n\n[bundle]\nformat=verity\n\n[image.test]\nfilename=probe.img\n' > "$RUNNER_TEMP/probe/manifest.raucm"
+          dd if=/dev/urandom of="$RUNNER_TEMP/probe/probe.img" bs=4096 count=16 status=none
+          rauc --cert="$cert" --key="$key" bundle "$RUNNER_TEMP/probe" "$RUNNER_TEMP/probe.raucb"
+          rauc --keyring="$cert" info --output-format=json-2 "$RUNNER_TEMP/probe.raucb"
+          if [[ $SIGN_MODE == sign ]]; then
+            python3 -m zmala_images.sign_system_bundles "$RUNNER_TEMP/system-inputs" "$RUNNER_TEMP/system-bundles" "$cert" "$key"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: inputs.mode == 'sign'
+        with:
+          name: signed-terminal-system-bundles
+          path: ${{ runner.temp }}/system-bundles/*.raucb
+          if-no-files-found: error
+          compression-level: 0

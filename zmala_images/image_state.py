@@ -24,6 +24,9 @@ BOOT_DEPENDENCY = 'usr/lib/systemd/system/sysinit.target.d/50-zmala-host-storage
 BOOT_BACKEND = 'usr/lib/zmala/bin/boot-backend'
 UPDATE_TIMER = 'zmala-system-update-check.timer'
 UPDATE_TIMER_LINK = 'etc/systemd/system/timers.target.wants/'+UPDATE_TIMER
+UPDATER = 'zmala-system-updater.service'
+UPDATE_LINKS = {UPDATE_TIMER_LINK: '/usr/lib/systemd/system/'+UPDATE_TIMER,
+                'etc/systemd/system/multi-user.target.wants/'+UPDATER: '/usr/lib/systemd/system/'+UPDATER}
 
 
 def name(value):
@@ -57,17 +60,23 @@ def payloads(role):
     if role == 'terminal':
         result[update_discovery.IDENTITY] = (json.dumps({'schema': 1, 'role': role, 'version': project.image_version()})+'\n').encode()
         keyring = Path(__file__).with_name('system-update-keyring.pem')
-        if keyring.exists():
-            if keyring.is_symlink() or not keyring.is_file() or keyring.stat().st_size > 65536:
-                raise ValueError('Expected a bounded public RAUC certificate file')
-            body = keyring.read_bytes()
-            if (not 0 < len(body) <= 65536 or not re.fullmatch(
-                    rb'(?:-----BEGIN CERTIFICATE-----\r?\n[A-Za-z0-9+/=\r\n]+-----END CERTIFICATE-----\s*)+', body)):
-                raise ValueError('Expected the public RAUC certificate chain only')
-            result[update_discovery.KEYRING] = body
-        for unit in ('zmala-system-update-check.service', UPDATE_TIMER):
+        if keyring.is_symlink() or not keyring.is_file() or keyring.stat().st_size > 65536:
+            raise ValueError('Expected a bounded public RAUC certificate file')
+        body = keyring.read_bytes()
+        if (not 0 < len(body) <= 65536 or not re.fullmatch(
+                rb'(?:-----BEGIN CERTIFICATE-----\r?\n[A-Za-z0-9+/=\r\n]+-----END CERTIFICATE-----\s*)+', body)):
+            raise ValueError('Expected the public RAUC certificate chain only')
+        result[update_discovery.KEYRING] = body
+        for unit in ('zmala-system-update-check.service', UPDATE_TIMER, UPDATER,
+                     'zmala-system-update-boot.service', 'zmalacall-terminal-trial.service',
+                     'zmalacall-terminal-trial-probe.service',
+                     'zmalacall-system-update-screen.service'):
             special[unit] = 'usr/lib/systemd/system/'+unit
-        special['update_discovery.py'] = INSTALLED+'/update_discovery.py'
+        for module in ('update_discovery', 'update_install', 'update_ipc', 'update_coordinator', 'update_health'):
+            special[module+'.py'] = INSTALLED+'/'+module+'.py'
+        special['rauc-appliance.conf'] = 'usr/lib/systemd/system/rauc.service'
+        special['rauc-appliance-dbus.conf'] = 'etc/dbus-1/system.d/99-zmala-rauc.conf'
+        special['terminal-update-boot.conf'] = 'etc/systemd/system/zmalacall-terminal.service.d/40-update-boot.conf'
     for filename in ('__init__.py', 'host_layout.py', 'host_storage.py', 'device_identity.py',
                      'boot_layout.py', 'boot_devices.py', 'boot_storage.py', 'boot_entry.py', 'boot_gate.py',
                      'boot_state.py', 'boot_media.py', 'boot_capacity.py', 'boot_environment.py', 'boot_backend.py',
@@ -103,7 +112,7 @@ def audit(path, role, selected, expected_payloads):
     seed_count, seed_bytes = 0, 0
     status = None
     package_link = False
-    update_timer_link = False
+    update_links = set()
     application = None
     with tarfile.open(path, 'r:') as archive:
         for member in archive:
@@ -156,11 +165,10 @@ def audit(path, role, selected, expected_payloads):
                     seed_hardlinks.append(current)
             if current == layout.VAR_SEED+'/lib/dpkg':
                 package_link = member.issym() and member.linkname == '/'+layout.PACKAGE_DB
-            if current == UPDATE_TIMER_LINK:
-                update_timer_link = (member.issym() and member.linkname == '/usr/lib/systemd/system/'+UPDATE_TIMER
-                                     and member.uid == member.gid == 0)
-                if role != 'terminal' or not update_timer_link:
-                    raise ValueError('Invalid image update timer enablement')
+            if current in UPDATE_LINKS:
+                if role != 'terminal' or not member.issym() or member.linkname != UPDATE_LINKS[current] or member.uid or member.gid:
+                    raise ValueError('Invalid image updater enablement')
+                update_links.add(current)
             if current in expected_payloads or current == layout.PACKAGE_DB+'/status':
                 limit = 16*1024**2 if current.endswith('/status') else 128*1024
                 if not member.isfile() or member.uid != 0 or member.gid != 0 or member.size > limit:
@@ -190,7 +198,7 @@ def audit(path, role, selected, expected_payloads):
     if seed_bytes > layout.MAX_SEED_BYTES:
         raise ValueError('Prepared hard links exceed the variable-state RAM budget')
     if (set(found) != set(expected_payloads) or not package_link or status is None
-            or (role == 'terminal' and not update_timer_link)
+            or (role == 'terminal' and update_links != set(UPDATE_LINKS))
             or not {'data', 'var', layout.VAR_SEED, layout.PACKAGE_DB} <= seen):
         raise ValueError('Prepared host-storage root is incomplete')
     layout.decode_profile(found[layout.PROFILE], role)
@@ -239,9 +247,10 @@ def prepare(source, expected_sha256, selected, role, output):
                 if str(parent) != '.':
                     additions.setdefault(str(parent), None)
         if role == 'terminal':
-            for parent in PurePosixPath(UPDATE_TIMER_LINK).parents:
-                if str(parent) != '.':
-                    additions.setdefault(str(parent), None)
+            for link in UPDATE_LINKS:
+                for parent in PurePosixPath(link).parents:
+                    if str(parent) != '.':
+                        additions.setdefault(str(parent), None)
         for path, body in sorted(additions.items(), key=lambda item: (len(PurePosixPath(item[0]).parts), item[0])):
             if path in seen:
                 if body is not None:
@@ -251,9 +260,10 @@ def prepare(source, expected_sha256, selected, role, output):
             seen.add(path)
         outgoing.addfile(added_member(layout.VAR_SEED+'/lib/dpkg', link='/'+layout.PACKAGE_DB))
         if role == 'terminal':
-            if UPDATE_TIMER_LINK in seen:
-                raise ValueError('Prepared update timer path collision')
-            outgoing.addfile(added_member(UPDATE_TIMER_LINK, link='/usr/lib/systemd/system/'+UPDATE_TIMER))
+            for link, destination in UPDATE_LINKS.items():
+                if link in seen:
+                    raise ValueError('Prepared updater path collision')
+                outgoing.addfile(added_member(link, link=destination))
     if package_lock.digest(source) != expected_sha256:
         raise ValueError('Source root changed during preparation')
     result = audit(target, role, selected, content)

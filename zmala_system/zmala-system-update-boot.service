@@ -1,0 +1,18 @@
+[Unit]
+Description=Recover Zmala system update state before starting the Terminal
+Requires=zmala-host-storage.service
+After=zmala-host-storage.service
+Before=zmalacall-terminal.service zmalacall-terminal-trial.service
+ConditionPathExists=|/usr/lib/zmala/system-update-keyring.pem
+ConditionPathExists=|/data/host/system-updates/journal.json
+
+[Service]
+# @llr LLR-TERM-MAINT-064
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/python3 -IB -m zmala_system.update_coordinator boot
+RuntimeDirectory=zmalacall-updater
+RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
+UMask=0077
+TimeoutStartSec=85s

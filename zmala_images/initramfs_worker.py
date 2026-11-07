@@ -190,8 +190,12 @@ def worker(request_file):
         version = versions[0]
         # Validate the gate against this role's actual vendor-unit graph. This
         # checks offline configuration only; it does not start PID1 or services.
-        command(['chroot', root, '/usr/bin/systemd-analyze', '--man=no', 'verify',
-                 'zmala-host-storage.service', 'sysinit.target'])
+        units = ['zmala-host-storage.service', 'sysinit.target']
+        if (request['role'] == 'terminal'
+                and (root/'usr/lib/systemd/system/zmalacall-terminal.service').is_file()):
+            units += ['zmala-system-updater.service', 'zmalacall-terminal.service',
+                      'zmalacall-system-update-screen.service', 'rauc.service']
+        command(['chroot', root, '/usr/bin/systemd-analyze', '--man=no', 'verify', *units])
         command(['chroot', root, '/usr/sbin/mkinitramfs', '-c', 'gzip', '-o', '/tmp/zmala-initramfs.img', version])
         generated = root/'tmp/zmala-initramfs.img'
         if generated.is_symlink() or not generated.is_file() or not 0 < generated.stat().st_size <= 256*1024**2:

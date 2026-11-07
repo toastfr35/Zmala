@@ -33,6 +33,7 @@ build_tools/dist/
 .env.*
 !.env.example
 *.pem
+!/zmala_images/system-update-keyring.pem
 *.pfx
 *.p12
 *.key

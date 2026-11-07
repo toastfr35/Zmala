@@ -886,16 +886,41 @@ initramfs to 48 MiB at `0x02100000`, and expanded device tree to 2 MiB at
 `0x05600000`. It checks FAT payload readback, ext4 marker content/ownership,
 partition-copy extents, GPT/boot geometry and the final image digest. These
 checks do not prove firmware, graphics/CMA or physical boot compatibility.
-The development confirmed/factory path stops the loader watchdog; a trial keeps
-it armed with the kernel's 60-second userspace-open limit. PID1 health transfer,
-joint confirmation and automatic update coordination are still absent. Do not
-publish these candidates as supported installation/update media.
+The development confirmed/factory path stops the loader watchdog. A trial keeps
+it armed with the kernel's 60-second userspace-open limit. The standalone
+Terminal checks native and UI health within that window, confirms the slot,
+and reboots into normal operation. Server and combined trial health, watchdog
+handover and physical qualification remain release gates.
 
 Allow at least 32 GiB free scratch space per active builder, plus retained
 outputs. On WSL, check free space on the Windows volume holding the VHD as well
 as Linux `df`: the virtual capacity can exceed physical free space. Keep the VHD
 on a sufficiently large volume before starting concurrent builds. A failed build
 has no READY marker; preserve its log and use a new output directory after repair.
+
+## Standalone Terminal system updates
+
+The image embeds the public RAUC certificate in `system-update-keyring.pem`.
+Every day at local midnight the host looks for a newer signed appliance
+release, with a catch-up check after boot. Settings → Updates checks on demand
+and offers immediate installation. Both paths wait for a safe maintenance
+acknowledgement. Immediate installation skips the ordinary idle interval.
+The updater installs the matching inactive boot and root pair, verifies both
+partition hashes, and records a single trial attempt. The trial uses disposable
+native-probe state and read-only persistent application state.
+
+Prepare unsigned input pairs with `python3 -m zmala_images.system_bundle`
+using the qualified image and its recorded READY digest. Archive each slot
+separately from its directory using GNU tar's `--sparse` option and Zstandard
+compression. Include only `manifest.raucm`, `boot.vfat` and `root.ext4`.
+Stage the archives on a GitHub draft release as
+`ZmalaTerminal-System-Inputs-A.tar.zst` and
+`ZmalaTerminal-System-Inputs-B.tar.zst`. Dispatch **Sign Terminal system updates**
+from main in `sign` mode with the draft ID and both archive SHA-256 digests.
+The workflow checks the matching release environment secret and returns signed
+workflow artifacts for review. After physical qualification, publish both
+`ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` on the same
+latest release. Keep the signing key in the main-only release environment.
 
 ## Next-image acceptance contract
 
