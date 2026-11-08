@@ -9,13 +9,17 @@ import secrets
 import socket
 import subprocess
 import sys
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 SETTINGS = Path('/etc/zmalacall/developer-access.json')
 STATE = Path('/var/lib/zmalacall-developer/session.json')
 RUNTIME = Path('/run/zmalacall-developer')
 UNIT = 'zmalacall-developer'
 HOST_KEY = Path('/etc/ssh/ssh_host_ed25519_key')
-
+ENROLLED_SERVER = Path('/etc/ssh/keys/developer-enrollment.json')
+TUNNEL_FIELDS = {'terminal_id', 'session_id', 'host', 'port', 'remote_port', 'host_key', 'password'}
+OPERATOR = 'zmala'
 
 
 
@@ -37,7 +41,6 @@ def image_settings(settings, action, caller):
 
 
 
-
 def prepare(settings):
     """Create a unique host key after persistent storage is mounted, never at build."""
     if not settings.get('image'):
@@ -50,7 +53,7 @@ def prepare(settings):
     if settings['role'] in ('server', 'combined'):
         state = read(STATE)
         if state:
-            validate({k: v for k, v in state.items() if k != 'account_id'})
+            validate(tunnel_settings(state))
             run('chpasswd', data='terminal:' + state['password'] + '\n')
     return {'prepared': True}
 
@@ -75,14 +78,24 @@ def read(path):
         return {}
 
 
+def tunnel_settings(state):
+    return {name: state[name] for name in TUNNEL_FIELDS}
+
 
 def server(action, request, settings):
     state = read(STATE)
     if action == 'status':
+        operator = ({'username': OPERATOR, 'password': state['operator_password']}
+                    if 'operator_password' in state else None)
         return {'supported': True, 'terminal_id': state.get('account_id'),
-                'connected': bool(state) and connected(), 'port': 22001}
+                'connected': bool(state) and connected(), 'port': 22001, 'operator': operator}
     if action == 'config':
-        return {k: v for k, v in state.items() if k != 'account_id'} if state and state['account_id'] == request.get('terminal_id') and state['terminal_id'] == request.get('device_id') else None
+        if not state or state['account_id'] != request.get('terminal_id') or state['terminal_id'] != request.get('device_id'):
+            return None
+        config = tunnel_settings(state)
+        if request.get('operator') is True:
+            config['operator_hash'] = state.get('operator_hash')
+        return config
     if action == 'off':
         # Stop the entire sshd cgroup: locking a password alone does not revoke
         # established tunnels. Kill first, remove credentials only after success.
@@ -102,13 +115,16 @@ def server(action, request, settings):
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,252}', request.get('host', '')):
         raise ValueError('Invalid host')
     password = secrets.token_urlsafe(36)
+    operator_password = secrets.token_urlsafe(24)
     key = HOST_KEY.with_suffix('.pub').read_text().split()
     device = request.get('device_id', '')
     if not isinstance(device, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', device):
         raise ValueError('Invalid device identity')
     state = {'account_id': identity, 'terminal_id': device, 'session_id': secrets.token_hex(16),
              'host': request['host'], 'port': 2222, 'remote_port': 22001,
-             'host_key': ' '.join(key[:2]), 'password': password}
+             'host_key': ' '.join(key[:2]), 'password': password, 'operator_password': operator_password,
+             'operator_hash': run('/usr/bin/openssl', 'passwd', '-6', '-stdin',
+                                  data=operator_password + '\n').stdout.strip()}
     try:
         run('chpasswd', data='terminal:' + password + '\n')
         save(STATE, state)
@@ -131,8 +147,7 @@ def connected():
 
 
 def validate(config):
-    if not isinstance(config, dict) or set(config) != {
-            'terminal_id', 'session_id', 'host', 'port', 'remote_port', 'host_key', 'password'}:
+    if not isinstance(config, dict) or set(config) != TUNNEL_FIELDS:
         raise ValueError('Invalid developer configuration')
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.-]{0,252}', config['host']):
         raise ValueError('Invalid tunnel host')
@@ -150,22 +165,87 @@ def validate(config):
 
 
 
-def terminal(action, config):
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, location):
+        return None
+
+
+def operator_approval(enrollment):
+    """The application can request a refresh, but it cannot supply the operator hash."""
+    origin = enrollment['server_url']
+    url = urlsplit(origin)
+    device = enrollment['device_id']
+    if (url.scheme != 'https' or not url.hostname or url.username is not None or url.password is not None
+            or url.path or url.query or url.fragment
+            or not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', device)):
+        raise ValueError('Invalid developer authority')
+    binding = {'server_url': origin, 'device_id': device}
+    retained = read(ENROLLED_SERVER)
+    if retained and retained != binding:
+        raise PermissionError('Developer authority differs from the enrolled server')
+    opener = build_opener(ProxyHandler({}), NoRedirect())
+    request = Request(origin + '/api/device/developer-operator',
+                      headers={'Authorization': 'Bearer ' + enrollment['device_token']})
+    with opener.open(request, timeout=4) as response:
+        body = response.read(4097)
+    if len(body) > 4096:
+        raise ValueError('Developer approval exceeds its budget')
+    approval = json.loads(body)
+    if approval['terminal_id'] != device:
+        raise PermissionError('Developer approval belongs to another device')
+    activation = approval['activation']
+    password_hash = None
+    config = None
+    if activation is not None:
+        config = validate(tunnel_settings(activation))
+        if config['terminal_id'] != device or config['host'] != url.hostname:
+            raise PermissionError('Developer approval does not match enrollment')
+        password_hash = activation['operator_hash']
+        if password_hash is not None and (not isinstance(password_hash, str) or not re.fullmatch(
+                r'\$6\$[./A-Za-z0-9]{1,16}\$[./A-Za-z0-9]{86}', password_hash)):
+            raise ValueError('Invalid operator password hash')
+    if not retained:
+        save(ENROLLED_SERVER, binding)
+    return config, password_hash
+
+
+def stop_terminal(password_operator):
+    run('systemctl', 'stop', UNIT + '-tunnel.service', UNIT + '-shell.service')
+    if password_operator:
+        run('usermod', '-p', '*', OPERATOR)
+    for name in ('client.json', 'known_hosts'):
+        (RUNTIME / name).unlink(missing_ok=True)
+    return {'enabled': False}
+
+
+def terminal(action, config, settings=None):
+    password_operator = bool(settings and settings.get('password_operator'))
     if action == 'off' or action == 'apply' and config is None:
-        run('systemctl', 'stop', UNIT + '-tunnel.service', UNIT + '-shell.service')
-        for name in ('client.json', 'known_hosts'):
-            (RUNTIME / name).unlink(missing_ok=True)
-        return {'enabled': False}
+        return stop_terminal(password_operator)
     if action != 'apply':
         raise ValueError('Unsupported action')
-    validate(config)
-    if read(RUNTIME / 'client.json') != config:
-        run('systemctl', 'stop', UNIT + '-tunnel.service')
-        save(RUNTIME / 'client.json', config)
-        pin = f"[{config['host']}]:2222 {config['host_key']}\n"
-        (RUNTIME / 'known_hosts').write_text(pin)
-        (RUNTIME / 'known_hosts').chmod(0o600)
-    run('systemctl', 'start', UNIT + '-shell.service', UNIT + '-tunnel.service')
+    password_hash = None
+    try:
+        if password_operator:
+            config, password_hash = operator_approval(config['enrollment'])
+            if config is None or password_hash is None:
+                return stop_terminal(password_operator)
+        validate(config)
+        if read(RUNTIME / 'client.json') != config:
+            if password_operator:
+                stop_terminal(password_operator)
+                run('chpasswd', '-e', data=OPERATOR + ':' + password_hash + '\n')
+            else:
+                run('systemctl', 'stop', UNIT + '-tunnel.service')
+            save(RUNTIME / 'client.json', config)
+            pin = f"[{config['host']}]:2222 {config['host_key']}\n"
+            (RUNTIME / 'known_hosts').write_text(pin)
+            (RUNTIME / 'known_hosts').chmod(0o600)
+        run('systemctl', 'start', UNIT + '-shell.service', UNIT + '-tunnel.service')
+    except Exception:
+        if password_operator:
+            stop_terminal(password_operator)
+        raise
     return {'enabled': True}
 
 
@@ -200,7 +280,8 @@ def main():
     request = json.loads(sys.stdin.read(4096) or '{}')
     with open('/run/lock/zmalacall-developer.lock', 'a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        result = server(action, request, settings) if settings['role'] == 'server' else terminal(action, request)
+        result = (server(action, request, settings) if settings['role'] == 'server'
+                  else terminal(action, request, settings))
     print(json.dumps(result))
 
 
