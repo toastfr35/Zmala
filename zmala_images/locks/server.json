@@ -1773,12 +1773,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "zlib1g_1%3a1.3.dfsg+really1.3.1-1+b1_arm64.deb",
-      "bytes": 85116,
+      "archive": "zlib1g_1%3a1.3.dfsg+really1.3.1-1+deb13u1_arm64.deb",
+      "bytes": 85028,
       "package": "zlib1g",
-      "sha256": "209aa5cf671e97b9eb0410844fa6df4cae2e75b0c72e7802ab6c8ece13e6ddef",
-      "uri": "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bb1_arm64.deb",
-      "version": "1:1.3.dfsg+really1.3.1-1+b1"
+      "sha256": "0e41b3d7ad8ad7fcd36dd4d61ca91a70018478fc4af652e044f4be770784ddff",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
+      "version": "1:1.3.dfsg+really1.3.1-1+deb13u1"
     }
   ],
   "purpose": "requested-package-closure",
@@ -1792,21 +1792,21 @@
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "b76c9a9837b04f1a89981a5bb0b1cfe84c84bc77081222703886511be33c73ec",
+      "sha256": "fae629219bd1c601113a845425bda3a66e508d64a21c4b995d9157e26aa3ae11",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "d0dbede32d80c3e9462e037ede87b138bdd5e44be10145acf46c9f643388836d",
+      "sha256": "43f0c7af4acfb2d59c64e15324bf772a991f20856b66fa41a6d54d24d51e9526",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
     },
     {
       "file": "archive.raspberrypi.com_debian_dists_trixie_InRelease",
-      "sha256": "fd365addd9c8b017b391b20ed0f82b40d6768d2bc273073ba3821c415febbd2c",
+      "sha256": "a648354a68f03be959dc4dd8f5becd554a34c78f4870a361595d0f0bc2bd087b",
       "signers": [
         "CF8A1AF502A2AA2D763BAE7E82B129927FA3303E"
       ]
