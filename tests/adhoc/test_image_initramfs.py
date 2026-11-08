@@ -54,6 +54,25 @@ def copied_tree(base, main_subdirectory=True, role='server'):
 
 
 class InitramfsToolTests(unittest.TestCase):
+    def test_kernel_selection_requires_unique_match_to_firmware(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            old, current = '6.18.50+rpt-rpi-v8', '6.18.60+rpt-rpi-v8'
+            for version, payload in ((old, b'old'), (current, b'new')):
+                (root/'usr/lib/modules'/version).mkdir(parents=True)
+                (root/'boot/firmware').mkdir(parents=True, exist_ok=True)
+                (root/'boot'/('vmlinuz-'+version)).write_bytes(payload)
+            firmware = root/'boot/firmware/kernel8.img'
+            firmware.write_bytes(b'new')
+            self.assertEqual(worker.firmware_kernel_version(root), current)
+            firmware.write_bytes(b'bad')
+            with self.assertRaisesRegex(ValueError, 'Expected one module version'):
+                worker.firmware_kernel_version(root)
+            firmware.write_bytes(b'new')
+            (root/'boot'/('vmlinuz-'+old)).write_bytes(b'new')
+            with self.assertRaisesRegex(ValueError, 'Expected one module version'):
+                worker.firmware_kernel_version(root)
+
     def test_platform_and_root_refused_before_cache_or_source_access(self):
         for system, uid in (('Windows', 1000), ('Linux', 0)):
             with patch.object(build.platform, 'system', return_value=system), \

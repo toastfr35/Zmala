@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -22,6 +23,30 @@ def unpack_root(source, root):
     """Only root /dev is omitted, not e.g. drivers/net/can/dev inside /usr."""
     command(['tar', '--extract', '--numeric-owner', '--anchored', '--exclude=dev/*', '--exclude=./dev/*',
              '--file', source, '--directory', root])
+
+
+def firmware_kernel_version(root):
+    """Use the kernel the reviewed root's Raspberry Pi firmware installed."""
+    firmware = host_storage.safe(root, 'boot/firmware/kernel8.img')
+    info = firmware.lstat()
+    if not stat.S_ISREG(info.st_mode) or not 0 < info.st_size <= 64*1024**2:
+        raise ValueError('Invalid Raspberry Pi firmware kernel payload')
+    digest = package_lock.digest(firmware)
+    matches = []
+    for directory in host_storage.safe(root, 'usr/lib/modules').iterdir():
+        version = directory.name
+        if (not re.fullmatch('[A-Za-z0-9._+-]{1,96}', version)
+                or not stat.S_ISDIR(directory.lstat().st_mode)):
+            continue
+        image = host_storage.safe(root, 'boot/vmlinuz-'+version)
+        if image.exists():
+            candidate = image.lstat()
+            if (stat.S_ISREG(candidate.st_mode) and candidate.st_size == info.st_size
+                    and package_lock.digest(image) == digest):
+                matches.append(version)
+    if len(matches) != 1:
+        raise ValueError('Expected one module version matching the Raspberry Pi firmware kernel')
+    return matches[0]
 
 
 def inspect_initramfs(root, extracted, role):
@@ -185,11 +210,7 @@ def worker(request_file):
         entry.parent.mkdir(parents=True, exist_ok=True)
         entry.write_text(Path(__file__).with_name('initramfs_entry.sh').read_text(encoding='utf-8'),
                          encoding='utf-8', newline='\n'); entry.chmod(0o755)
-        modules = root/'usr/lib/modules'
-        versions = [path.name for path in modules.iterdir() if path.is_dir()]
-        if len(versions) != 1 or not re.fullmatch('[A-Za-z0-9._+-]{1,96}', versions[0]):
-            raise ValueError('Expected one locked target kernel')
-        version = versions[0]
+        version = firmware_kernel_version(root)
         # Validate the gate against this role's actual vendor-unit graph. This
         # checks offline configuration only; it does not start PID1 or services.
         units = ['zmala-host-storage.service', 'sysinit.target', 'systemd-machine-id-commit.service']
