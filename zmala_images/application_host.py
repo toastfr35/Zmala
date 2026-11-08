@@ -10,7 +10,9 @@ def install(root, records, role):
     import json
     helper = '/usr/local/libexec/zmala-developer-access'
     put(root, helper[1:], records[SOURCES[0]][0], 0o755)
-    put(root, 'etc/zmalacall/developer-access.json', json.dumps({'role': role, 'image': True})+'\n')
+    put(root, 'etc/zmalacall/developer-access.json', json.dumps({
+        'role': role, 'image': True, 'password_operator': role in ('terminal', 'combined'),
+    })+'\n')
     base = '''HostKey /etc/ssh/keys/ssh_host_ed25519_key
 PidFile none
 UsePAM yes
@@ -60,16 +62,12 @@ ExecStart='''+helper+' prepare\n[Install]\nWantedBy=multi-user.target\n')
         put(root, 'etc/ssh/zmala-developer-terminal.conf', base+'''Port 2223
 ListenAddress 127.0.0.1
 AllowUsers zmala
-PasswordAuthentication no
-PubkeyAuthentication yes
+PasswordAuthentication yes
+PubkeyAuthentication no
 AuthorizedKeysFile none
-AuthorizedKeysCommand /usr/local/libexec/zmala-developer-keys %u
-AuthorizedKeysCommandUser root
 AllowTcpForwarding no
 ''')
         service('zmalacall-developer-shell', '/usr/sbin/sshd -D -e -f /etc/ssh/zmala-developer-terminal.conf')
-        put(root, 'usr/local/libexec/zmala-developer-keys',
-            '#!/bin/sh\n[ "$1" = zmala ] || exit 1\nexec /usr/bin/cat /etc/ssh/keys/authorized_keys\n', 0o755)
         service('zmalacall-developer-tunnel', helper+' run', 'Restart=always\nRestartSec=10\nStandardInput=null\n')
         put(root, 'usr/local/libexec/zmala-developer-askpass', '#!/bin/sh\nexec '+helper+' askpass\n', 0o755)
         rules.append('zmalaterminal ALL=(root) NOPASSWD: '+helper+' apply, '+helper+' off')

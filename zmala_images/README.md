@@ -817,30 +817,23 @@ rollback qualification remain prerequisites for automatic activation.
 Developer Access has separate service units. Preparation creates a unique host
 key after persistent storage mounts; generic artifacts contain neither host keys
 nor operator login credentials. The terminal shell binds only to loopback and
-accepts the separate `zmala` operator's public key through a fixed root-owned
-reader of `/etc/ssh/keys/authorized_keys`. Password authentication is disabled;
-the operator has diagnostic sudo privileges, while the application retains only
-its fixed-action helper permission. The shell and reverse tunnel are not enabled
-at boot: a fresh enrolled-server HTTPS setting starts them. Server activation
+accepts the `zmala` operator password generated for the active Server session.
+The Terminal's root helper obtains the verifier over HTTPS and pins the first
+approved enrollment to the device. The operator has diagnostic sudo privileges
+and the application can request a refresh or stop Developer Access. A fresh
+Server approval starts the shell and tunnel after boot. Disabling access stops
+both and clears the Terminal operator password. Server activation
 state is retained privately, with the restricted tunnel password restored after
 reboot only from a valid activation. Combined hosts distinguish the service
 callers. Ordinary port 22 remains closed; generic server-image operator entry and
 onboarding still need a supported path before distribution.
 
-Do not preseed `host/ssh/authorized_keys` into uninitialized factory data: the
-first-identity admission whitelist correctly rejects that additional state. For
-the next private lab copy, retain the factory data unchanged and place only the
-intended operator's public key in the root-owned, immutable
-`/usr/lib/zmala-development-operator.pub` in both system slots. That copy's fixed
-`AuthorizedKeysCommand` reads this file through `/usr/bin/cat` as root. This is a
-private artifact adjustment, not the generic builder's credential policy or a
-supported enrollment mechanism. It changes neither server-controlled activation
-nor loopback-only shell binding. A later generic system-slot replacement will
-remove this lab authorization; it is not a persistent credential migration path.
+Generic images start with the operator account locked and generate their SSH
+host keys on first boot.
 
 The application worker executes the installed ARM64 SSH configuration in its
 private network namespace, with throwaway keys and RAM storage. It checks operator
-authentication, rejection after removing the authorized key and connection
+authentication, password rotation, credential revocation and connection
 failure after listener shutdown. This does not exercise a real server-admin
 enable/disable exchange or qualify physical network behavior. The terminal and
 combined roots also select the Zmala Plymouth theme. Initramfs acceptance verifies
@@ -995,16 +988,11 @@ latest release. Keep the signing key in the main-only release environment.
 ## Test a Terminal package through Developer Access
 
 Use the existing operator SSH tunnel on a standalone A/B Terminal. Enable
-Developer Access for the enrolled Terminal and verify that the operator key
-logs in as `zmala` through the server. For a factory card, provision the
-operator public key after the first boot initializes the card. From a local
-root session, install the public key at `/etc/ssh/keys/authorized_keys` with
-root ownership and mode `0600`. You can also shut down the Pi and mount the
-card's `persistent` partition on Linux, then write the key to
-`host/ssh/authorized_keys` on that partition with the same ownership and mode.
-Read `host/ssh/ssh_host_ed25519_key.pub` there to pin the fresh card's SSH host
-key on your workstation. Deployment requires a running stock Terminal and
-system update coordinator.
+Developer Access for the enrolled Terminal and sign in as `zmala` with the
+password shown in the Server admin dialog. Read
+`host/ssh/ssh_host_ed25519_key.pub` on the initialized card to pin the fresh
+card's SSH host key on your workstation. Deployment requires a running stock
+Terminal and system update coordinator.
 
 Build the ARM64 package from the Terminal checkout with
 `python3 build_tools/linux/package-terminal.py --output ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz`,
@@ -1059,16 +1047,12 @@ test only when all applicable gates are evidenced for its final artifact:
   splash arguments in the actual U-Boot command path. Check the visible logo on
   the Pi; configuration presence alone is insufficient.
 - Keep ordinary SSH disabled and temporary Ethernet diagnostic services absent.
-  Include the server-triggered Developer Access helper and isolated units. For a
-  private lab candidate, install only the intended operator's public key at the
-  immutable development-key path in both roots and make the dedicated SSH
-  configuration read that exact path. Preserve the factory data byte-for-byte.
-  Check root ownership, non-writable file modes, exact key/configuration bytes,
-  target sshd configuration and authentication through the private command;
-  reject another operator key. Keep that candidate separate from generic images,
-  which contain no operator key, shared password or private key. Confirm actual
-  server-admin enable, shell connection, disable, failed reconnection and reboot
-  behavior before relying on this as the main debugging path.
+  Include the Server-triggered Developer Access helper and isolated units.
+  Check password authentication for `zmala`, rotation on a new activation,
+  revocation and listener shutdown. The Server tunnel account must reject shell,
+  command and subsystem sessions and limit forwarding to its fixed loopback port.
+  Confirm real Server-admin enable, login, disable, failed reconnection and reboot
+  behavior on the target hardware.
 - Retain source/version, package locks, component READY digests, final raw and
   compressed hashes and byte sizes. Verify both boot slots and filesystem
   payloads after any private adaptation. Deliver the artifact, checksum and
