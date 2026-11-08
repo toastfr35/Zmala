@@ -1566,23 +1566,19 @@ qualification evidence, not merely whichever GitHub release is newest.
 
 ### 12.2 Package and security update intake
 
-1. Check upstream repositories/security information daily on the build side.
-2. Open an automated issue/PR with resolved package-lock changes and changelog/CVE
-   context. Distinguish new package revisions from a new major distribution.
-3. Build affected role candidates and run the appropriate checks. An unattended
-   dependency bump cannot bypass the pinned media ABI checks.
-4. Run role canary/soak qualification before stable promotion. Expedite a critical
-   security fix through a documented shorter soak only when all mandatory safety
-   and call checks still pass.
-5. Publish signed eligible metadata. Devices check and apply automatically under
-   local maintenance policy; no per-device approval.
-6. Alert maintainers if an important fix cannot be promoted because of tests,
-   boot safety, unsupported packages or hardware incompatibility.
+The standalone Terminal checks the signed Debian Trixie security index daily.
+A newer security package in its installed package set triggers an automatic
+refresh of the shared locks and the pinned build cache. The workflow stages the
+resolved changes and system version on a review branch. Merging the verified
+changes starts the system build and signing job.
 
-Proposed operational objectives: candidate detection within 24 hours; routine
-stable promotion within seven days of successful qualification; critical fixes as
-soon as their mandatory checks/canaries pass. These are targets to validate, not
-promises to install untested updates or to interrupt calls.
+Routine Terminal RAUC releases use Verify, the build audit and the signing
+audit for release acceptance. The appliance still performs a one-shot boot
+trial with health checks and fallback. Physical tests of the boot platform
+and factory media are covered by their respective qualification plans.
+
+Publish the signed bundle pair together. Terminals check and apply the release
+under their local maintenance policy.
 
 Disable production APT timers/unattended-upgrades and other competing package
 writers in new images. APT operates while building candidate roots, not while
@@ -1989,7 +1985,8 @@ and the first real fleet updates have supporting evidence.
 
 ### Stage 8 — Ongoing maintenance and cleanup
 
-- [ ] Enable daily package/security intake and documented promotion ownership.
+- [ ] Extend daily security intake beyond the standalone Terminal and document
+      promotion ownership.
 - [ ] Establish end-of-support, CVE escalation and blocked-update reporting.
 - [ ] Exercise rescue and key rotation periodically.
 - [ ] Remove obsolete installer/runtime paths only after supported legacy devices

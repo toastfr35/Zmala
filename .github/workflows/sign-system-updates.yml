@@ -7,7 +7,7 @@ on:
         options: [check-key, sign]
         default: check-key
       draft_id:
-        description: ID of the draft release holding both qualified input archives
+        description: ID of the draft release holding both verified input archives
         type: string
       slot_a_sha256:
         description: SHA-256 of ZmalaTerminal-System-Inputs-A.tar.zst
@@ -27,7 +27,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Stage qualified release inputs
+      - name: Stage verified release inputs
         env:
           GH_TOKEN: ${{ github.token }}
           DRAFT_ID: ${{ inputs.draft_id }}

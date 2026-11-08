@@ -171,6 +171,7 @@ def common_base(index=None):
         values.append(json.loads(body))
     intent, lock = values
     requested = intent['requested']
+    names = sorted(p.split('=')[0] for p in requested)
     if (intent['schema'] != 1 or intent['purpose'] != 'observed-common-base-intent'
             or intent['architecture'] != 'arm64' or intent['distribution'] != 'trixie'
             or intent['image_qualified'] is not False
@@ -181,11 +182,12 @@ def common_base(index=None):
             or len({p.split('=')[0] for p in requested}) != len(requested)
             or lock['schema'] != 1 or lock['purpose'] != 'requested-package-closure'
             or lock['architecture'] != 'arm64' or lock['distribution'] != 'trixie'
-            or lock['image_qualified'] is not False or lock['requested'] != requested
+            or lock['image_qualified'] is not False or lock['requested'] not in (requested, names)
             or len(lock['packages']) != record['archives']
             or sum(p['bytes'] for p in lock['packages']) != record['archive_bytes']):
         raise ValueError('Common-base intent and reviewed closure disagree')
-    installed = {p['package']+'='+p['version'] for p in lock['packages']}
-    if not set(requested) <= installed:
+    installed = {p['package']: p['version'] for p in lock['packages']}
+    selections = set(installed) | {name+'='+version for name, version in installed.items()}
+    if not set(lock['requested']) <= selections:
         raise ValueError('Common-base closure is missing installed selections')
     return intent

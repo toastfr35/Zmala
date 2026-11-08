@@ -293,11 +293,12 @@ python3 -m unittest tests.adhoc.test_image_base_inputs -v
 ```
 
 The reviewed capture in `locks/base-intent.json` comes from the selected imagegen
-probe's pre-boot ledger. Both original slot ledgers matched. Its 259 exact
-installed selections resolve to 259 retained authenticated archives (164,614,914
-bytes), anchored by `locks/base.json` and the `base` entry in `locks/index.json`.
+probe's pre-boot ledger. Both original slot ledgers matched. The base lock
+anchors the retained authenticated archives in `locks/index.json`. The
+scheduled security refresh can resolve newer versions of the captured
+package names while retaining the original ledger record.
 `check` rejects changed intent/lock bytes, mismatched source commits, inconsistent
-counts/sizes or a closure missing a captured selection. The raw ledger remains
+counts/sizes or a closure missing a captured package. The raw ledger remains
 private. An intake refresh is reviewed explicitly; it never updates an accepted
 lock silently. The capture is observed intent, not proof of full build closure.
 
@@ -915,12 +916,29 @@ application, loader and initramfs, assembles the image and packages both slots.
 The separate signing job uses the release environment key and uploads
 `signed-terminal-system-bundles` with both RAUC bundles and their SHA-256
 checksums. The unsigned artifact includes the image `READY.json` for review.
-Physical A/B qualification is required before publishing the signed assets.
+Routine Terminal RAUC releases use the repository's Verify checks and the
+build and signing audits as their release gates. Factory SD images and the
+boot platform have their own physical qualification plan.
 
 The hosted build uses the pinned package cache asset in
-[`terminal-build-cache.json`](terminal-build-cache.json). When the reviewed
-base or Terminal package locks change, pack the matching retained caches and
-upload the archive to a draft used only for build inputs:
+[`terminal-build-cache.json`](terminal-build-cache.json). **Refresh Terminal
+OS security locks** checks the signed Debian Trixie security index each day.
+A newer security version for a package in the Terminal build triggers APT
+resolution across the base and all roles that share it. The workflow pins
+the refreshed cache in a build-input draft, increments the system patch
+version and stages the lock changes on a review branch. If GitHub permits
+Actions to open pull requests, the workflow opens one. The run summary has
+the comparison link when a maintainer needs to open it. Review and merge
+after Verify passes. A change to the cache pin on main starts the system
+build and protected signing job.
+
+The same draft retains `ZmalaServer-Combined-Package-Caches.tar` for the
+other refreshed role locks. Use `python3 -m zmala_images.terminal_build_cache
+unpack --server-and-combined ARCHIVE OUTPUT` from the matching checkout to
+verify and restore them. The base cache is in the Terminal archive.
+
+For other package lock changes, pack the matching retained caches and upload
+the archive to a draft used only for build inputs:
 
 ```sh
 python3 -m zmala_images.terminal_build_cache pack BASE_CACHE TERMINAL_CACHE ZmalaTerminal-Package-Cache.tar
@@ -942,7 +960,7 @@ partition hashes, and records a single trial attempt. The trial uses disposable
 native-probe state and read-only persistent application state.
 
 Prepare unsigned input pairs with `python3 -m zmala_images.system_bundle`
-using the qualified image and its recorded READY digest. Archive each slot
+using the audited image and its recorded READY digest. Archive each slot
 separately from its directory using GNU tar's `--sparse` option and Zstandard
 compression. Include only `manifest.raucm`, `boot.vfat` and `root.ext4`.
 Stage the archives on a GitHub draft release as
@@ -950,7 +968,7 @@ Stage the archives on a GitHub draft release as
 `ZmalaTerminal-System-Inputs-B.tar.zst`. Dispatch **Sign Terminal system updates**
 from main in `sign` mode with the draft ID and both archive SHA-256 digests.
 The workflow checks the matching release environment secret and returns signed
-workflow artifacts for review. After physical qualification, publish both
+workflow artifacts for review. After Verify and the signing audit pass, publish both
 `ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` on the same
 latest release. Keep the signing key in the main-only release environment.
 

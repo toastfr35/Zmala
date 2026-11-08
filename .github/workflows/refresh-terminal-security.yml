@@ -1,0 +1,84 @@
+name: Refresh Terminal OS security locks
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: terminal-security-refresh
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve signed OS package security updates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline="$RUNNER_TEMP/baseline.tar"
+          bash build_tools/fetch-terminal-build-cache.sh "$baseline"
+          python3 -m zmala_images.security_refresh "$RUNNER_TEMP/security-refresh" "$baseline"
+      - name: Stage refreshed inputs for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/security-refresh"
+          changes="$work/security-updates.json"
+          if [[ ! -f $changes ]]; then
+            echo 'No newer Debian security package applies to the Terminal.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          id=$(jq -er .id "$changes")
+          [[ $id =~ ^[a-f0-9]{16}$ ]]
+          branch="codex/terminal-security-$id"
+          compare="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/main...$branch?expand=1"
+          if [[ -n $(git ls-remote --heads origin "refs/heads/$branch") ]]; then
+            printf '[The refreshed locks are already staged for review](%s)\n' "$compare" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          [[ $(git ls-remote origin refs/heads/main | cut -f1) == "$GITHUB_SHA" ]]
+          tag="terminal-security-cache-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          draft=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+            -f tag_name="$tag" -f name="Terminal security build cache $id" \
+            -f body="Build inputs only. Keep this release in draft." -F draft=true --jq .id)
+          archive="$work/ZmalaTerminal-Package-Cache.tar"
+          gh release upload "$tag" "$archive" "$work/ZmalaServer-Combined-Package-Caches.tar"
+          asset=$(gh api "repos/$GITHUB_REPOSITORY/releases/$draft" \
+            --jq '.assets[] | select(.name == "ZmalaTerminal-Package-Cache.tar" and .state == "uploaded") | .id')
+          digest=$(sha256sum "$archive" | cut -d ' ' -f1)
+          jq -en --argjson draft "$draft" --argjson asset "$asset" --arg digest "$digest" \
+            '{draft_id: $draft, asset_id: $asset, sha256: $digest}' > zmala_images/terminal-build-cache.json
+          python3 - <<'PY'
+          from pathlib import Path
+          from zmala_images import project, security_refresh
+
+          major, minor, patch = map(int, project.image_version().split('.'))
+          security_refresh.write_json(Path('VERSION.json'), {'version': f'{major}.{minor}.{patch+1}'})
+          PY
+          python3 -m zmala_images check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add VERSION.json zmala_images/locks zmala_images/terminal-build-cache.json
+          git commit -m 'Refresh OS package locks for Debian security updates'
+          git push origin "HEAD:refs/heads/$branch"
+          {
+            echo 'Debian security versions that triggered this refresh'
+            echo
+            jq -r '.packages | to_entries[] | "- " + .key + " " + .value' "$changes"
+            echo
+            echo 'The matching build cache is pinned in the branch. Verify must pass before merge.'
+          } > "$work/pull-request.md"
+          if ! gh pr create --base main --head "$branch" --title 'Refresh OS packages for Debian security updates' \
+              --body-file "$work/pull-request.md"; then
+            printf '[Open the lock refresh pull request](%s)\n' "$compare" >> "$GITHUB_STEP_SUMMARY"
+          fi

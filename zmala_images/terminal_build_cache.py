@@ -8,10 +8,11 @@ import tarfile
 from . import package_lock, project
 
 
-def inventory():
+def inventory(roles=('base', 'terminal')):
     index = project.package_locks()
-    locks = {'base': (index['base']['lock_file'], index['base']['lock_sha256']),
-             'terminal': (index['roles']['terminal']['file'], index['roles']['terminal']['sha256'])}
+    available = {'base': (index['base']['lock_file'], index['base']['lock_sha256'])}
+    available.update({role: (record['file'], record['sha256']) for role, record in index['roles'].items()})
+    locks = {role: available[role] for role in roles}
     files = {}
     for role, (name, _) in locks.items():
         lock = (project.ROOT/'zmala_images/locks'/name).read_bytes()
@@ -25,8 +26,11 @@ def inventory():
 
 
 def pack(base, terminal, output):
-    locks, files = inventory()
-    caches = {'base': base, 'terminal': terminal}
+    pack_caches({'base': base, 'terminal': terminal}, output)
+
+
+def pack_caches(caches, output):
+    locks, files = inventory(caches)
     for role, cache in caches.items():
         package_lock.verify(cache, locks[role][1])
     with tarfile.open(output, 'x:') as archive:
@@ -39,8 +43,8 @@ def pack(base, terminal, output):
                 archive.addfile(entry, stream)
 
 
-def unpack(source, output):
-    locks, expected = inventory()
+def unpack(source, output, roles=('base', 'terminal')):
+    locks, expected = inventory(roles)
     limit = sum(expected.values()) + len(expected)*4096 + 10240
     if source.is_symlink() or not source.is_file() or not 0 < source.stat().st_size <= limit:
         raise ValueError('Expected a bounded regular build cache archive')
@@ -69,11 +73,14 @@ def main():
     restore = commands.add_parser('unpack')
     restore.add_argument('source', type=Path)
     restore.add_argument('output', type=Path)
+    restore.add_argument('--server-and-combined', action='store_true',
+                         help='Restore the companion cache from a security refresh')
     args = parser.parse_args()
     if args.command == 'pack':
         pack(args.base, args.terminal, args.output)
     else:
-        unpack(args.source, args.output)
+        roles = ('server', 'combined') if args.server_and_combined else ('base', 'terminal')
+        unpack(args.source, args.output, roles)
 
 
 if __name__ == '__main__':

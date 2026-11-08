@@ -1,5 +1,8 @@
 name: Build and sign Terminal system update
 on:
+  push:
+    branches: [main]
+    paths: [zmala_images/terminal-build-cache.json]
   workflow_dispatch:
     inputs:
       terminal_commit:
@@ -24,19 +27,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
-        run: |
-          pin=zmala_images/terminal-build-cache.json
-          draft=$(jq -er .draft_id "$pin")
-          asset=$(jq -er .asset_id "$pin")
-          digest=$(jq -er .sha256 "$pin")
-          [[ $draft =~ ^[1-9][0-9]*$ && $asset =~ ^[1-9][0-9]*$ && $digest =~ ^[a-f0-9]{64}$ ]]
-          api="repos/$GITHUB_REPOSITORY/releases/$draft"
-          [[ $(gh api "$api" --jq .draft) == true ]]
-          name=ZmalaTerminal-Package-Cache.tar
-          [[ $(gh api "$api" --jq ".assets[] | select(.name == \"$name\" and .state == \"uploaded\") | .id") == "$asset" ]]
-          path="$RUNNER_TEMP/$name"
-          gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset" -H 'Accept: application/octet-stream' > "$path"
-          printf '%s  %s\n' "$digest" "$path" | sha256sum --check --strict
+        run: bash build_tools/fetch-terminal-build-cache.sh "$RUNNER_TEMP/ZmalaTerminal-Package-Cache.tar"
       - uses: actions/upload-artifact@v4
         with:
           name: terminal-os-package-cache
