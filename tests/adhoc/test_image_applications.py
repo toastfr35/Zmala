@@ -162,6 +162,8 @@ class ApplicationProvisionTests(unittest.TestCase):
         records = provisioning_records()
         records['zmala_server/main.js'] = (b'// synthetic application', False)
         records['zmala_terminal/common/main.py'] = (b'# synthetic application', False)
+        power_rule = 'build_tools/linux/49-zmalacall-power.rules'
+        records[power_rule] = (b'// Terminal power policy for @USER@\n', False)
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             (root/'etc').mkdir()
@@ -174,6 +176,8 @@ class ApplicationProvisionTests(unittest.TestCase):
             wants.mkdir(parents=True)
             (wants/'NetworkManager.service').symlink_to('/usr/lib/systemd/system/NetworkManager.service')
             result = provision.provision(root, records, 'combined')
+            installed_policy = root/'etc/polkit-1/rules.d/49-zmalacall-power.rules'
+            self.assertEqual(installed_policy.read_bytes(), records[power_rule][0].replace(b'@USER@', b'zmalaterminal'))
             self.assertTrue(result['developer_access_installed'])
             self.assertTrue(result['boot_theme_installed'])
             self.assertIn('zmalacall-developer-shell.service', result['units'])
