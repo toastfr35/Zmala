@@ -163,8 +163,8 @@ def main():
             print(json.dumps(root_build.build(args.role, args.base_cache, args.role_cache, args.output), indent=2))
         elif args.command == 'prepare-root':
             index = project.package_locks()
-            selected, _ = local_repo.inputs([(args.base_cache, index['base']['lock_sha256']),
-                                            (args.role_cache, index['roles'][args.role]['sha256'])])
+            selected, _ = local_repo.role_inputs(args.role, [(args.base_cache, index['base']['lock_sha256']),
+                                                            (args.role_cache, index['roles'][args.role]['sha256'])])
             print(json.dumps(image_state.prepare(args.source, args.expected_root_sha256, selected,
                                                 args.role, args.output), indent=2))
         elif args.command == 'factory-data':

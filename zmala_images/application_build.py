@@ -15,8 +15,8 @@ def build(role, source, expected_root, applications, expected_applications, base
     if platform.system() != 'Linux' or os.geteuid() == 0:
         raise ValueError('Use an ordinary Linux user with subordinate UID/GID mappings')
     index = project.package_locks()
-    selected, locks = local_repo.inputs([(base_cache, index['base']['lock_sha256']),
-                                        (role_cache, index['roles'][role]['sha256'])])
+    selected, locks = local_repo.role_inputs(role, [(base_cache, index['base']['lock_sha256']),
+                                                    (role_cache, index['roles'][role]['sha256'])])
     source, applications, output = (Path(p).absolute() for p in (source, applications, output))
     if not re.fullmatch('[a-f0-9]{64}', expected_root) or package_lock.digest(source) != expected_root:
         raise ValueError('OS root differs from its reviewed digest')

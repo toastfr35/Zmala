@@ -138,7 +138,7 @@ def build(role, base_cache, role_cache, output):
     index = project.package_locks()
     project.profiles()['roles'][role]
     caches = [(base_cache, index['base']['lock_sha256']), (role_cache, index['roles'][role]['sha256'])]
-    selected, locks = local_repo.inputs(caches)
+    selected, locks = local_repo.role_inputs(role, caches)
     output = Path(output).absolute()
     if output.exists() or not re.fullmatch(r'/[A-Za-z0-9_./-]+', output.as_posix()):
         raise ValueError('Use a new simple absolute Linux build-output path')
@@ -153,7 +153,7 @@ def build(role, base_cache, role_cache, output):
     scratch = Path(tempfile.mkdtemp(prefix='zmala-locked-root-', dir='/tmp'))
     # Only authenticated public archives and build hooks enter this workspace.
     # Namespace service UIDs must traverse it; private cache permissions stay put.
-    local_repo.emit(caches, scratch/'repo')
+    local_repo.emit(caches, scratch/'repo', role=role)
     emit_hook(scratch)
     scratch.chmod(0o755)
     target = output/'root.tar'
