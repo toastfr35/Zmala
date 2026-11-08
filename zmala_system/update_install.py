@@ -17,7 +17,7 @@ BACKEND = '/usr/lib/zmala/bin/boot-backend'
 
 
 # @llr LLR-TERM-MAINT-062
-def download(slot, path, *, opener=None, clock=time.monotonic):
+def download(slot, path, *, opener=None, clock=time.monotonic, progress=None):
     url = update_discovery.bundle_url(slot)
     opener = opener or update_discovery.release_opener()
     deadline = clock()+900
@@ -28,6 +28,7 @@ def download(slot, path, *, opener=None, clock=time.monotonic):
             raise ValueError('Bundle size or free space is outside its budget')
         with path.open('xb') as output:
             remaining = length
+            last_percent = 0
             while remaining:
                 if clock() >= deadline:
                     raise TimeoutError('System release transfer timed out')
@@ -36,10 +37,16 @@ def download(slot, path, *, opener=None, clock=time.monotonic):
                     raise ValueError('Truncated system release transfer')
                 output.write(block)
                 remaining -= len(block)
+                percent = min(99, (length - remaining) * 100 // length)
+                if progress and percent != last_percent:
+                    progress(percent)
+                    last_percent = percent
             if response.read(1):
                 raise ValueError('Oversized system release transfer')
             output.flush()
             os.fsync(output.fileno())
+        if progress:
+            progress(100)
 
 
 # @llr LLR-TERM-MAINT-062
@@ -90,13 +97,15 @@ def stop_rauc(run=command):
 
 
 # @llr LLR-TERM-MAINT-062
-def install(candidate, installed, state, *, run=command, inspect=update_discovery.inspect_release):
+def install(candidate, installed, state, *, run=command, inspect=update_discovery.inspect_release, progress=None):
     """The image owner holds the maintenance fence until RAUC has exited."""
     target = candidate['target']
     archive = state/'candidate.raucb'
     archive.unlink(missing_ok=True)
     try:
-        download(target, archive)
+        download(target, archive, progress=progress)
+        if progress:
+            progress(None)
         if inspect(target, installed, source=str(archive)) != candidate:
             raise ValueError('Downloaded release differs from the authorized offer')
         with boot_environment.open_control() as (environment, current):
