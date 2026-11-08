@@ -687,6 +687,26 @@ qualified image installation flow exists. Image-tool regressions live under
 `tests/adhoc/` and run independently of requirement-based runtime tests.
 
 
+## Standalone Server factory image
+
+Build a `server` root and provision the reviewed Server package using the
+commands below. The Server package selection excludes RAUC after authenticating
+the shared locks. Assemble the application-bearing root directly:
+
+```sh
+python3 -m zmala_images.server_single --application /path/to/server-application \
+  --manifest-sha256 SHA256_OF_APPLICATION_READY_JSON \
+  --base-cache /path/to/base-cache --role-cache /path/to/server-cache \
+  --output /path/to/new/server-image
+```
+
+The 8 GiB candidate uses an MBR partition table, a FAT32 firmware partition and
+one writable ext4 root. Pi 4 firmware starts the matched native kernel, device
+tree and vendor initramfs. The image keeps the standard signed Debian and
+Raspberry Pi APT sources for manual OS maintenance. It has no RAUC package,
+update bundle or slot switching. A Pi boot and real Server setup are separate
+qualification steps.
+
 ## Combined Terminal + Server build inputs
 
 All role-taking build commands also accept `combined`, displayed as **Zmala

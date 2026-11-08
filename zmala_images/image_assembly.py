@@ -36,8 +36,8 @@ def build(role, source, expected, initramfs, initramfs_manifest, loader, loader_
     media_bytes = image_payload.disk_bytes(media_bytes)
     builders = {path.name: package_lock.digest(path) for path in sorted(Path(__file__).parent.glob('*.py'))}
     index = project.package_locks()
-    selected, _ = local_repo.inputs([(base_cache, index['base']['lock_sha256']),
-                                    (role_cache, index['roles'][role]['sha256'])])
+    selected, _ = local_repo.role_inputs(role, [(base_cache, index['base']['lock_sha256']),
+                                                (role_cache, index['roles'][role]['sha256'])])
     source = Path(source).absolute()
     audit = initramfs_build.checked_source(source, expected, selected, role)
     if not audit['application_installed']:

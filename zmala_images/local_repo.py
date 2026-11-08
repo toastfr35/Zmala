@@ -48,6 +48,14 @@ def inputs(caches):
     return selected, sorted(set(locks))
 
 
+def role_inputs(role, caches):
+    """The shared lock is authenticated before applying the Server package policy."""
+    selected, locks = inputs(caches)
+    if role == 'server':
+        selected.pop('rauc', None)
+    return selected, locks
+
+
 def audit_index(text, selected):
     """Compare archive identities and generated paths/hashes with reviewed inputs."""
     seen = set()
@@ -66,10 +74,10 @@ def audit_index(text, selected):
         raise ValueError('Generated repository is incomplete')
 
 
-def emit(caches, output):
+def emit(caches, output, *, role=None):
     if platform.system() != 'Linux':
         raise ValueError('Local repository assembly requires Linux dpkg-scanpackages')
-    selected, locks = inputs(caches)
+    selected, locks = role_inputs(role, caches)
     output = Path(output).absolute()
     if output.exists():
         raise ValueError('Use a new local repository directory')

@@ -27,8 +27,8 @@ def build(role, source, expected, base_cache, role_cache, output):
     if platform.system() != 'Linux' or os.geteuid() == 0:
         raise ValueError('Use an ordinary Linux user with subordinate UID/GID namespace support')
     index = project.package_locks()
-    selected, _ = local_repo.inputs([(base_cache, index['base']['lock_sha256']),
-                                     (role_cache, index['roles'][role]['sha256'])])
+    selected, _ = local_repo.role_inputs(role, [(base_cache, index['base']['lock_sha256']),
+                                                (role_cache, index['roles'][role]['sha256'])])
     source = Path(source).absolute()
     checked_source(source, expected, selected, role)
     output = Path(output).absolute()
