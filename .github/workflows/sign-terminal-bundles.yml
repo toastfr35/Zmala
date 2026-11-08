@@ -5,6 +5,9 @@ on:
       mode:
         required: true
         type: string
+    secrets:
+      ZMALA_RAUC_SIGNING_KEY:
+        required: true
 permissions:
   contents: read
 jobs:
@@ -46,6 +49,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [[ -z $RAUC_KEY ]]; then
+            echo '::error::The release environment did not supply the RAUC signing key'
+            exit 1
+          fi
           umask 077
           key=$(mktemp /dev/shm/zmala-rauc.XXXXXXXX)
           trap 'rm -f "$key"' EXIT

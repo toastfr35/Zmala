@@ -65,3 +65,5 @@ jobs:
     uses: ./.github/workflows/sign-terminal-bundles.yml
     with:
       mode: ${{ inputs.mode }}
+    secrets:
+      ZMALA_RAUC_SIGNING_KEY: ${{ secrets.ZMALA_RAUC_SIGNING_KEY }}
