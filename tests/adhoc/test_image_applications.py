@@ -183,8 +183,12 @@ class ApplicationProvisionTests(unittest.TestCase):
             self.assertIn('zmalacall-developer-shell.service', result['units'])
             self.assertFalse((wants/'zmalacall-developer-shell.service').exists())
             self.assertFalse((wants/'zmalacall-developer-tunnel.service').exists())
-            self.assertIn('ListenAddress 127.0.0.1', (root/'etc/ssh/zmala-developer-terminal.conf').read_text())
-            self.assertIn('PasswordAuthentication no', (root/'etc/ssh/zmala-developer-terminal.conf').read_text())
+            terminal_ssh = (root/'etc/ssh/zmala-developer-terminal.conf').read_text().splitlines()
+            self.assertTrue({'ListenAddress 127.0.0.1', 'AllowUsers zmala', 'PasswordAuthentication yes',
+                             'PubkeyAuthentication no'} <= set(terminal_ssh))
+            server_ssh = (root/'etc/ssh/zmala-developer-server.conf').read_text().splitlines()
+            self.assertTrue({'AllowUsers terminal', 'MaxSessions 0', 'AllowTcpForwarding remote',
+                             'PermitListen 127.0.0.1:22001'} <= set(server_ssh))
             self.assertFalse((root/'etc/ssh/keys').exists())
             self.assertIn('zmala:*:', (root/'etc/shadow').read_text())
             self.assertEqual((root/'usr/share/plymouth/themes/zmala/boot-family.png').read_bytes(), records[application_host.SOURCES[3]][0])
