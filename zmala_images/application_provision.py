@@ -158,6 +158,10 @@ def provision(root, records, role):
         return polkit.Result.YES;
 });
 ''')
+        power_policy = records.get('build_tools/linux/49-zmalacall-power.rules')
+        if power_policy:
+            put(root, 'etc/polkit-1/rules.d/49-zmalacall-power.rules',
+                power_policy[0].replace(b'@USER@', b'zmalaterminal'))
         tmpfiles.append('d /var/lib/zmalacall 0700 zmalaterminal zmalaterminal -')
         # An explicitly optional board-specific workaround is installed only when
         # the selected distribution's driver implements that path.
