@@ -2952,12 +2952,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libminizip1t64_1%3a1.3.dfsg+really1.3.1-1+b1_arm64.deb",
-      "bytes": 52592,
+      "archive": "libminizip1t64_1%3a1.3.dfsg+really1.3.1-1+deb13u1_arm64.deb",
+      "bytes": 52604,
       "package": "libminizip1t64",
-      "sha256": "46f361d1deb90caa1760f230c9c119fa4ce255636b12e6d817a0f65d6de87aad",
-      "uri": "https://deb.debian.org/debian/pool/main/z/zlib/libminizip1t64_1.3.dfsg%2breally1.3.1-1%2bb1_arm64.deb",
-      "version": "1:1.3.dfsg+really1.3.1-1+b1"
+      "sha256": "6e599767b8bae6fa858195c474c6eeab8230dd71c0a6a22dbec2586ff9362fbe",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/z/zlib/libminizip1t64_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
+      "version": "1:1.3.dfsg+really1.3.1-1+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -6660,12 +6660,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "zlib1g_1%3a1.3.dfsg+really1.3.1-1+b1_arm64.deb",
-      "bytes": 85116,
+      "archive": "zlib1g_1%3a1.3.dfsg+really1.3.1-1+deb13u1_arm64.deb",
+      "bytes": 85028,
       "package": "zlib1g",
-      "sha256": "209aa5cf671e97b9eb0410844fa6df4cae2e75b0c72e7802ab6c8ece13e6ddef",
-      "uri": "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bb1_arm64.deb",
-      "version": "1:1.3.dfsg+really1.3.1-1+b1"
+      "sha256": "0e41b3d7ad8ad7fcd36dd4d61ca91a70018478fc4af652e044f4be770784ddff",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
+      "version": "1:1.3.dfsg+really1.3.1-1+deb13u1"
     }
   ],
   "purpose": "requested-package-closure",
@@ -6679,14 +6679,14 @@
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "80409bb43ea1d7c8f6799d0fdd42997a5b78937d214345620585d6a847b33e65",
+      "sha256": "fae629219bd1c601113a845425bda3a66e508d64a21c4b995d9157e26aa3ae11",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "2b357948f35f871794b6218240f034c53aa4a631f3d15bc4228dd070b765da5f",
+      "sha256": "43f0c7af4acfb2d59c64e15324bf772a991f20856b66fa41a6d54d24d51e9526",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
