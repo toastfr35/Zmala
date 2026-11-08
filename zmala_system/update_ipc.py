@@ -78,10 +78,14 @@ class LocalUI:
     def offer(self, state, request='', **fields):
         self.publish('offer.json', {'schema': 1, 'state': state, 'request': request, **fields})
 
-    def phase(self, phase, immediate=False):
+    def phase(self, phase, immediate=False, *, download_percent=None):
         self.publish('state.json', {'phase': phase, 'nonce': self.nonce, 'heartbeat': self.clock(),
                                     'language': self.language, 'preserve_sleep': self.sleeping,
-                                    'immediate': immediate and phase == 'request'})
+                                    'immediate': immediate and phase == 'request'}
+                     | ({'download_percent': download_percent} if download_percent is not None else {}))
+
+    def download_progress(self, percent):
+        self.phase('updating', download_percent=percent)
 
     def heartbeat(self, unit=NORMAL_SERVICE):
         try:

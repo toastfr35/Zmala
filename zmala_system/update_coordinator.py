@@ -175,7 +175,7 @@ class Coordinator:
         candidate = validate_candidate(candidate)
         if not self.ui.claim(immediate):
             return False
-        self.ui.phase('updating')
+        self.ui.download_progress(0)
         # Keep the fence even if cleanup itself fails. systemd restarts this
         # owner, which stops RAUC and replays the journal before publishing idle.
         with self.control() as (environment, current):
@@ -187,7 +187,7 @@ class Coordinator:
         self.write(saved, 'installing')
         try:
             systemctl('start', UPDATE_SCREEN)
-            self.install(candidate, self.installed, self.directory)
+            self.install(candidate, self.installed, self.directory, progress=self.ui.download_progress)
         except FAILURES as error:
             update_install.stop_rauc()
             self.write(saved, 'rejected')

@@ -28,6 +28,8 @@ text: The coordinator shall validate the Terminal process, fresh nonce acknowled
   activity state before enabling installation. Immediate mode may waive the
   ordinary idle interval. Reverify the downloaded bundle against the exact
   offer, bind RAUC to the validated on-board slot layout, disable RAUC slot
-  activation and verify both installed partition digests before staging.
+  activation and verify both installed partition digests before staging. Publish
+  download progress as the percentage of the bounded bundle length received,
+  and clear it before verifying and installing the downloaded bundle.
 verification: Exercise missing admission, valid and invalid manual offers,
-  interrupted installation and readback before trial selection.
+  interrupted installation, bundle transfer progress and readback before trial selection.

@@ -4,11 +4,13 @@
 # @plan Simulate idle admission, installation failure, signed offer matching and healthy or failed trial boots with an in-memory boot environment and controlled clock.
 # @pass Busy and failed writes never select a trial. Only the exact staged and consumed trial with stable application health can be confirmed.
 from contextlib import contextmanager
+from io import BytesIO
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import Mock, patch
 
-from zmala_system import boot_state, update_coordinator, update_ipc
+from zmala_system import boot_state, update_coordinator, update_install, update_ipc
 
 
 OFFER = {'system_version': '0.4.2', 'terminal_version': '0.4.4', 'target': 'B',
@@ -23,7 +25,7 @@ class CoordinatorTests(unittest.TestCase):
         self.now = 0
         self.events = []
         self.ui = Mock(sleeping=True, language='en', runtime=Path('/update-run'))
-        self.install = Mock(side_effect=lambda *args: self.events.append('install'))
+        self.install = Mock(side_effect=lambda *args, **kwargs: self.events.append('install'))
         self.restart = Mock(side_effect=lambda: self.events.append('restart'))
         self.owner = update_coordinator.Coordinator(Path('/update-data'), self.ui, '0.4.1',
                                                    control=self.control, install=self.install,
@@ -65,8 +67,32 @@ class CoordinatorTests(unittest.TestCase):
     def test_writes_journal_and_verifies_install_before_staging(self):
         self.assertTrue(self.owner.activate(OFFER, immediate=False))
         self.assertEqual(self.events, ['installing', 'install', 'staged', 'commit', 'restart'])
+        self.ui.download_progress.assert_called_once_with(0)
+        self.install.assert_called_once_with(OFFER, '0.4.1', Path('/update-data'), progress=self.ui.download_progress)
         self.assertEqual(self.state.primary, 'B')
         self.assertEqual(self.state.confirmed, 'A')
+
+    def test_download_progress_follows_bytes_and_only_completes_for_a_full_transfer(self):
+        body = b'x' * (2 * 1024 ** 2)
+        for data, expected in ((body, [50, 99, 100]), (body[:1024 ** 2], [50])):
+            with self.subTest(expected=expected), TemporaryDirectory() as folder, \
+                    patch.object(update_install.update_discovery, 'check_url'), \
+                    patch.object(update_install.shutil, 'disk_usage', return_value=Mock(free=2**32)):
+                response = BytesIO(data)
+                response.geturl = lambda: 'test'
+                response.headers = {'Content-Length': str(len(body))}
+                response.status = 200
+                path = Path(folder) / 'bundle'
+                progress = []
+                opener = Mock()
+                opener.open.return_value = response
+                if len(data) == len(body):
+                    update_install.download('B', path, opener=opener, progress=progress.append)
+                    self.assertEqual(path.read_bytes(), body)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'Truncated'):
+                        update_install.download('B', path, opener=opener, progress=progress.append)
+                self.assertEqual(progress, expected)
 
     def test_install_failure_is_quarantined_without_reboot(self):
         self.install.side_effect = ValueError('Readback mismatch')
