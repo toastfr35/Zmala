@@ -9,8 +9,9 @@ architecture, dated experiments and proposed work sequence. Its historical paths
 versions, status statements and unchecked stage lists are not a current release
 inventory. Product requirements remain exclusively in `requirements/`.
 
-As of the 9 November 2026 source review, all three development image roles use
-the shared compact A/B builder. Standalone Terminal discovery, signed inactive-pair
+As of the 9 November 2026 source review, the standalone Server factory builder
+uses native Pi boot and one writable root. Terminal and combined development
+images use the shared compact A/B builder. Standalone Terminal discovery, signed inactive-pair
 installation and trial confirmation are implemented. Server/combined maintenance,
 complete onboarding and production image qualification remain unfinished.
 Use the [current image guide](zmala_images/README.md),

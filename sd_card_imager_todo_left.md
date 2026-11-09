@@ -14,8 +14,9 @@ for the selected artifact, even when its implementation already exists.
 
 ## Current position
 
-- Offline package intake, application provisioning, initramfs construction and
-  complete development-media assembly exist for terminal, server and combined roles.
+- Offline package intake, application provisioning and development-media assembly
+  exist for all three roles. Server uses native Pi boot and one writable root;
+  Terminal/combined use the custom initramfs and A/B layout.
 - The hosted Terminal workflow builds both update slots from reviewed package
   caches and an identified Terminal commit. Its optional `include_sd_image`
   output comes from that same audited assembly; signing runs separately.
@@ -104,10 +105,15 @@ for the selected artifact, even when its implementation already exists.
 
 ## 3. Measure actual storage and capacity margins
 
-Current compact layout: **14,001,635,328 raw bytes**, with a 32 MiB common boot
-partition, two 512 MiB slot boot partitions, two 4 GiB root partitions and a fixed
+Current Terminal/combined compact layout: **14,001,635,328 raw bytes**, with a
+32 MiB common boot partition, two 512 MiB slot boot partitions, two 4 GiB root partitions and a fixed
 4 GiB data partition, plus alignment/GPT allowances. Extra space on larger cards
 stays unallocated. GPT relocation does not expand a partition or filesystem.
+
+The standalone Server factory image instead uses an **8 GiB MBR layout**, with
+a 512 MiB FAT32 firmware partition starting at 8 MiB and one writable ext4 root
+using the remaining image space. It has no second root slot or separate data
+partition; measure its capacity and recovery needs independently.
 
 The historical 7 November Wi-Fi/QR/Argon baseline (source `7589fd8`, image SHA-256
 `b397645917f82a296b27eedd2c3243c68c3412f10d2cc195068e18bb5b3351e2`)
@@ -120,7 +126,8 @@ repeat them for each current artifact after changes to host services, artwork,
 Bluetooth policy or application/package inputs.
 
 - [ ] Measure allocated/used/free bytes in every filesystem of each newly built
-  terminal, server and combined artifact, including both root slots.
+  terminal, server and combined artifact, including both root slots on A/B images
+  and the single writable Server root.
 - [ ] Record raw and compressed download sizes, package/source version and actual
   16 GB/32 GB card capacities. Marketed card sizes are not exact byte guarantees.
 - [ ] Measure peak persistent-data usage during staging, download, verification,

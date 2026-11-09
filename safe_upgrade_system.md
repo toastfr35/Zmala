@@ -6,15 +6,18 @@ code and its limits; it does not qualify a particular SD image or deployed devic
 | Installation | Implemented update path | Boundary |
 | --- | --- | --- |
 | Standalone image-managed Terminal | Signed RAUC bundle containing the inactive boot/root pair; local-midnight discovery and Settings requests | Implemented admission, installation and trial confirmation; integration and physical qualification remain incomplete |
-| Image-managed Server or combined appliance | Shared A/B storage and boot-control infrastructure | No automatic Server/combined discovery, maintenance coordinator or joint health confirmation |
+| Standalone Server factory image | Native Pi boot, one writable root and signed Debian/Raspberry Pi APT sources for manual maintenance | No RAUC, automatic whole-system updater or fallback slot |
+| Combined development image | Shared A/B storage and boot-control infrastructure | No automatic combined discovery, maintenance coordinator or joint health confirmation |
 | Legacy installer-based Terminal | Separate signed application updater owned by ZmalaTerminal | Application rollback does not replace the OS, kernel or distribution packages |
 
 The image builder masks ordinary APT timers, the vendor EEPROM-update service
 and legacy application updaters. This prevents those paths from modifying the
 appliance independently. **Standalone Terminal images also install and enable
 the separate whole-system updater**; those masks do not disable it. The builder
-requires the public RAUC certificate. Private signing keys stay in the release
-workflow.
+requires the public RAUC certificate for that update path. Private signing keys
+stay in the release workflow. The native Server builder excludes RAUC and
+restores signed APT sources for manual maintenance; the ordinary APT timers
+remain masked. Manual Server package changes have no slot rollback protection.
 
 ## Standalone Terminal update flow
 
@@ -45,7 +48,10 @@ See the [requirements evidence guide](requirements/README.md).
 
 ## Storage and boot protections
 
-All three image roles use read-only A/B roots and separate persistent data.
+Terminal and combined development images use read-only A/B roots and separate
+persistent data. The following protections describe that A/B path, not the
+native single-root Server factory image. Experimental Server A/B host helpers
+and tests remain in the repository but are not its factory assembly path.
 Early boot checks the selected root, same-parent data partition, compatible
 identity and declared mounts before admitting normal services. Unknown state
 is not silently reformatted. The boot backend checks redundant confirmed/trial
@@ -69,7 +75,9 @@ Keep a known-working card/image and a separate persistent-data backup before a
 manual development-card test. Both slots share one SD card; reflashing the whole
 card erases its data. A verified replacement image can recover a damaged software
 installation when the hardware and boot firmware remain functional. Avoid
-manual in-place package or firmware upgrades on the image-managed appliance.
+manual in-place package or firmware upgrades on A/B appliances. The native
+Server image permits manual package maintenance, but recovery requires a backup
+or replacement image rather than a former root slot.
 
 See the [build and release guide](zmala_images/README.md) for signed artifacts and
 the [Terminal repository](https://github.com/toastfr35/ZmalaTerminal/blob/main/docs/terminal.md)
