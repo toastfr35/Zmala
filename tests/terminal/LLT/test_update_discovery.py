@@ -2,6 +2,7 @@
 # @requirements LLR-TERM-MAINT-060
 # @environment portable
 # @plan Validate RAUC 1.13 metadata for complete hook-free A/B pairs and test bounded signature inspection and persisted local-date scheduling using controlled probes.
+# Verify a dated OTA release can upgrade an older numeric release with the same app build.
 # @pass Only newer complete matching pairs are recorded and the daily check does not invoke install, boot-state change or reboot.
 import json
 from pathlib import Path
@@ -22,6 +23,16 @@ def fixture():
 
 
 class DiscoveryTests(unittest.TestCase):
+    def test_dated_release_can_update_the_os_with_the_same_app(self):
+        data = fixture()
+        data['update']['version'] = '20261109.0.1'
+        body = json.dumps(data)
+        for installed in ('0.4.9', '20261108.0.9'):
+            candidate = update_discovery.release(body, 'B', installed)
+            self.assertEqual(candidate['system_version'], '20261109.0.1')
+            self.assertEqual(candidate['terminal_version'], '0.4.4')
+        self.assertIsNone(update_discovery.release(body, 'B', '20261109.0.2'))
+
     def test_accepts_only_complete_newer_slot_pair(self):
         data = fixture()
         result = update_discovery.release(json.dumps(data), 'B', '0.4.0')

@@ -1,4 +1,5 @@
 """Image build/privacy and acquisition regressions, outside product runtime RBT."""
+from datetime import date
 import io
 import json
 import os
@@ -26,6 +27,19 @@ def archive(path, entries):
 
 
 class ImageSourceTests(unittest.TestCase):
+    def test_terminal_ota_versions_advance_by_date_and_revision(self):
+        previous = '20261109.0.1'
+        self.assertEqual(project.next_terminal_ota_version(previous, date(2026, 11, 9)), '20261109.0.2')
+        self.assertEqual(project.next_terminal_ota_version(previous, date(2026, 11, 10)), '20261110.0.1')
+        with self.assertRaises(ValueError):
+            project.next_terminal_ota_version(previous, date(2026, 11, 8))
+        for value in ('0.4.9', '20260230.0.1', '20261109.1.1', '20261109.0.0'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                project.terminal_ota_identity(value)
+        self.assertEqual(project.image_version('server'), project.image_version())
+        self.assertEqual(project.image_version('combined'), project.image_version())
+        self.assertNotEqual(project.image_version('terminal'), project.image_version())
+
     def test_archive_hash_and_changed_source_are_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

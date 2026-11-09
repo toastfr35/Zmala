@@ -1,16 +1,39 @@
 """Versioned build intent and lab configuration, separate from package locks."""
+from datetime import date
 import hashlib
 import json
 from pathlib import Path
 import re
 
 from zmala_system.host_layout import ROLES
+from zmala_system.update_discovery import version as system_version
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def image_version():
+def terminal_ota_identity(value):
+    stamp, reserved, revision = system_version(value)
+    if len(str(stamp)) != 8 or reserved != 0 or revision < 1:
+        raise ValueError('Expected Terminal OTA version YYYYMMDD.0.N')
+    return date.fromisoformat(str(stamp)), revision
+
+
+def next_terminal_ota_version(previous, today):
+    previous_date, revision = terminal_ota_identity(previous)
+    if today < previous_date:
+        raise ValueError('Terminal OTA release date cannot go backwards')
+    revision = revision + 1 if today == previous_date else 1
+    value = f'{today:%Y%m%d}.0.{revision}'
+    terminal_ota_identity(value)
+    return value
+
+
+def image_version(role=None):
     metadata = json.loads((ROOT/'VERSION.json').read_text(encoding='utf-8'))
+    if role == 'terminal':
+        version = metadata.get('terminal_ota_version') if isinstance(metadata, dict) else None
+        terminal_ota_identity(version)
+        return version
     version = metadata.get('version') if isinstance(metadata, dict) else None
     if not isinstance(version, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){2}', version):
         raise ValueError('Invalid SD image version in VERSION.json')
