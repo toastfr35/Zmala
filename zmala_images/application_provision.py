@@ -15,6 +15,8 @@ HOST_FILES = {
     'cec_device.py': 'zmala_terminal/linux/cec_device.py',
     'argon_fan.py': 'zmala_terminal/linux/argon_fan.py',
 }
+USB_POWER_SOURCE = 'build_tools/linux/usb-power.py'
+USB_POWER_CAPABILITY = b'# ZMALA_USB_POWER_CAPABILITY=hdmi-pcm-v1'
 
 
 def target(root, name):
@@ -57,6 +59,18 @@ def enable(root, unit):
 def uses_argon(role):
     host_layout.profile(role)
     return role in ('terminal', 'combined')
+
+
+def install_usb_power(root, records):
+    helper = records.get(USB_POWER_SOURCE)
+    if helper is None or USB_POWER_CAPABILITY not in helper[0].splitlines():
+        return  # Older Terminal packages do not support this image policy.
+    path = '/usr/local/libexec/zmala-usb-power'
+    put(root, path[1:], helper[0].replace(b'\r\n', b'\n'), 0o755)
+    put(root, 'etc/sudoers.d/zmalacall-usb-power',
+        f'zmalaterminal ALL=(root) NOPASSWD: {path} on, {path} off\n', 0o440)
+    put(root, 'etc/systemd/system/zmalacall-terminal.service.d/usb-power.conf',
+        f'[Service]\nEnvironment=ZMALA_USB_POWER=1\nExecStopPost=+{path} restore\n')
 
 
 def accounts(records, role):
@@ -134,6 +148,7 @@ def provision(root, records, role):
         link(root, 'opt/zmalacall/current', '/'+TERMINAL)
         for filename, original in HOST_FILES.items():
             put(root, 'usr/local/lib/zmalacall-terminal-host/'+filename, records[original][0])
+        install_usb_power(root, records)
         for component in ('terminal', 'display', 'pairing', 'cec', 'compositor'):
             unit = 'zmalacall-'+component+'.service'
             body = records['build_tools/linux/'+unit][0].replace(b'@USER@', b'zmalaterminal')

@@ -729,6 +729,14 @@ changes belong with the eventual qualified installation workflow.
 
 ## Offline applications and development media
 
+Images built with a compatible Terminal package install the Pi 4 USB power
+helper from that package and enable the service capability. The pinned
+Terminal package closure supplies `uhubctl` and `fuser`. The application user
+can request only the helper's fixed on/off commands. The service restores power
+on shutdown unless an update maintenance fence is active. Always on is the
+Terminal's default setting. The standalone Server image does not install the
+Terminal USB helper or service policy.
+
 Download the versions in [the reviewed component lock](../components.lock.json)
 from [Server releases](https://github.com/toastfr35/ZmalaServer/releases)
 and [Terminal releases](https://github.com/toastfr35/ZmalaTerminal/releases).
