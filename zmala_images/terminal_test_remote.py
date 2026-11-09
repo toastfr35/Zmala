@@ -214,6 +214,7 @@ def launch():
                     '--setenv=DISPLAY=:0', '--setenv=XAUTHORITY=/run/zmalacall-display/Xauthority',
                     '--setenv=PYTHONDONTWRITEBYTECODE=1', '--setenv=PYTHONUNBUFFERED=1',
                     '--setenv=ZMALA_LOG_STDERR=1', '--setenv=ZMALA_RUNTIME_DIR=/run/zmalacall-test',
+                    '--setenv=TMPDIR=/run/zmalacall-test',
                     '--setenv=ZMALA_PAIRING_STATUS=/run/zmalacall-pairing/status.json', '--setenv=ZMALA_C20_SETUP=1',
                     '/usr/bin/python3', str(RELEASE/'build_tools/linux/kiosk-session.py')],
                    check=True, timeout=25)

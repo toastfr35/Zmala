@@ -92,6 +92,7 @@ class TerminalDeveloperDeployTests(unittest.TestCase):
               patch.object(remote.subprocess, 'run') as run):
             remote.launch()
         bindings = next(arg for arg in run.call_args.args[0] if arg.startswith('--property=BindReadOnlyPaths='))
+        self.assertIn('--setenv=TMPDIR=/run/zmalacall-test', run.call_args.args[0])
         for filename in remote.TURN_FILES:
             self.assertEqual((candidate/filename).resolve(), (candidate/filename).absolute())
             self.assertEqual((candidate/filename).read_bytes(), b'')
