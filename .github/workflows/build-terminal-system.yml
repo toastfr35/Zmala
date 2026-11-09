@@ -134,8 +134,10 @@ jobs:
           mkdir "$output"
           system=$(jq -er .image_version "$source/READY.json")
           terminal=$(jq -er .components.terminal.version "$source/READY.json")
+          terminal_commit=$(git -C "$GITHUB_WORKSPACE/.terminal-source" rev-parse HEAD)
           expected=$(jq -er .image_sha256 "$source/READY.json")
           [[ $system =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && $terminal =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ $(jq -er .components.terminal.commit "$source/READY.json") == "$terminal_commit" ]]
           [[ $expected =~ ^[a-f0-9]{64}$ ]]
           name="ZmalaTerminal-SD-$system-Terminal-$terminal.img"
           sfdisk --verify "$source/appliance.img"
