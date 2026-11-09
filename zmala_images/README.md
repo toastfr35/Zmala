@@ -805,8 +805,8 @@ provisioned. The checker verifies the opposite-slot bundle with RAUC 1.13.
 
 An image release combines the OS and Terminal application. Use separate
 `ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` assets to
-preserve distinct filesystem labels. An application-only change advances the
-image release version. Bundle metadata also records the Terminal version.
+preserve distinct filesystem labels. An OS-only or app-only change advances the
+Terminal OTA release. Bundle metadata separately records the Terminal app version.
 Prepare the two unsigned bundle inputs from an audited regular image and an
 reviewed digest of its `READY.json`:
 
@@ -864,8 +864,10 @@ initramfs belonging to a different role/root. No command accepts a device path,
 flashes a card or alters a running Pi.
 
 The image version comes from [VERSION.json](../VERSION.json) independently of
-the component versions. The candidate `READY.json` records that image version
-and the exact application component identities.
+the component versions. The standalone Terminal uses `terminal_ota_version`
+for its SD image, installed identity and signed RAUC manifests. Other image
+roles use `version`. The candidate `READY.json` records the image version and
+the exact application component identities.
 
 The six GPT partitions are 32 MiB common FAT16, two 512 MiB FAT32 boot slots,
 two 4 GiB ext4 system slots and 4 GiB ext4 factory data, preceded by the fixed
@@ -930,6 +932,13 @@ has no READY marker; preserve its log and use a new output directory after repai
 
 ## Standalone Terminal system updates
 
+Set `terminal_ota_version` to the UTC release date as `YYYYMMDD.0.N` before
+building a new release. Start at revision `1` each day and increment it for
+later releases on the same day. For example, `20261109.0.1` is the first
+release for 9 November 2026. This format keeps numeric version comparisons
+compatible with earlier Terminals. Use the same identity for both signed slots
+and the matching SD image.
+
 Run **Build and sign Terminal system update** on `main` to build the ARM64
 Terminal from its current main commit, or specify an exact commit on that
 branch. The workflow verifies the retained OS package caches, builds the root,
@@ -946,8 +955,8 @@ The hosted build uses the pinned package cache asset in
 OS security locks** checks the signed Debian Trixie security index each day.
 A newer security version for a package in the Terminal build triggers APT
 resolution across the base and all roles that share it. The workflow pins
-the refreshed cache in a build-input draft, increments the system patch
-version and stages the lock changes on a review branch. If GitHub permits
+the refreshed cache in a build-input draft, advances the Terminal OTA date
+or same-day revision and stages the lock changes on a review branch. If GitHub permits
 Actions to open pull requests, the workflow opens one. The run summary has
 the comparison link when a maintainer needs to open it. Review and merge
 after Verify passes. A change to the cache pin on main starts the system

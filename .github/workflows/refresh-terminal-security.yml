@@ -59,11 +59,16 @@ jobs:
           jq -en --argjson draft "$draft" --argjson asset "$asset" --arg digest "$digest" \
             '{draft_id: $draft, asset_id: $asset, sha256: $digest}' > zmala_images/terminal-build-cache.json
           python3 - <<'PY'
+          from datetime import datetime, timezone
+          import json
           from pathlib import Path
           from zmala_images import project, security_refresh
 
-          major, minor, patch = map(int, project.image_version().split('.'))
-          security_refresh.write_json(Path('VERSION.json'), {'version': f'{major}.{minor}.{patch+1}'})
+          path = Path('VERSION.json')
+          metadata = json.loads(path.read_text())
+          metadata['terminal_ota_version'] = project.next_terminal_ota_version(
+              project.image_version('terminal'), datetime.now(timezone.utc).date())
+          security_refresh.write_json(path, metadata)
           PY
           python3 -m zmala_images check
           git config user.name 'github-actions[bot]'

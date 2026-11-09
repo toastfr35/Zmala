@@ -64,7 +64,8 @@ def payloads(role):
                'machine-id-commit.conf': IDENTITY_COMMIT,
                'trial-watchdog.conf': 'usr/lib/systemd/system.conf.d/99-zmala-trial.conf'}
     if role == 'terminal':
-        result[update_discovery.IDENTITY] = (json.dumps({'schema': 1, 'role': role, 'version': project.image_version()})+'\n').encode()
+        identity = {'schema': 1, 'role': role, 'version': project.image_version(role)}
+        result[update_discovery.IDENTITY] = (json.dumps(identity)+'\n').encode()
         keyring = Path(__file__).with_name('system-update-keyring.pem')
         if keyring.is_symlink() or not keyring.is_file() or keyring.stat().st_size > 65536:
             raise ValueError('Expected a bounded public RAUC certificate file')

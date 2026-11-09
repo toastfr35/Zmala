@@ -103,7 +103,7 @@ def refresh(work, baseline):
     terminal_build_cache.pack(work/'base', work/'terminal', work/'ZmalaTerminal-Package-Cache.tar')
     terminal_build_cache.pack_caches({role: work/role for role in ('server', 'combined')},
                                     work/'ZmalaServer-Combined-Package-Caches.tar')
-    identity = {'version': project.image_version(), 'packages': changes}
+    identity = {'version': project.image_version('terminal'), 'packages': changes}
     change_id = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
     write_json(work/'security-updates.json', {'id': change_id, 'packages': changes})
     print(f'Refreshed locks for {len(changes)} newer Debian security packages.')

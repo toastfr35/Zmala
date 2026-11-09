@@ -104,6 +104,7 @@ def main():
             bootloader.profile()
             locks = project.package_locks()
             print('Image version: '+project.image_version())
+            print('Terminal OTA version: '+project.image_version('terminal'))
             components_lock = project.ROOT/'components.lock.json'
             if components_lock.is_file():
                 components = application_inputs.read_component_lock('combined', components_lock)

@@ -32,7 +32,7 @@ def build(role, source, expected, initramfs, initramfs_manifest, loader, loader_
           base_cache, role_cache, output, media_bytes=None):
     if platform.system() != 'Linux' or os.geteuid() == 0:
         raise ValueError('Use an ordinary Linux user with subordinate UID/GID mappings')
-    version = project.image_version()
+    version = project.image_version(role)
     media_bytes = image_payload.disk_bytes(media_bytes)
     builders = {path.name: package_lock.digest(path) for path in sorted(Path(__file__).parent.glob('*.py'))}
     index = project.package_locks()
