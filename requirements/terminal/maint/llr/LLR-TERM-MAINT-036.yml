@@ -17,7 +17,7 @@ references:
 reviewed: null
 scope: Experimental
 text: For image-managed host storage preparation, the helper shall accept only a bounded, root-owned
-  regular supported layout profile for the selected server or terminal role, a read-only marked image
+  regular supported layout profile for the selected server, terminal or combined role, a read-only marked image
   root, a separate writable validated data mount and a RAM working area. It shall reject linked policy
   parents, unsupported or mismatched schemas/roles/owners, unsafe paths and invalid saved machine
   identity or hostname before mounting mutable views. Physical data-device selection and first identity

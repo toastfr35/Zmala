@@ -28,10 +28,24 @@ references:
   type: file
 reviewed: null
 scope: Experimental
-text: The coordinator shall record the selected release and former slot durably before staging. Admit
-  only its matching consumed trial to a passive UI and an isolated native
-  probe. Confirm after eight seconds of stable fresh process health within a
-  bounded trial. Cancel an interrupted or failed trial on the confirmed slot
-  and suppress another attempt of the rejected offer.
-verification: Exercise matching, foreign, interrupted, healthy and failed trial
-  transitions with a controlled clock and boot environment.
+text: The coordinator shall durably record the selected release and former slot
+  before staging. It shall admit a candidate to the passive UI and isolated native
+  probe only when the journal, booted slot, installed system version and consumed
+  boot transaction match. Within a thirty-second confirmation attempt, it shall
+  require eight consecutive seconds of fresh health from one trial-service PID
+  and process generation, following successful native probing. Missing or stale
+  health shall restart the stable interval; a changed PID or generation shall
+  fail the attempt. Immediately before confirmation it shall revalidate both the
+  trial transaction and fresh health from that same process. An unhealthy or timed-out
+  health check shall request reboot without confirming, allowing the consumed trial
+  to fall back to the confirmed slot. On the confirmed slot it shall cancel any
+  matching pending trial after interrupted or failed maintenance, record the
+  offer as rejected and suppress another attempt of that rejected offer.
+verification: Use a controlled clock and boot environment to cover matching and
+  foreign journals, unconsumed or wrong-slot trials, interrupted installation and
+  staging, stable health, stale or absent health, process restart and expiration
+  of the confirmation deadline. Assert revalidation before confirmation and no
+  confirmation after failure. Check rejected-offer suppression and journal replay
+  after a coordinator restart. Separately exercise the packaged native probe and
+  passive UI with persistent state protected; mocked heartbeats do not demonstrate
+  native or UI health, and simulated fallback is not physical watchdog evidence.

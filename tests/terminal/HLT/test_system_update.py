@@ -1,8 +1,8 @@
 # @test T-HLT-056
 # @requirements HLR-TERM-MAINT-061, HLR-TERM-MAINT-063
 # @environment portable
-# @plan Check the packaged Terminal-only service graph and exercise RAUC's native signature verification on disposable verity bundles when RAUC is available. Physical slot writes and watchdog resets require a Pi.
-# @pass The normal and trial services are mutually gated, candidate code cannot write persistent data, and the wrong certificate is rejected by RAUC.
+# @plan Inspect the packaged Terminal-only service graph and exercise RAUC's native signature verification on disposable verity bundles when RAUC is available. This test does not execute the maintenance handshake, partition installation or the sandboxed candidate. Physical slot writes and watchdog resets require a Pi.
+# @pass Packaged configuration gates normal and trial services and declares read-only persistent state for the trial; the native signature example rejects the wrong certificate when its tools are available. Configuration inspection does not prove that a running candidate preserves persistent data.
 import os
 from pathlib import Path
 import shutil

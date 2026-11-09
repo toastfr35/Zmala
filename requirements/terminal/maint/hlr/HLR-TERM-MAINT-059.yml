@@ -18,5 +18,8 @@ text: A standalone Terminal appliance with an approved release keyring shall che
   for a complete signed OS and Terminal release at local midnight. The check shall
   retain a daily record and catch up once after a missed day. Discovery shall not
   write a system slot, interrupt calls or reboot.
-verification: Inspect the packaged timer and use isolated signed-metadata and calendar
-  fixtures to check accepted releases and duplicate or backwards-date suppression.
+verification: Inspect timer enablement and exercise the packaged local-midnight
+  calendar expression across daylight-saving transitions and its boot catch-up
+  trigger. Use persisted-date fixtures for duplicate and backwards-date suppression
+  and authenticated-metadata fixtures for release selection. Distinguish those
+  simulated inputs from native signature verification and a running-device check.

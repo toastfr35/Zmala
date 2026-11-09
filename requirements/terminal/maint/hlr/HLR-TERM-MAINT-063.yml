@@ -18,5 +18,9 @@ text: A standalone Terminal shall try the candidate boot and system pair once.
   Trial processes shall preserve persistent appliance state and defer media
   and call activity. The host shall confirm the pair only after native and UI
   health checks. A failed trial shall fall back to the confirmed pair.
-verification: Verify the isolated trial unit graph and simulated slot recovery.
-  Physical watchdog, power-cut and healthy boot qualification remain required.
+verification: Check the isolated trial unit graph, then exercise native-probe
+  failure, UI health failure and a healthy trial while checking that persistent
+  appliance state is preserved and call/media activity remains deferred. Verify
+  simulated slot recovery separately. Unit-file inspection and mocked health
+  do not establish execution of the sandboxed candidate. Physical watchdog,
+  power-cut and healthy boot qualification remain required.

@@ -16,14 +16,27 @@ references:
   type: file
 reviewed: null
 scope: Experimental
-text: The discovery service shall use bounded RAUC signature inspection with the
-  installed public keyring and fixed release origin. Accept only newer verity bundles for the inactive slot
-  with a complete boot and root pair and no bundle hooks or handlers. Persist
-  the verification outcome once per local calendar day. Provide the verified
-  offer to the separate maintenance coordinator. Compare the whole appliance
-  release version, including a date-based version, independently of the app
-  version. An OS-only release may contain the same app version.
-verification: Reject mismatched slots, hook-bearing and incomplete pairs, old
-  system versions and malformed identity. Verify one check per day, catch-up,
-  backwards-date suppression and bounded signed inspection invocation. Check
-  discovery of a newer dated OTA release with the same app version.
+text: The standalone Terminal discovery service shall inspect release metadata
+  using bounded RAUC signature verification with the installed public keyring
+  and fixed release origin. It shall offer only a newer verity bundle compatible
+  with the inactive slot, containing exactly the boot and root images with the
+  supported filenames, partition sizes and SHA-256 digests, and no bundle or
+  image hooks, handlers or unsupported image variants. The offer shall identify
+  the authenticated manifest, target slot, system version, Terminal version and
+  both image digests for the separate maintenance coordinator. System versions
+  shall be compared as numeric major, minor and revision components, including
+  date-based versions, independently of the Terminal version; an OS-only update
+  may retain the same Terminal version. Scheduled discovery shall record the
+  local date before inspection and persist its outcome, including errors. It
+  shall not repeat scheduled inspection on the same or an earlier recorded
+  date; the first invocation on a later date shall perform one catch-up check.
+verification: With controlled authenticated-metadata fixtures, accept complete
+  inactive-slot pairs and reject wrong-slot, duplicate or missing images, wrong
+  names or sizes, hooks, handlers, variants and malformed identities or digests.
+  Check numeric version ordering and a newer dated system release retaining the
+  same Terminal version. Use a controlled clock and persisted status to verify
+  same-day suppression, one catch-up check after missed dates, backwards-date
+  suppression and a recorded inspection failure. Check the keyring, fixed origin
+  and bounded RAUC invocation. Separately exercise native signature acceptance
+  and rejection with trusted and unrelated keys; mocked metadata is not evidence
+  that a real bundle signature was verified.
