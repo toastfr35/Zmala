@@ -7,7 +7,10 @@ certificates live in a Docker volume; real server data is excluded from image bu
 Use only the dedicated WSL Docker daemon, and keep WSL active until each run finishes.
 
 Create a combined application archive using the [image builder instructions](../../../zmala_images/README.md#offline-applications-and-development-media).
-Run from the Zmala checkout in WSL as root. Use the archive digest from its
+Run from a disposable Zmala checkout under the workspace's top-level `tmp/`
+in WSL as root. This keeps the fixture's fixed report path out of the source
+checkout. Set `TMPDIR` to a private Linux-capable directory under the same
+workspace `tmp/` for its temporary build context. Use the archive digest from its
 `READY.json` and record it with the test results.
 
 ```sh
@@ -37,11 +40,12 @@ firewall counters. Separate probes reject untrusted endpoint certificates; nativ
 SIP probes reject an unrelated CA and a wrong certificate name. Each recording
 starts with a new file, preventing stale audio from satisfying a later assertion.
 
-`build_tools/linux/build-turn.py` builds the same pinned SDK correction used by the
-Pi installer. `tests/terminal/LLT/turn_parser.cpp` tests fragmented headers, padded
-ChannelData and coalesced STUN at every chunk size. The original parser must reproduce
-the padded-length assertion; the corrected parser must pass. Build evidence and
-upstream source stay under `zmala_terminal/linux/turn-runtime/`, outside Git.
+The verified application archive supplies `build_tools/linux/build-turn.py`
+and the Terminal runtime; those are not local source files in this repository.
+The container builds the pinned SDK correction from that archive. Parser
+regressions and source ownership live in ZmalaTerminal. Container-generated
+native outputs stay in the disposable lab image; reports remain in the temporary
+checkout. A successful image build is not evidence that the call matrix ran.
 
 The synthetic camera is a static 640x480 image, normally about one frame per second.
 Generated audio and Xvfb replace physical devices. Software OpenH264 replaces Pi

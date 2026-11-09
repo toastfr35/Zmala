@@ -4,12 +4,22 @@ Planning issue: [#138](https://github.com/toastfr35/ZmalaCall/issues/138).
 Prepared against `main` at `c6aabe2109e8478c6c3b1e6c7564fb7d2f651d7f`
 (Zmala 0.3.76), on 4 November 2026.
 
-**Status: implementation started; feasibility and development tooling in progress.** This file records the intended
-architecture, work sequence, unresolved engineering decisions and acceptance
-evidence. It does not describe functionality already shipped. Its checklists are
-uncompleted work, not passed verification. Product requirements remain exclusively
-in `requirements/`; implementation changes will add or revise those records and
-their direct LLT/HLT coverage before the corresponding behavior ships.
+**Historical plan and implementation log.** This document preserves the original
+architecture, dated experiments and proposed work sequence. Its historical paths,
+versions, status statements and unchecked stage lists are not a current release
+inventory. Product requirements remain exclusively in `requirements/`.
+
+As of the 9 November 2026 source review, all three development image roles use
+the shared compact A/B builder. Standalone Terminal discovery, signed inactive-pair
+installation and trial confirmation are implemented. Server/combined maintenance,
+complete onboarding and production image qualification remain unfinished.
+Use the [current image guide](zmala_images/README.md),
+[update protections](safe_upgrade_system.md),
+[requirements evidence guide](requirements/README.md) and
+[qualification checklist](sd_card_imager_todo_left.md) for current instructions
+and limits. The entries below retain what was known at their recorded dates;
+they do not confer qualification on later builds. Paths into the old monorepo
+may now belong to ZmalaServer, ZmalaTerminal or private retained evidence.
 
 ### Implementation log
 
@@ -717,7 +727,8 @@ offline applications and regular-file media assembly:
   qualification remain required, as do secure owner onboarding and coordination.
 - ARM64 execution here is QEMU user-mode CPU emulation with Linux namespaces,
   not board emulation. Build artifacts and exact check evidence are retained
-  privately and summarized in `upgrade_system_status.md` and the implementation
+  privately and summarized in the historical private `upgrade_system_status.md`
+  record (not included in this repository) and the implementation
   PR. A WSL backing-volume exhaustion interrupted assembly; physical-volume
   capacity is now checked in addition to Linux virtual free space.
 - These changes concern build/packaging tooling and reuse existing runtime

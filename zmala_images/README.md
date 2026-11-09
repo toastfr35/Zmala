@@ -12,8 +12,11 @@ the historical [staged system-update plan](../update_upgrade.md).
 
 Run commands from the repository root with `python3 -m zmala_images`. The builder
 has its own top-level package; old development commands using
-`python3 -m build_tools.images` need the new module name. Output/cache paths under
-`build_tools/tmp/` remain usable, and committed input-lock bytes are unchanged.
+`python3 -m build_tools.images` need the new module name. Keep downloads, caches,
+logs and build outputs under the workspace's top-level `tmp/`, outside the
+component checkout. In the examples, set `ZMALA_TMP` to its absolute Linux path;
+replace every illustrative `/path/to/...` input/output with a reviewed location
+there. Use a new output directory for each attempt and retain failed logs.
 
 | Stage | Command/module | Result and boundary |
 | --- | --- | --- |
@@ -50,13 +53,14 @@ Windows. No command in this guide qualifies a physical card, TV or power-loss ru
 Run from the repository root:
 
 ```sh
+ZMALA_TMP=/path/to/zmala-workspace/tmp
 python3 -m zmala_images check
-python3 -m zmala_images probe-config terminal --output build_tools/tmp/terminal-probe
-python3 -m zmala_images probe-config server --output build_tools/tmp/server-probe
-python3 -m zmala_images fetch imagegen --cache build_tools/tmp/image-sources
-python3 -m zmala_images fetch backend_audit --cache build_tools/tmp/image-sources
-python3 -m zmala_images fetch bootloader_audit --cache /path/to/new/outside-checkout-cache
-python3 -m zmala_images bootloader-config --output /path/to/new/bootloader-profile
+python3 -m zmala_images probe-config terminal --output "$ZMALA_TMP/terminal-probe"
+python3 -m zmala_images probe-config server --output "$ZMALA_TMP/server-probe"
+python3 -m zmala_images fetch imagegen --cache "$ZMALA_TMP/image-sources"
+python3 -m zmala_images fetch backend_audit --cache "$ZMALA_TMP/image-sources"
+python3 -m zmala_images fetch bootloader_audit --cache "$ZMALA_TMP/loader-sources"
+python3 -m zmala_images bootloader-config --output "$ZMALA_TMP/bootloader-profile"
 python3 -m zmala_images inspect-bootloader /path/to/resolved-build/.config
 python3 -m zmala_images inspect-root /path/to/offline/root
 python3 -m zmala_images inspect-disk /path/to/uncompressed-probe.img
@@ -99,11 +103,13 @@ validation executes the target supplicant version command and checks its D-Bus
 activation/policy files and systemd unit, catching missing backend libraries
 before a root is accepted. These packaging checks do not claim a real Wi-Fi join.
 
-Server npm/build dependencies and full secure-relay provisioning remain to be
-separated into build/runtime sets. The selected RAUC package is Debian Trixie's
-`1.13-3+deb13u1`; its role dependency closures are now retained and reviewed.
-Complete builder/toolchain inputs and use of the locks in factory builds still
-need to be established before production builds.
+Application intake retains the Server's integrity-pinned npm dependencies and
+the Terminal's pinned TURN sources for offline provisioning. The selected RAUC
+package is Debian Trixie's `1.13-3+deb13u1`; reviewed base and role locks are
+consumed by the root, application, initramfs and assembly stages. Full host
+toolchain locking, secure-relay onboarding and production qualification remain
+unfinished. Read current package counts from `python3 -m zmala_images check`
+and the selected artifacts rather than from earlier experiment measurements.
 
 The emitted `probe.yaml` is a minimal Pi 4 A/B **boot experiment**. It does not
 install Zmala, a bootloader backend, production keys or an update coordinator.
@@ -118,18 +124,18 @@ After fetching, the upstream configuration resolver can check each probe:
 
 ```sh
 # Replace <commit> with the imagegen commit in sources.lock.json.
-build_tools/tmp/image-sources/imagegen-<commit>/rpi-image-gen config \
-  build_tools/tmp/terminal-probe/probe.yaml \
-  --write-to build_tools/tmp/terminal-probe/resolved.env
+"$ZMALA_TMP/image-sources/imagegen-<commit>/rpi-image-gen" config \
+  "$ZMALA_TMP/terminal-probe/probe.yaml" \
+  --write-to "$ZMALA_TMP/terminal-probe/resolved.env"
 ```
 
 Build with the emitted project as the explicit source directory, so imagegen
 discovers its executable customization hook:
 
 ```sh
-build_tools/tmp/image-sources/imagegen-<commit>/rpi-image-gen build \
-  -S build_tools/tmp/terminal-probe \
-  -c build_tools/tmp/terminal-probe/probe.yaml -B /path/to/new/lab-build
+"$ZMALA_TMP/image-sources/imagegen-<commit>/rpi-image-gen" build \
+  -S "$ZMALA_TMP/terminal-probe" \
+  -c "$ZMALA_TMP/terminal-probe/probe.yaml" -B "$ZMALA_TMP/lab-build"
 ```
 
 The project's `layer/zmala-probe-eeprom.d/hooks/customize99-zmala-eeprom-scope`
@@ -172,10 +178,13 @@ firmware selection or successful boot. Its result remains explicitly unqualified
 Run the standalone collector on an existing Linux Pi:
 
 ```sh
-python3 inventory.py --role terminal > terminal-inventory.json
-python3 inventory.py --role server > server-inventory.json
+python3 inventory.py --role terminal > /path/to/private/terminal-inventory.json
+python3 inventory.py --role server > /path/to/private/server-inventory.json
 ```
 
+The standalone source is `zmala_images/inventory.py`; copy it to the chosen
+Linux Pi before running these commands. Use a private diagnostic location for
+the remote output and retain the collected copy under the workspace `tmp/`.
 Use only the appropriate role. It reads fixed OS/package/service/mount facts and
 counts selected application/data trees. It does not invoke sudo, restart a
 service, access a camera/audio device, scan a network, or request TV/USB power.
@@ -323,11 +332,12 @@ repository over HTTP, put its source in a deployed device, or change host APT
 configuration. Keep the generated repository read-only during a build and verify
 the original caches again before regenerating it. `READY.json` is a completion
 record, not a signature or a continuing integrity monitor. No release private
-key is used. Combining the reviewed base with each role produced 312 server and
+key is used. Earlier base/role experiments produced 312 server and
 805 terminal archives. Real isolated, file-only APT download tests consumed all
 exact selections for both roles without changing host dpkg state. This proves
-local APT consumption, **not yet full image-builder consumption**; `probe-config`
-still resolves from upstream repositories and is explicitly unqualified.
+local APT consumption. The current `build-root` path also consumes verified local
+caches; the separate `probe-config` experiment still resolves from upstream
+repositories and is explicitly unqualified. Counts change with reviewed locks.
 
 ## Isolated locked-root construction
 
@@ -394,15 +404,16 @@ application/toolchain/mount-policy/hardware qualification. Keep logs and artifac
 private until reviewed. Retained public scratch inputs are left for diagnosis;
 only remove a known inactive build directory after checking its resolved path.
 
-Both role experiments completed under ARM64 emulation with unchanged host dpkg
+Historical role experiments completed under ARM64 emulation with unchanged host dpkg
 state: the cleaned server tar contains exactly 312 locked packages and is
 765,826,560 bytes; the terminal tar contains exactly 805 and is 2,366,328,320 bytes.
-Both retained hashes and the current archive acceptance checks passed. These are
-raw tar sizes, not partition-capacity measurements or boot/call qualification.
+Their retained hashes and archive acceptance checks passed at that checkpoint.
+These are historical raw tar sizes, not current artifact sizes, partition-capacity
+measurements or boot/call qualification. Use each new artifact's `READY.json`.
 
 ## Preparing experimental image-managed storage
 
-`prepare-root` consumes a reviewed `build-root` tar and the matching verified
+`prepare-root` consumes a reviewed OS or application root tar and the matching verified
 base/role caches. It rewrites a **new tar without extracting or mounting it**:
 
 ```sh
@@ -428,17 +439,19 @@ hard-link targets/metadata, ownership ranges, complete runtime bytes, slot packa
 identity and the variable-state RAM budget. Seed aliases into unlisted `/data`
 paths are refused. Incomplete output has no `READY.json`. The success record
 includes both root digests and runtime payload hashes, while explicitly keeping
-early-boot integration, device initialization, application installation, hardware
-qualification and production eligibility false. Retain those boundaries: this
+device initialization, hardware qualification and production eligibility false.
+Application presence is checked and recorded from the input; a bootable assembly
+requires a provisioned application root. Retain those boundaries: this
 archive is not a ready-to-flash image or update candidate.
 
 The runtime helper is requirement-traced under experimental `PROD017` with direct
 server/terminal LLT/HLT plans. Its real mount-namespace integration scenarios use
 only temporary ext4 file images; see `docs/general.md`. Build/archive regressions
 remain ad-hoc tooling checks. The current SSH installers do not launch this
-helper. Experimental same-parent data discovery and initramfs packaging are now
-available below; complete role setup, assembled image boot qualification and the
-update coordinator remain unfinished.
+helper. Same-parent data discovery and initramfs packaging are available below.
+Standalone Terminal update coordination is implemented; Server/combined
+coordination, complete onboarding and assembled-image hardware qualification
+remain unfinished.
 
 ## Empty factory data and first-device identity
 
@@ -452,7 +465,8 @@ This emits a deterministic `data.tar` containing only a root-owned private data
 directory and the role's `.zmala-factory.json` record. The adjacent status explicitly
 reports that no device identity exists and data initialization/production
 qualification remain false. It never formats, mounts or opens a device. The
-archive is an input to future image assembly, not a migration archive.
+archive describes factory data; `assemble-image` creates the same marked empty
+data layout directly. It is not a migration archive.
 
 `prepare-root` also packages `zmala_system.device_identity`. Its Linux-root CLI
 accepts `--data` and `--role`, but must only be invoked by boot integration after
@@ -593,7 +607,7 @@ its bounded parser with runtime admission while still refusing block devices.
 The adapter implements `get-current`, `get-primary`, `get-state A|B`, and
 `set-state A|B good|bad`. Generic `set-primary` deliberately fails: it cannot
 identify a product transaction. Candidate installation must use RAUC 1.13
-`activate-installed=false`; the later coordinator calls `stage A|B TRANSACTION`
+`activate-installed=false`; the standalone Terminal coordinator calls `stage A|B TRANSACTION`
 only after installation, durable transaction recording and safe admission.
 `snapshot` returns the fixed boot fields; `confirm TRANSACTION GENERATION`
 requires the current consumed trial and exact 16-character hexadecimal
@@ -626,8 +640,8 @@ the pinned U-Boot hush interpreter, explicitly substituting `saveenv`. The
 initramfs build also executes actual target ARM64 environment-tool read/write
 operations on new RAM-backed fixture files. These checks do not establish the
 combined U-Boot/SD persistence path, actual Pi transport, physical power-loss
-recovery, complete boot/root pairing or product health. Full image wiring and
-hardware qualification remain required before any system image release.
+recovery or product health. The current assembler wires matched boot/root pairs;
+hardware qualification of the complete image remains a separate gate.
 
 PID1 must not pet an unhealthy trial indefinitely. Its runtime watchdog remains
 disabled until a separate qualified product-health handover. Kernel
@@ -657,13 +671,16 @@ The exact reviewed upstream files can be inspected from the acquired trees:
   per-slot `/var` and persistent journal behavior, which differs from Zmala's plan.
 
 The alternative boot-state investigation is tracked in
-[#149](https://github.com/toastfr35/Zmala/issues/2). A private U-Boot experiment
+[#2](https://github.com/toastfr35/Zmala/issues/2), continued from the original
+ZmalaCall investigation #149. A private U-Boot experiment
 has compiled and completed an A/B selection, fallback and manual counter-reset
 sequence on a Pi. Further private checks exercised healthy watchdog handoff,
 a controlled pre-root stall, one newer-copy CRC fault and one operator power cut
 during repeated commits. See the plan for measured scope and remaining gates.
-It is not included by `probe-config`, acquired by `fetch`, or
-adopted as the production backend. The current source's configuration names differ
+The private diagnostic image is not the `probe-config` output. The current
+`fetch bootloader_audit` and `build-loader` commands acquire and build the pinned
+loader for development assembly; this does not establish production qualification.
+The current source's configuration names differ
 from older RAUC examples; validate the resolved settings, not just a fragment.
 Source references for that investigation:
 
@@ -693,31 +710,26 @@ qualified image installation flow exists. Image-tool regressions live under
 
 ## Standalone Server factory image
 
-Build a `server` root and provision the reviewed Server package using the
-commands below. The Server package selection excludes RAUC after authenticating
-the shared locks. Assemble the application-bearing root directly:
+Use the same [build sequence](#build-sequence-and-ownership) with role `server`
+and the reviewed Server package/cache: `build-root`, `provision-applications`,
+`prepare-root`, `build-initramfs`, `build-loader` and `assemble-image`. There is
+no `zmala_images.server_single` command in this repository.
 
-```sh
-python3 -m zmala_images.server_single --application /path/to/server-application \
-  --manifest-sha256 SHA256_OF_APPLICATION_READY_JSON \
-  --base-cache /path/to/base-cache --role-cache /path/to/server-cache \
-  --output /path/to/new/server-image
-```
-
-The 8 GiB candidate uses an MBR partition table, a FAT32 firmware partition and
-one writable ext4 root. Pi 4 firmware starts the matched native kernel, device
-tree and vendor initramfs. The image keeps the standard signed Debian and
-Raspberry Pi APT sources for manual OS maintenance. It has no RAUC package,
-update bundle or slot switching. A Pi boot and real Server setup are separate
-qualification steps.
+The current Server builder uses the shared six-partition compact GPT layout,
+read-only A/B roots and separate persistent data. It does not create an 8 GiB
+MBR image with one writable root. The shared package foundation includes RAUC,
+but Server roots do not enable the Terminal discovery or update coordinator.
+Automatic Server system updates, first-owner/TLS onboarding and physical Server
+qualification remain unfinished. Do not substitute manual in-place APT upgrades
+for a supported whole-system update path.
 
 ## Combined Terminal + Server build inputs
 
 All role-taking build commands also accept `combined`, displayed as **Zmala
-Terminal + Server**. Its 52 requested packages are the exact union of the two
-standalone intents. The separately retained authenticated closure contains 738
-archives; common package identities match the reviewed standalone locks. `check`
-rejects conflicting shared versions or hashes. The observed base remains unchanged.
+Terminal + Server**. Its requested packages are the union of the two
+standalone intents. The separately retained authenticated closure shares common
+package identities with the reviewed standalone locks. `check` reports the
+current requested/archive counts and rejects conflicting shared versions or hashes.
 Use the combined cache for `build-root`, `prepare-root` and `build-initramfs`;
 never substitute a terminal or server cache or relabel an existing prepared root.
 `factory-data combined` emits an empty combined marker without shared identities.
@@ -750,7 +762,7 @@ Then retain the packages and their build dependencies:
 
 ```sh
 python3 -m zmala_images application-inputs combined --components-lock components.lock.json \
-  --packages downloads --output application-inputs
+  --packages "$ZMALA_TMP/component-packages" --output "$ZMALA_TMP/application-inputs"
 ```
 
 Choose `server` or `terminal` to use a single component. Intake checks the
@@ -811,7 +823,7 @@ An image release combines the OS and Terminal application. Use separate
 `ZmalaTerminal-System-A.raucb` and `ZmalaTerminal-System-B.raucb` assets to
 preserve distinct filesystem labels. An OS-only or app-only change advances the
 Terminal OTA release. Bundle metadata separately records the Terminal app version.
-Prepare the two unsigned bundle inputs from an audited regular image and an
+Prepare the two unsigned bundle inputs from an audited regular image and a
 reviewed digest of its `READY.json`:
 
 ```sh
@@ -821,8 +833,11 @@ python3 -m zmala_images.system_bundle --image /path/to/image-directory \
 
 The release job signs each input with RAUC verity. Each input includes just
 its matching boot and root filesystems. Discovery records verified metadata.
-Settings integration, idle admission, trial health confirmation and hardware
-rollback qualification remain prerequisites for automatic activation.
+The standalone Terminal coordinator handles Settings requests, idle admission,
+inactive-pair installation and trial health confirmation. See
+[the current update flow](#standalone-terminal-system-updates). Its implemented
+checks and the remaining integration/hardware evidence are distinguished in the
+[requirements guide](../requirements/README.md).
 
 ### Developer Access
 
@@ -975,8 +990,8 @@ For other package lock changes, pack the matching retained caches and upload
 the archive to a draft used only for build inputs:
 
 ```sh
-python3 -m zmala_images.terminal_build_cache pack BASE_CACHE TERMINAL_CACHE ZmalaTerminal-Package-Cache.tar
-sha256sum ZmalaTerminal-Package-Cache.tar
+python3 -m zmala_images.terminal_build_cache pack BASE_CACHE TERMINAL_CACHE "$ZMALA_TMP/ZmalaTerminal-Package-Cache.tar"
+sha256sum "$ZMALA_TMP/ZmalaTerminal-Package-Cache.tar"
 ```
 
 Update the draft ID, asset ID and digest in the cache pin through a PR.
@@ -1017,12 +1032,12 @@ latest release. Keep the signing key in the main-only release environment.
 Use the existing operator SSH tunnel on a standalone A/B Terminal. Enable
 Developer Access for the enrolled Terminal and sign in as `zmala` with the
 password shown in the Server admin dialog. Read
-`host/ssh/ssh_host_ed25519_key.pub` on the initialized card to pin the fresh
+`/data/host/ssh/ssh_host_ed25519_key.pub` on the initialized card to pin the fresh
 card's SSH host key on your workstation. Deployment requires a running stock
 Terminal and system update coordinator.
 
 Build the ARM64 package from the Terminal checkout with
-`python3 build_tools/linux/package-terminal.py --output ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz`,
+`python3 build_tools/linux/package-terminal.py --output "$ZMALA_TMP/ZmalaTerminal-test-linux-arm64.tar.gz"`,
 or use the package and SHA-256 from a Terminal Verify run. Set `digest` to the
 first field of the package's `.sha256` file. From the image-builder checkout,
 use an executable wrapper that forwards its command arguments and standard input
@@ -1030,7 +1045,7 @@ to the authenticated Pi SSH session without allocating a terminal.
 
 ```sh
 python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh deploy \
-    ../tmp/ZmalaTerminal-test-linux-arm64.tar.gz --sha256 "$digest"
+    "$ZMALA_TMP/ZmalaTerminal-test-linux-arm64.tar.gz" --sha256 "$digest"
 python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh status
 python3 -m zmala_images.terminal_test --ssh /path/to/operator-ssh restore
 ```

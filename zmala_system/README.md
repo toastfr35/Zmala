@@ -26,6 +26,30 @@ Shared behavior links to both server and terminal requirements under
 shared fixtures are in `tests/support/`. Installer/image checks are ad-hoc tooling
 regressions and do not qualify runtime hardware behavior.
 
+## Installed state and service boundaries
+
+| Location or service | Purpose |
+| --- | --- |
+| `/usr/lib/zmala/` | Immutable role, storage, boot and capacity policies; standalone Terminal release identity and public update keyring |
+| `/data/identity/` | Durable machine ID and hostname shared by both slots |
+| `/data/state/terminal/`, `/data/state/server/` | Role-specific application data, exposed through the declared private bindings |
+| `/data/host/ssh/` | Persistent host keys generated after storage initialization |
+| `/run/zmala-host/` | Current-boot readiness records and volatile storage working area |
+| `zmala-host-storage.service` | Startup gate that checks completed early-boot preparation |
+| `zmala-system-update-check.timer` | Standalone Terminal local-midnight discovery and boot catch-up |
+| `/data/host/update-discovery/status.json` | Last scheduled discovery date and outcome |
+| `/data/host/system-updates/journal.json` | Standalone Terminal installation/trial recovery record |
+| `/run/zmalacall-updater/` | Volatile maintenance requests, progress and trial state |
+
+The boot helpers require validated mounts and role policies supplied by the
+image boot path. They are not commands for repairing an arbitrary live root or
+converting a legacy installation. Preserve persistent identity and journals when
+collecting diagnostics; editing them is not a supported recovery procedure.
+
+For the update sequence, watchdog limits and card-recovery boundary, read
+[update protections](../safe_upgrade_system.md). The private records above may
+be absent on legacy installations or roles that do not install the updater.
+
 See the [requirements guide](../requirements/README.md) for implemented boundaries
 and missing verification, the [engineering guide](../docs/general.md) for checks,
 and the [image build sequence](../zmala_images/README.md#build-sequence-and-ownership)
