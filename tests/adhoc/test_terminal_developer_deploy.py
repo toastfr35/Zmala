@@ -112,12 +112,23 @@ class TerminalDeveloperDeployTests(unittest.TestCase):
         source = self.root/'source'
         source.mkdir()
         (source/'config').write_text('stock profile')
+        pulse = source/'.config/pulse'
+        pulse.mkdir(parents=True)
+        runtime = pulse/('a'*32+'-runtime')
+        runtime.symlink_to('/tmp/pulse-testRuntime')
         target = self.root/'target'
         user = SimpleNamespace(pw_uid=1000, pw_gid=1000)
         with patch.object(remote, 'BASE', self.root), patch.object(remote.os, 'chown'):
             remote.snapshot(source, target, user)
             (target/'config').write_text('test profile')
             self.assertEqual((source/'config').read_text(), 'stock profile')
+            self.assertTrue(runtime.is_symlink())
+            self.assertFalse((target/runtime.relative_to(source)).is_symlink())
+            untrusted_runtime = pulse/('b'*32+'-runtime')
+            untrusted_runtime.symlink_to('/etc/passwd')
+            with self.assertRaisesRegex(ValueError, 'link or special file'):
+                remote.snapshot(source, self.root/'untrusted-runtime', user)
+            untrusted_runtime.unlink()
             (source/'unsafe').symlink_to('/etc/passwd')
             with self.assertRaisesRegex(ValueError, 'link or special file'):
                 remote.snapshot(source, self.root/'unsafe', user)

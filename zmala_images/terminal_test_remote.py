@@ -168,6 +168,12 @@ def snapshot(source, target, user):
                     if stream.read(1):
                         raise ValueError('Terminal profile grew during snapshot')
                 copy.chmod(0o600)
+            elif (stat.S_ISLNK(info.st_mode) and path.relative_to(source).parent == Path('.config/pulse')
+                  and re.fullmatch(r'[a-f0-9]{32}-runtime', path.name)
+                  and re.fullmatch(r'/tmp/pulse-[A-Za-z0-9]+', os.readlink(path))):
+                # PulseAudio regenerates this link to its per-process runtime.
+                # The test profile must never inherit or follow it.
+                continue
             else:
                 raise ValueError('Terminal profile contains a link or special file')
             os.chown(copy, user.pw_uid, user.pw_gid)
