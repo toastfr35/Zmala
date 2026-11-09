@@ -29,6 +29,8 @@ NATIVE_SUFFIXES = {'.c', '.cpp', '.cc', '.cxx', '.h', '.hpp', '.patch'}
 BUILDERS = {'build_tools/linux/build-media.sh', 'build_tools/linux/build-turn.py'}
 RUNTIME = ('media/video/libzmala_video.so', 'media/audio/libzmala_speech_audio.so',
            'turn-runtime', 'media/framing-runtime', 'media/models')
+TURN_FILES = tuple(Path('zmala_terminal/linux/turn-runtime')/name
+                   for name in ('turn-fix.so', 'sdk-version'))
 
 
 def systemctl(*args, check=True):
@@ -130,7 +132,17 @@ def reuse_native(candidate, stock):
             raise ValueError('The installed native runtime is incomplete')
         if (stock/relative).exists():
             (candidate/relative).parent.mkdir(parents=True, exist_ok=True)
-            (candidate/relative).symlink_to(stock/relative)
+            if name == 'turn-runtime':
+                # Bind the stock files into the test namespace at these paths.
+                # The preload guard compares /proc/self/maps with the test path
+                # and the test root's /run mount is non-executable.
+                (candidate/relative).mkdir()
+                for filename in TURN_FILES:
+                    if not stat.S_ISREG((stock/filename).lstat().st_mode):
+                        raise ValueError('The installed TURN runtime is invalid')
+                    (candidate/filename).touch()
+            else:
+                (candidate/relative).symlink_to(stock/relative)
     (candidate/'zmala_terminal/data').symlink_to(DATA, target_is_directory=True)
 
 
@@ -181,6 +193,7 @@ def snapshot(source, target, user):
 
 
 def launch():
+    turn_bindings = ' '.join(f'{(STOCK_ROOT/path).resolve(strict=True)}:{RELEASE/path}' for path in TURN_FILES)
     subprocess.run(['/usr/bin/systemd-run', '--quiet', '--collect', '--unit='+TEST,
                     '--property=Type=exec', '--property=User=zmalaterminal',
                     '--property=SupplementaryGroups=audio video render input',
@@ -191,6 +204,7 @@ def launch():
                     '--property=ProtectSystem=strict', '--property=ReadOnlyPaths=/data',
                     '--property=ReadWritePaths='+str(DATA)+' -/run/zmalacall-developer',
                     '--property=BindPaths='+str(SESSION/'data')+':'+str(DATA),
+                    '--property=BindReadOnlyPaths='+turn_bindings,
                     '--property=InaccessiblePaths=-/run/zmalacall-updater',
                     '--property=EnvironmentFile=/etc/zmalacall/terminal.conf',
                     '--property=WorkingDirectory='+str(RELEASE),
@@ -229,9 +243,14 @@ def activate():
     snapshot(DATA, SESSION/'data', pwd.getpwnam('zmalaterminal'))
     admit()
     launch()
-    time.sleep(3)
-    if state(TEST) != 'active':
-        raise ValueError('The test Terminal exited during startup. Inspect its systemd journal')
+    deadline = time.monotonic() + 15
+    ready = Path('/run/zmalacall-test/terminal.pid.json')
+    while time.monotonic() < deadline and state(TEST) == 'active':
+        if ready.is_file():
+            (SESSION/'ready').touch()
+            return
+        time.sleep(.25)
+    raise ValueError('The test Terminal launcher did not become ready. Inspect its systemd journal')
 
 
 def cleanup():
@@ -240,8 +259,11 @@ def cleanup():
     try:
         if (SESSION/'lease').exists():
             update_ipc.LocalUI().phase('idle')
-        if (SESSION/'stopped').exists() and not busy(TEST):
-            systemctl('start', STOCK)
+        if (SESSION/'stopped').exists():
+            if busy(TEST) and not (SESSION/'ready').exists():
+                systemctl('stop', TEST)
+            if not busy(TEST):
+                systemctl('start', STOCK)
     finally:
         if (SESSION/'thaw').exists():
             systemctl('thaw', UPDATER)

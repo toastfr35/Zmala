@@ -74,6 +74,29 @@ class TerminalDeveloperDeployTests(unittest.TestCase):
             remote.extract(package, destination)
         self.assertFalse(destination.exists())
 
+    def test_turn_preloader_binds_stock_files_at_the_test_paths(self):
+        stock = self.root/'stock'
+        candidate = self.root/'candidate'
+        for name in remote.RUNTIME[:3]:
+            path = stock/'zmala_terminal/linux'/name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if name == 'turn-runtime':
+                path.mkdir()
+                (path/'turn-fix.so').write_bytes(b'library')
+                (path/'sdk-version').write_text('sdk')
+            else:
+                path.write_bytes(b'installed library')
+        with patch.object(remote, 'BASE', self.root), patch.object(remote, 'native_inputs', return_value=set()):
+            remote.reuse_native(candidate, stock)
+        with (patch.object(remote, 'STOCK_ROOT', stock), patch.object(remote, 'RELEASE', candidate),
+              patch.object(remote.subprocess, 'run') as run):
+            remote.launch()
+        bindings = next(arg for arg in run.call_args.args[0] if arg.startswith('--property=BindReadOnlyPaths='))
+        for filename in remote.TURN_FILES:
+            self.assertEqual((candidate/filename).resolve(), (candidate/filename).absolute())
+            self.assertEqual((candidate/filename).read_bytes(), b'')
+            self.assertIn(f'{(stock/filename).resolve()}:{candidate/filename}', bindings)
+
     @unittest.skipIf(sys.platform == 'win32', 'Linux deployment APIs')
     def test_no_service_swap_until_app_acknowledges_maintenance(self):
         ui = Mock(claim=Mock(return_value=False), runtime=self.root)
@@ -106,6 +129,15 @@ class TerminalDeveloperDeployTests(unittest.TestCase):
         ui.return_value.phase.assert_called_once_with('idle')
         self.assertEqual([call.args for call in control.call_args_list],
                          [('start', remote.STOCK), ('thaw', remote.UPDATER)])
+
+    def test_unready_test_service_is_stopped_before_stock_restores(self):
+        (self.root/'stopped').touch()
+        with (patch.object(remote, 'SESSION', self.root),
+              patch.object(remote, 'systemctl') as control,
+              patch.object(remote, 'busy', side_effect=(True, False))):
+            remote.cleanup()
+        self.assertEqual([call.args for call in control.call_args_list],
+                         [('stop', remote.TEST), ('start', remote.STOCK)])
 
     @unittest.skipIf(sys.platform == 'win32', 'Linux profile ownership and file types')
     def test_snapshot_has_independent_data_and_rejects_links(self):
