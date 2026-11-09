@@ -971,6 +971,12 @@ Only the reviewed public package archives, keyrings, signed repository metadata
 and lock files go into this archive. Keep the draft and pinned asset available
 for future builds.
 
+For a flashable standalone Terminal candidate, enable `include_sd_image`
+when dispatching **Build and sign Terminal system update**. The build uploads
+the compressed SD image, both checksums, the partition table and the READY
+record in `terminal-sd-image`. This image comes from the same audited
+assembly as the two RAUC bundles.
+
 The image embeds the public RAUC certificate in `system-update-keyring.pem`.
 Every day at local midnight the host looks for a newer signed appliance
 release, with a catch-up check after boot. Settings → Updates checks on demand

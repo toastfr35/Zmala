@@ -8,6 +8,10 @@ on:
       terminal_commit:
         description: Full commit on ZmalaTerminal main (blank uses its current head)
         type: string
+      include_sd_image:
+        description: Export a verified standalone Terminal SD image from this build
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -82,7 +86,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             arch-test bc binfmt-support bison build-essential dosfstools dpkg-dev e2fsprogs fdisk flex \
             gcc-aarch64-linux-gnu libgnutls28-dev libssl-dev mmdebstrap mtools \
-            python3-dev python3-pyelftools python3-setuptools qemu-user-static swig uidmap zstd
+            python3-dev python3-pyelftools python3-setuptools qemu-user-static swig uidmap xz-utils zstd
           sudo update-binfmts --enable qemu-aarch64
           grep -Eq '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64
           arch-test arm64
@@ -117,6 +121,38 @@ jobs:
         with:
           name: terminal-system-signing-inputs
           path: ${{ runner.temp }}/terminal-release/artifacts/
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+      - name: Package and verify the standalone SD image
+        if: inputs.include_sd_image
+        shell: bash
+        run: |
+          set -euo pipefail
+          source="$RUNNER_TEMP/terminal-release/image"
+          output="$RUNNER_TEMP/terminal-sd-image"
+          mkdir "$output"
+          system=$(jq -er .image_version "$source/READY.json")
+          terminal=$(jq -er .components.terminal.version "$source/READY.json")
+          terminal_commit=$(git -C "$GITHUB_WORKSPACE/.terminal-source" rev-parse HEAD)
+          expected=$(jq -er .image_sha256 "$source/READY.json")
+          [[ $system =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && $terminal =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ $(jq -er .components.terminal.commit "$source/READY.json") == "$terminal_commit" ]]
+          [[ $expected =~ ^[a-f0-9]{64}$ ]]
+          name="ZmalaTerminal-SD-$system-Terminal-$terminal.img"
+          sfdisk --verify "$source/appliance.img"
+          sfdisk --json "$source/appliance.img" > "$output/partition-table.json"
+          xz -T2 -3 --stdout "$source/appliance.img" > "$output/$name.xz"
+          actual=$(xz -dc "$output/$name.xz" | sha256sum | cut -d ' ' -f 1)
+          [[ $actual == "$expected" ]]
+          cp "$source/READY.json" "$output/READY.json"
+          printf '%s  %s\n' "$expected" "$name" > "$output/$name.sha256"
+          (cd "$output"; sha256sum "$name.xz" > "$name.xz.sha256"; sha256sum --check "$name.xz.sha256")
+      - uses: actions/upload-artifact@v4
+        if: inputs.include_sd_image
+        with:
+          name: terminal-sd-image
+          path: ${{ runner.temp }}/terminal-sd-image/
           compression-level: 0
           retention-days: 3
           if-no-files-found: error
