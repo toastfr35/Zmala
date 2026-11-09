@@ -4,10 +4,8 @@ Source review: **9 November 2026**. This is an implementation and qualification
 checklist, not a new product requirements baseline or a declaration that images
 are ready for distribution. Runtime requirements remain in [requirements/](requirements/).
 
-Use this as the short continuation list for a newly identified candidate. The
-dated design and prototype log is in [update_upgrade.md](update_upgrade.md);
-the old private `upgrade_system_status.md` catalogue is not part of this
-repository. Current commands are in [the image guide](zmala_images/README.md),
+Use this as the short continuation list for a newly identified candidate.
+Current commands are in [the image guide](zmala_images/README.md),
 and [the requirements guide](requirements/README.md) distinguishes implemented
 behavior from missing verification. An unchecked item below requires evidence
 for the selected artifact, even when its implementation already exists.
@@ -180,9 +178,8 @@ Bluetooth policy or application/package inputs.
 
 ## 6. Broader system-update work remains separate
 
-A flashable first-install image does not finish the OS-upgrade project. Track the
-following in [the detailed update plan](update_upgrade.md), without holding up
-another clearly identified development-card test:
+A flashable first-install image does not finish the OS-upgrade project. The
+following work remains open alongside clearly identified development-card tests:
 
 - [ ] Complete integration and physical qualification of the implemented signed
   Terminal feed, bounded staging and inactive-slot install/trial/confirm/fallback

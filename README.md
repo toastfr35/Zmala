@@ -18,8 +18,8 @@ onboarding and production image qualification remain unfinished. A successful
 build or signed artifact is not evidence of physical qualification; see the
 [requirements guide](requirements/README.md) for the verification boundaries.
 
-The [original system-update plan](update_upgrade.md) preserves dated experiments
-and future architecture. Use the current guides above for commands and status.
+The superseded [original system-update plan](https://github.com/toastfr35/Zmala/blob/787f53651e4cdc513ee4e2ccd9f3ca9106726e83/update_upgrade.md)
+remains in Git history. Use the current guides above for commands and status.
 
 ## Related repositories
 
