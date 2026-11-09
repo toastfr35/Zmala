@@ -24,12 +24,31 @@ references:
   type: file
 reviewed: null
 scope: Experimental
-text: The coordinator shall validate the Terminal process, fresh nonce acknowledgement and protected
-  activity state before enabling installation. Immediate mode may waive the
-  ordinary idle interval. Reverify the downloaded bundle against the exact
-  offer, bind RAUC to the validated on-board slot layout, disable RAUC slot
-  activation and verify both installed partition digests before staging. Publish
-  download progress as the percentage of the bounded bundle length received,
-  and clear it before verifying and installing the downloaded bundle.
-verification: Exercise missing admission, valid and invalid manual offers,
-  interrupted installation, bundle transfer progress and readback before trial selection.
+text: Before installation, the coordinator shall obtain an acknowledgement for
+  a newly generated nonce from the Terminal service process. It shall validate
+  a Terminal-owned single-link regular acknowledgement file of at most 4096
+  bytes and mode 0600, opened without following a symbolic link. It shall validate
+  the process owner, application directory and expected service membership, and
+  a heartbeat no more than four seconds old and not in the future. The
+  acknowledgement shall report ready, maintenance-fenced and eligible state;
+  admission shall expire without installation after twelve seconds without an
+  accepted acknowledgement. A manual apply request shall match the currently
+  offered authenticated release and arrive within its ten-minute acceptance
+  window. Immediate mode may waive only the ordinary inactivity delay.
+  The coordinator shall reverify the downloaded bundle against all fields of
+  the authorized offer, bind RAUC to the validated on-board inactive slot pair,
+  and disable RAUC slot activation. It shall compare the readback SHA-256 of
+  both installed partitions with the signed image digests before staging a
+  trial; transfer, verification, installation or readback failure shall not
+  stage a trial. It shall publish download progress as the percentage of the
+  bounded bundle length received and clear it before verification and installation.
+verification: Exercise the actual acknowledgement reader with wrong ownership,
+  mode, links, size, nonce, process directory and service membership, stale or
+  future heartbeats, missing readiness or eligibility, and the admission timeout.
+  Test current, changed and expired manual offers and busy immediate requests.
+  Exercise the installer with a changed downloaded offer, mounted or mismatched
+  targets, incomplete transfer, RAUC failure and a wrong readback digest for each
+  partition. Assert no trial staging on each failure, disabled RAUC activation,
+  progress clearing and readback before staging. Use disposable media for native
+  installation checks. Mocked admission or injected installer errors verify only
+  coordinator reactions, not authentication, device admission or digest readback.

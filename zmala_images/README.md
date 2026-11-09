@@ -1,8 +1,12 @@
 # Appliance image development tools
 
-See [the staged system-update plan](../update_upgrade.md). These tools are
-build/deployment tooling, not an installed updater. **There is no production SD
-installer or automatic system-update feed yet.**
+These tools build development SD images and signed standalone Terminal system
+updates. The installed updater lives in [`zmala_system/`](../zmala_system/README.md);
+its discovery and maintenance coordinator support standalone Terminals.
+Server and combined update coordination and production SD-image qualification
+remain unfinished. See the [requirements and evidence boundaries](../requirements/README.md),
+the [current Terminal update workflow](#standalone-terminal-system-updates) and
+the historical [staged system-update plan](../update_upgrade.md).
 
 ## Build sequence and ownership
 

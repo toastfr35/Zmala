@@ -4,11 +4,16 @@ Read the [technical guide](../zmala_images/README.md).
 
 ## Requirements and tests
 
+Start with the [requirements guide](../requirements/README.md) for applicability,
+implemented boundaries and outstanding verification. The Doorstop records remain
+normative; a generated traceability report is not a record of passed tests.
+
 Install Python development dependencies and the pinned Doorstop tooling:
 
 ```sh
-python3 -m venv .venv
-. .venv/bin/activate
+ZMALA_TMP=/path/to/zmala-workspace/tmp
+python3 -m venv "$ZMALA_TMP/zmala-dev"
+. "$ZMALA_TMP/zmala-dev/bin/activate"
 python -m pip install -r requirements-dev.txt -r build_tools/doorstop-requirements.txt
 make requirements
 ```
@@ -26,3 +31,10 @@ A test begins with standalone `@test`, `@requirements`, `@environment`,
 `@plan` and `@pass` comments. Link LLT directly to an LLR and HLT directly to
 an HLR. State inputs, procedure and expected assertions. Refer to the test from
 each Doorstop item. An inventory or a plan does not record an execution.
+
+Run `make lint check test-llt test-hlt test-adhoc` for the repository checks.
+On Linux, repeat the Server and Terminal HLT suites with root privileges to
+exercise their disposable mount namespaces. Report missing native tools and
+hardware skips separately from passes. Keep temporary environments, caches,
+logs and test outputs under the workspace's top-level `tmp/` directory; Linux
+permission and mount tests require a filesystem with native Linux semantics.

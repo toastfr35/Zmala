@@ -18,5 +18,11 @@ text: A standalone Terminal shall queue a newer signed appliance release after
   the local midnight check or when the user accepts the current offer in
   Settings. Installation shall wait until the Terminal can fence calls and
   interaction safely and shall replace only the inactive boot and system pair.
-verification: Exercise the admission handshake and signed release inspection,
-  including rejection of wrong-slot and untrusted bundles.
+  User acceptance may waive the ordinary inactivity delay, but shall not bypass
+  call, setup, worker or peripheral admission guards.
+verification: Exercise automatic and user-requested admission, including a busy
+  Terminal and an accepted current offer, using the actual local acknowledgement
+  boundary. Check that a wrong-slot, untrusted or changed bundle cannot stage a
+  trial and that only the inactive pair is written. Record service-graph inspection,
+  mocked coordinator transitions, native signature verification and disposable
+  partition installation as separate evidence; none alone proves the full flow.

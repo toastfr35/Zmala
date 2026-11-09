@@ -1,8 +1,8 @@
 # @test T-LLT-107
 # @requirements LLR-TERM-MAINT-062, LLR-TERM-MAINT-064
 # @environment portable
-# @plan Simulate idle admission, installation failure, signed offer matching and healthy or failed trial boots with an in-memory boot environment and controlled clock.
-# @pass Busy and failed writes never select a trial. Only the exact staged and consumed trial with stable application health can be confirmed.
+# @plan Simulate idle admission, installer success/failure, signed offer matching and healthy or failed trial boots with an in-memory boot environment and controlled clock. Admission and installation are mocked; health records are supplied by the fixture. Exercise transfer progress with controlled response bytes.
+# @pass Refused admission and injected installer failures never select a trial. Only the exact staged and consumed trial with stable simulated health can be confirmed. These assertions do not execute process authentication, installed-partition readback or candidate native/UI health.
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path

@@ -1,7 +1,9 @@
 # Shared Pi host runtime
 
 This package owns identity, storage and boot policy for the experimental image-managed
-server, terminal and combined roles. It has no UI, media or image-build dependencies.
+server, terminal and combined roles. The storage and boot core has no UI, media
+or image-build dependencies. The standalone Terminal update health probe loads
+the candidate Terminal runtime inside its isolated service.
 
 | Responsibility | Source |
 | --- | --- |
@@ -11,6 +13,7 @@ server, terminal and combined roles. It has no UI, media or image-build dependen
 | Factory compact-card GPT relocation (fixed partition sizes) | `boot_capacity.py` |
 | Confirmed/trial boot records and admission | `boot_state.py`, `boot_backend.py`, `boot_select.sh` |
 | Early boot and startup gate | `boot_entry.py`, `boot_storage.py`, `boot_gate.py`, service/configuration files |
+| Standalone Terminal update discovery, installation and trial confirmation | `update_discovery.py`, `update_ipc.py`, `update_install.py`, `update_coordinator.py`, `update_health.py` |
 
 The [image builder](../zmala_images/README.md) packages this runtime into offline
 roots and initramfs. A source move in the builder does not change installed Python
@@ -23,7 +26,8 @@ Shared behavior links to both server and terminal requirements under
 shared fixtures are in `tests/support/`. Installer/image checks are ad-hoc tooling
 regressions and do not qualify runtime hardware behavior.
 
-See the [system overview](../docs/general.md#sd-images-and-shared-pi-runtime) for
-status, [server guide](../docs/server.md#experimental-image-managed-storage) for
-host integration and [image build sequence](../zmala_images/README.md#build-sequence-and-ownership)
-for assembly and remaining qualification gates.
+See the [requirements guide](../requirements/README.md) for implemented boundaries
+and missing verification, the [engineering guide](../docs/general.md) for checks,
+and the [image build sequence](../zmala_images/README.md#build-sequence-and-ownership)
+for assembly. Server and combined update coordination and physical qualification
+remain unfinished.
