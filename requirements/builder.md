@@ -17,6 +17,9 @@ runtime requirements in Doorstop.
 - The hosted Terminal release workflow shall build both slots from reviewed
   package caches and an identified Terminal main commit. Only the separate
   release signing job shall receive the private signing key.
+- An optional SD export from the hosted build shall use the same assembled
+  Terminal image as the OTA inputs. Verify the partition table and check the
+  decompressed digest against the audited image before uploading the archive.
 - Preserve firmware-selected onboard Bluetooth UART flow control on Pi 4 when
   the selected slot device tree has the known TX/RX-only pin group.
 - Place the primary GPT array at LBA 2 and declare LBA 34 as the first usable
