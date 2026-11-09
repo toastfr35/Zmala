@@ -157,6 +157,39 @@ class ApplicationProvisionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 provision.accounts(values, 'combined')
 
+    @unittest.skipIf(os.name == 'nt', 'Offline Unix roots require Linux symlinks and modes')
+    def test_usb_power_is_installed_only_for_compatible_terminal_images(self):
+        helper_path = 'usr/local/libexec/zmala-usb-power'
+        sudo_path = 'etc/sudoers.d/zmalacall-usb-power'
+        unit_path = 'etc/systemd/system/zmalacall-terminal.service.d/usb-power.conf'
+        for role, compatible, installed in (('terminal', True, True), ('combined', True, True),
+                                             ('terminal', False, False), ('server', True, False)):
+            with self.subTest(role=role, compatible=compatible), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                (root/'etc').mkdir()
+                for name, body in self.ledgers().items():
+                    (root/'etc'/name).write_text(body)
+                units = root/'usr/lib/systemd/system'
+                units.mkdir(parents=True)
+                (units/'NetworkManager.service').write_text('[Service]\nExecStart=/bin/true\n')
+                records = provisioning_records()
+                source = b'#!/usr/bin/python3\n'
+                if compatible:
+                    source += provision.USB_POWER_CAPABILITY + b'\n'
+                records[provision.USB_POWER_SOURCE] = (source.replace(b'\n', b'\r\n'), False)
+                provision.provision(root, records, role)
+                if not installed:
+                    for path in (helper_path, sudo_path, unit_path):
+                        self.assertFalse((root/path).exists(), path)
+                    continue
+                self.assertEqual((root/helper_path).read_bytes(), source)
+                self.assertEqual((root/helper_path).stat().st_mode & 0o777, 0o755)
+                self.assertEqual((root/sudo_path).stat().st_mode & 0o777, 0o440)
+                self.assertEqual((root/sudo_path).read_text(),
+                    f'zmalaterminal ALL=(root) NOPASSWD: /{helper_path} on, /{helper_path} off\n')
+                self.assertEqual((root/unit_path).read_text(),
+                    f'[Service]\nEnvironment=ZMALA_USB_POWER=1\nExecStopPost=+/{helper_path} restore\n')
+
     @unittest.skipIf(os.name == 'nt', 'Offline Unix roots require Linux symlinks')
     def test_combined_release_paths_separate_server_bootstrap_and_terminal_state(self):
         records = provisioning_records()

@@ -207,6 +207,11 @@ class CombinedIntentTests(unittest.TestCase):
                          sorted(set(project.packages('terminal')) | set(project.packages('server'))))
         index = project.package_locks()
         self.assertEqual(set(index['roles']), {'server', 'terminal', 'combined'})
+        for role in ('terminal', 'combined'):
+            self.assertTrue({'psmisc', 'uhubctl'} <= set(project.packages(role)))
+            manifest = json.loads((project.ROOT/'zmala_images/locks'/index['roles'][role]['file']).read_text())
+            self.assertIn('uhubctl', {item['package'] for item in manifest['packages']})
+        self.assertNotIn('uhubctl', project.packages('server'))
 
     def test_reanchored_role_lock_cannot_change_a_shared_archive(self):
         with tempfile.TemporaryDirectory() as temporary:

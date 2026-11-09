@@ -7,6 +7,11 @@ runtime requirements in Doorstop.
   SHA-256. Verify both the archive digest and embedded package identity.
 - Retain the exact dependency inputs used to provision the selected server,
   terminal or combined role. Build and provision in an isolated offline root.
+- For an image containing a compatible Terminal, provision the pinned Pi 4
+  hub tooling and root-owned USB power helper. Grant the Terminal service
+  only the fixed on/off commands and install maintenance-aware shutdown
+  restoration. The Terminal retains Always on as its default. A standalone
+  Server image shall not provision the Terminal USB power policy.
 - Record the retained inputs, image digest, image geometry and qualification
   status alongside every image candidate.
 - The hosted Terminal release workflow shall build both slots from reviewed

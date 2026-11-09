@@ -18,7 +18,9 @@
         "xauth",
         "x11-utils",
         "x11-xserver-utils",
-        "polkitd"
+        "polkitd",
+        "psmisc",
+        "uhubctl"
       ]
     },
     "server": {
