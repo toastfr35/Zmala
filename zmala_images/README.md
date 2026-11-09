@@ -6,7 +6,7 @@ its discovery and maintenance coordinator support standalone Terminals.
 Server and combined update coordination and production SD-image qualification
 remain unfinished. See the [requirements and evidence boundaries](../requirements/README.md),
 the [current Terminal update workflow](#standalone-terminal-system-updates) and
-the historical [staged system-update plan](../update_upgrade.md).
+the [image qualification checklist](../sd_card_imager_todo_left.md).
 
 ## Build sequence and ownership
 

@@ -81,6 +81,5 @@ or replacement image rather than a former root slot.
 
 See the [build and release guide](zmala_images/README.md) for signed artifacts and
 the [Terminal repository](https://github.com/toastfr35/ZmalaTerminal/blob/main/docs/terminal.md)
-for the separate legacy application updater. The
-[original design plan](update_upgrade.md) is historical and prospective context;
-the normative runtime contracts remain in [requirements/](requirements/README.md).
+for the separate legacy application updater. The normative runtime contracts
+remain in [requirements/](requirements/README.md).

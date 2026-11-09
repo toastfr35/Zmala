@@ -44,26 +44,9 @@ def installer_source(name: str) -> bool:
 EXCLUSIONS = {
     'build_tools/linux/boot-version.py': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
     'build_tools/linux/developer-access.py': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
-    'build_tools/linux/developer-lan-guard.py': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
-    'build_tools/linux/ssh-guard.py': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
     'build_tools/linux/zmala.plymouth': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
     'build_tools/linux/zmala.script': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
     'build_tools/linux/zmalacall-boot-version.service': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
-    'build_tools/linux/zmalacall-ssh-guard.service': 'Imported host integration payload. See requirements/ownership.json and the component source repository.',
-    'build_tools/linux/tv_test_camera.py': 'Camera child for the opt-in developer evidence tool; covered by ad-hoc regressions.',
-    'build_tools/linux/tv_test_processes.py': 'Helper cleanup for the opt-in developer evidence tool; covered by ad-hoc regressions.',
-    'build_tools/linux/tv-plugin-self-test.sh': 'Installed wrapper for the internal opt-in TV qualification tool; installer regressions cover packaging.',
-    'build_tools/linux/tv-plugin-self-test.py': 'Opt-in developer experiment/evidence CLI; not a terminal runtime behavior. Regression tests live in tests/adhoc/test_tv_plugin_self_test.py.',
-    'build_tools/linux/tv_plugin_self_test.py': 'Internal opt-in TV experiment/report tool; development-tool regressions are outside the runtime baseline.',
-    'build_tools/linux/tv_test_card.py': 'Internal HDMI test pattern for opt-in TV qualification; not normal terminal UI.',
-    'zmala_phone/app/src/main/assets/licenses/SDK-SOURCES.json': 'Packaged dependency source provenance, not runtime configuration.',
-    'zmala_server/web/admin.js': 'Generated bundle; authored admin modules are mapped.',
-    'zmala_server/web/admin.css': 'Generated bundle; authored stylesheets are mapped.',
-    'zmala_server/package.json': 'Dependency/build metadata, not an application behavior.',
-    'zmala_server/package-lock.json': 'Dependency lockfile.',
-    'zmala_server/tsconfig.json': 'Static type-check configuration.',
-    'zmala_server/tsconfig.admin.json': 'Static type-check configuration.',
-    'zmala_server/assets/test-portraits/accounts.json': 'Synthetic demo fixture, not live accounts.',
 }
 
 
