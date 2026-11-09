@@ -20,6 +20,11 @@ roots and initramfs. A source move in the builder does not change installed Pyth
 module names, host paths or service identities. Current SSH installations do not
 opt into these experimental policies automatically.
 
+The [standalone Server factory image](../zmala_images/README.md#standalone-server-factory-image)
+uses native Pi boot and one writable root, bypassing this A/B preparation path.
+The experimental Server role helpers and tests below do not describe that
+factory image's installed storage or recovery behavior.
+
 Shared behavior links to both server and terminal requirements under
 [`requirements/`](../requirements/). Direct unit/system plans remain under
 [`tests/server/`](../tests/server/) and [`tests/terminal/`](../tests/terminal/);

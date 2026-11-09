@@ -24,9 +24,10 @@ there. Use a new output directory for each attempt and retain failed logs.
 | Retain external inputs | `fetch`, `lock-base`, `lock-packages`, `application-inputs` | Authenticated OS archives and pinned component packages/dependencies |
 | Build package root | `build-root`, `root_build.py` | Locked OS root tar; no application or bootable media yet |
 | Add applications | `provision-applications`, `application_build.py` | Offline role-specific application root |
-| Add host runtime | `prepare-root`, `image_state.py` | Packages `zmala_system/` policy and role seed into the root |
-| Build boot components | `build-initramfs`, `build-loader` | Checked target runtime and pinned loader manifests |
-| Assemble development media | `assemble-image`, `image_assembly.py` | New regular-file A/B image plus READY/digest evidence |
+| Assemble standalone Server | `python3 -m zmala_images.server_single` | Native Pi boot and one writable root; see the [Server recipe](#standalone-server-factory-image) |
+| Add A/B host runtime | `prepare-root`, `image_state.py` | Packages `zmala_system/` policy and role seed into the root |
+| Build A/B boot components | `build-initramfs`, `build-loader` | Checked target runtime and pinned loader manifests |
+| Assemble A/B development media | `assemble-image`, `image_assembly.py` | New regular-file A/B image plus READY/digest evidence |
 | Inspect independently | `inspect-root`, `inspect-disk`, `inspect-bootfs` | Bounded structural/privacy checks, not physical boot qualification |
 
 The [complete application/media walkthrough](#offline-applications-and-development-media)
@@ -34,6 +35,10 @@ shows the dependent build order and required digests. Earlier sections describe
 individual stages and the smaller `probe-config` experiment; the probe is not
 an alternative production image recipe. Each build uses a new output directory.
 A READY record is accepted only with independently checked input/output hashes.
+After application provisioning, the standalone Server uses `server_single`;
+Terminal and combined images continue through the A/B stages. Server-role A/B
+helpers and probe examples are experimental and do not produce the native
+standalone Server factory layout.
 
 Module responsibilities follow the stage names. `*_worker.py` executes inside
 isolated Linux namespaces; its parent validates inputs and completion before
@@ -106,7 +111,8 @@ before a root is accepted. These packaging checks do not claim a real Wi-Fi join
 Application intake retains the Server's integrity-pinned npm dependencies and
 the Terminal's pinned TURN sources for offline provisioning. The selected RAUC
 package is Debian Trixie's `1.13-3+deb13u1`; reviewed base and role locks are
-consumed by the root, application, initramfs and assembly stages. Full host
+consumed by the root, application, initramfs and assembly stages. Standalone
+Server package selection excludes RAUC after authenticating those locks. Full host
 toolchain locking, secure-relay onboarding and production qualification remain
 unfinished. Read current package counts from `python3 -m zmala_images check`
 and the selected artifacts rather than from earlier experiment measurements.
@@ -710,18 +716,39 @@ qualified image installation flow exists. Image-tool regressions live under
 
 ## Standalone Server factory image
 
-Use the same [build sequence](#build-sequence-and-ownership) with role `server`
-and the reviewed Server package/cache: `build-root`, `provision-applications`,
-`prepare-root`, `build-initramfs`, `build-loader` and `assemble-image`. There is
-no `zmala_images.server_single` command in this repository.
+Build a root with `build-root server`, then provision the reviewed Server package
+with `provision-applications server`. Server package selection excludes RAUC
+after authenticating the shared base and role locks. Assemble that verified
+application root directly, without `prepare-root`, the custom A/B initramfs or
+the U-Boot loader:
 
-The current Server builder uses the shared six-partition compact GPT layout,
-read-only A/B roots and separate persistent data. It does not create an 8 GiB
-MBR image with one writable root. The shared package foundation includes RAUC,
-but Server roots do not enable the Terminal discovery or update coordinator.
+```sh
+python3 -m zmala_images.server_single \
+  --application /path/to/server-application \
+  --manifest-sha256 SHA256_OF_APPLICATION_READY_JSON \
+  --base-cache /path/to/base-cache \
+  --role-cache /path/to/server-cache \
+  --output /path/to/new/server-image
+```
+
+Run as an ordinary Linux user with subordinate UID/GID mappings and at least
+16 GiB of free scratch space. The output directory must be new and outside the
+checkout; use the workspace `tmp/`. The builder verifies the application manifest,
+package locks and root digest, then assembles `server.img` in isolated namespaces.
+
+The candidate is an **8 GiB MBR image** with a 512 MiB FAT32 firmware partition
+starting at 8 MiB and one writable ext4 root using the remaining image space.
+Pi 4 firmware boots the matched native kernel, device tree and vendor initramfs.
+The image has standard signed Debian and Raspberry Pi APT sources for manual
+maintenance, with ordinary APT timers still masked. It has no RAUC, update bundle,
+slot switching or separate persistent-data partition. Back up Server data before
+manual changes; there is no former root slot to restore.
+
+`READY.json` records the image digest, partition identities and kernel version,
+and explicitly leaves `hardware_boot_verified` and `production_qualified` false.
 Automatic Server system updates, first-owner/TLS onboarding and physical Server
-qualification remain unfinished. Do not substitute manual in-place APT upgrades
-for a supported whole-system update path.
+qualification remain unfinished. Retained Server-role A/B helpers and tests are
+experimental; they are separate from this factory path.
 
 ## Combined Terminal + Server build inputs
 
@@ -867,8 +894,8 @@ combined roots also select the Zmala Plymouth theme. Initramfs acceptance verifi
 the retained theme, artwork and script plugin; their U-Boot command line requests
 quiet splash rendering. Physical logo visibility still needs a card boot.
 
-Pass the resulting application root through `prepare-root`, then
-`build-initramfs`. `build-loader --output NEW_DIR` acquires the pinned U-Boot
+For Terminal and combined images, pass the resulting application root through
+`prepare-root`, then `build-initramfs`. `build-loader --output NEW_DIR` acquires the pinned U-Boot
 source, compiles the Pi 4 ARM64 loader and host `mkimage`, and audits resolved
 configuration plus compiled defaults. Its compiled fallback must have no `zm_*`
 state. Toolchain freezing remains incomplete.
@@ -888,8 +915,8 @@ for its SD image, installed identity and signed RAUC manifests. Other image
 roles use `version`. The candidate `READY.json` records the image version and
 the exact application component identities.
 
-The six GPT partitions are 32 MiB common FAT16, two 512 MiB FAT32 boot slots,
-two 4 GiB ext4 system slots and 4 GiB ext4 factory data, preceded by the fixed
+The A/B image's six GPT partitions are 32 MiB common FAT16, two 512 MiB FAT32
+boot slots, two 4 GiB ext4 system slots and 4 GiB ext4 factory data, preceded by the fixed
 8 MiB boot-state gap. Each slot has its matched kernel, checked initramfs and
 Pi 4 device tree. The locked target `dtmerge` applies the Pi-specific KMS overlay;
 generic `fdtoverlay` cannot substitute for Raspberry Pi dormant-fragment handling.
@@ -1075,10 +1102,13 @@ test only when all applicable gates are evidenced for its final artifact:
 - Build terminal and combined profiles with mandatory Argon ONE Pi 4 V2 support,
   including I2C ownership, module loading and matching firmware/slot settings.
   Preserve the call-only fan controller; qualify actual fan transitions on the Pi.
-- Use the compact 14,001,635,328-byte layout for both 16 GB and 32 GB cards,
-  check the actual target capacity, and rerun first-boot GPT relocation and
+- Use the compact 14,001,635,328-byte layout for Terminal/combined images on both
+  16 GB and 32 GB cards, check the actual target capacity, and rerun first-boot GPT relocation and
   repeat-boot checks against that candidate. Record filesystem allocations and
   free space; leave excess card capacity unallocated until expansion is designed.
+- For standalone Server candidates, verify the native 8 GiB MBR layout, firmware
+  and writable root described in the [Server recipe](#standalone-server-factory-image),
+  and qualify boot, onboarding, capacity and backup/restore independently.
 - Include permanent Wi-Fi supplicant activation, QR guide colour feedback and
   specific safe setup errors. Do not depend on earlier RAM repairs. Require
   Bluetooth pairing and remote operation on a cold boot. A private full-firmware
