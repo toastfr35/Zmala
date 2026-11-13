@@ -1566,12 +1566,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libegl-mesa0_26.2.6-1~bpo13+0~rpt1_arm64.deb",
-      "bytes": 164870,
+      "archive": "libegl-mesa0_26.2.6-1~bpo13+0~rpt2_arm64.deb",
+      "bytes": 164922,
       "package": "libegl-mesa0",
-      "sha256": "15e4a99fec22ed1f55da3df079273a7d591e2620b8c903385cecbd702fb79315",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libegl-mesa0_26.2.6-1%7ebpo13%2b0%7erpt1_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt1"
+      "sha256": "4cf07578a8d395c83c8d9bcea1c0cafec9888f427edbe6bc3b0f04e9a792777d",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libegl-mesa0_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
+      "version": "26.2.6-1~bpo13+0~rpt2"
     },
     {
       "architecture": "arm64",
@@ -1791,12 +1791,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgbm1_26.2.6-1~bpo13+0~rpt1_arm64.deb",
-      "bytes": 65314,
+      "archive": "libgbm1_26.2.6-1~bpo13+0~rpt2_arm64.deb",
+      "bytes": 65366,
       "package": "libgbm1",
-      "sha256": "deab38356bbfe703316a0040f4a0b8fcf9750dd34e1e26661e29526ee2a59fbd",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgbm1_26.2.6-1%7ebpo13%2b0%7erpt1_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt1"
+      "sha256": "70ac59ff1218b289fe0fa316c9e3a08cd730b1ce98e69b78ae5162d1703fc580",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgbm1_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
+      "version": "26.2.6-1~bpo13+0~rpt2"
     },
     {
       "architecture": "arm64",
@@ -1953,12 +1953,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgl1-mesa-dri_26.2.6-1~bpo13+0~rpt1_arm64.deb",
-      "bytes": 53446,
+      "archive": "libgl1-mesa-dri_26.2.6-1~bpo13+0~rpt2_arm64.deb",
+      "bytes": 53546,
       "package": "libgl1-mesa-dri",
-      "sha256": "5be492ffa90dddfd699b9c95594bebc8f252de6c68f0b30c6acb3990be202192",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgl1-mesa-dri_26.2.6-1%7ebpo13%2b0%7erpt1_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt1"
+      "sha256": "066e6ffbf2259fe4fb42ced12c63adabfa9814ba59c95d922044c16ed2043748",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgl1-mesa-dri_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
+      "version": "26.2.6-1~bpo13+0~rpt2"
     },
     {
       "architecture": "arm64",
@@ -2070,12 +2070,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libglx-mesa0_26.2.6-1~bpo13+0~rpt1_arm64.deb",
-      "bytes": 151990,
+      "archive": "libglx-mesa0_26.2.6-1~bpo13+0~rpt2_arm64.deb",
+      "bytes": 152150,
       "package": "libglx-mesa0",
-      "sha256": "23bd8e06bdd8794e1fc8347cff4ecfae4d52bdfd54f06a91490eac50f581d1d4",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libglx-mesa0_26.2.6-1%7ebpo13%2b0%7erpt1_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt1"
+      "sha256": "094543c99473e53f150cb82e491371bf36eb724de5e9d7b9235d717ac15e4353",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libglx-mesa0_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
+      "version": "26.2.6-1~bpo13+0~rpt2"
     },
     {
       "architecture": "arm64",
@@ -3447,12 +3447,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libopenexr-3-1-30_3.1.13-2_arm64.deb",
-      "bytes": 875180,
+      "archive": "libopenexr-3-1-30_3.2.12-1~deb13u1_arm64.deb",
+      "bytes": 914612,
       "package": "libopenexr-3-1-30",
-      "sha256": "5a786fcd4e09948ca7d3c52398c78473c9ada8290cf1e0fa667629e84817c7d9",
-      "uri": "https://deb.debian.org/debian/pool/main/o/openexr/libopenexr-3-1-30_3.1.13-2_arm64.deb",
-      "version": "3.1.13-2"
+      "sha256": "09198a782b28e443b2344f288c2ffddcde54ee8d2ab907979e8468035f04b38d",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/o/openexr/libopenexr-3-1-30_3.2.12-1%7edeb13u1_arm64.deb",
+      "version": "3.2.12-1~deb13u1"
     },
     {
       "architecture": "arm64",
@@ -3780,12 +3780,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libpq5_17.11-0+deb13u1_arm64.deb",
-      "bytes": 229628,
+      "archive": "libpq5_17.12-0+deb13u1_arm64.deb",
+      "bytes": 228808,
       "package": "libpq5",
-      "sha256": "1eb5e3126a6978446a4f02f53ce74c7ce4b7f13e48ec45adddcce1881d233458",
-      "uri": "https://deb.debian.org/debian/pool/main/p/postgresql-17/libpq5_17.11-0%2bdeb13u1_arm64.deb",
-      "version": "17.11-0+deb13u1"
+      "sha256": "bd9032e803a1513fa85aea93e9b239cf4ecbebf9ec0f87b5ecd70448f9c1c3bb",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/p/postgresql-17/libpq5_17.12-0%2bdeb13u1_arm64.deb",
+      "version": "17.12-0+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -4356,12 +4356,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libssl3t64_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 3447484,
+      "archive": "libssl3t64_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 3455574,
       "package": "libssl3t64",
-      "sha256": "262d6d47024aa2277e7886396ffedb9c02a3ce6d09a07bf126b68214ace56d99",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/libssl3t64_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "29dfac5ec2411198758c73ea9985560f480046bcba10bb8d41a4d5a413efe56b",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/libssl3t64_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
@@ -5715,12 +5715,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "mesa-libgallium_26.2.6-1~bpo13+0~rpt1_arm64.deb",
-      "bytes": 16678086,
+      "archive": "mesa-libgallium_26.2.6-1~bpo13+0~rpt2_arm64.deb",
+      "bytes": 16679412,
       "package": "mesa-libgallium",
-      "sha256": "243b672cd6c63e6ae5c798fb68a86e56a56ab07355fbeb12e22bdfa6d1d278e4",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/mesa-libgallium_26.2.6-1%7ebpo13%2b0%7erpt1_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt1"
+      "sha256": "783a3d57eb4d1074e6c58e097477b62cf54369fc983c86ba4f6c4cfc79d19ff9",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/mesa-libgallium_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
+      "version": "26.2.6-1~bpo13+0~rpt2"
     },
     {
       "architecture": "arm64",
@@ -5913,21 +5913,21 @@
     },
     {
       "architecture": "arm64",
-      "archive": "openssl-provider-legacy_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 325126,
+      "archive": "openssl-provider-legacy_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 330644,
       "package": "openssl-provider-legacy",
-      "sha256": "517441ee2e38cc5124db8921bb3d30c1dc371becf61c3fe492922d227a331ab0",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl-provider-legacy_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "ac8a7e6a85f94abc3378a8164509a2c097a598e7b6f43a6c0204f704b2891bde",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl-provider-legacy_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
-      "archive": "openssl_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 1571574,
+      "archive": "openssl_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 1582720,
       "package": "openssl",
-      "sha256": "44e8c1dfca6347e6a10bc5e93003af6d9097ed39b072ec621ad8fc743aca3b58",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "bb0b4fa98cb59e3b9375de6cbea00483c49946f258bd71baae7537ebd190b611",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
@@ -6697,21 +6697,21 @@
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "fae629219bd1c601113a845425bda3a66e508d64a21c4b995d9157e26aa3ae11",
+      "sha256": "3d2bc2d836e53fc92b8077081b8ea4218ede6dc660971103e68fb006441bc989",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "43f0c7af4acfb2d59c64e15324bf772a991f20856b66fa41a6d54d24d51e9526",
+      "sha256": "8594c81c75d083bbbe1c10e5961a6f20be93ee52f2035cc6736abe6df3cef922",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
     },
     {
       "file": "archive.raspberrypi.com_debian_dists_trixie_InRelease",
-      "sha256": "a648354a68f03be959dc4dd8f5becd554a34c78f4870a361595d0f0bc2bd087b",
+      "sha256": "a5e6a4d7fe48c771c14b9ee229fb2fafdab57bc329e4fd78a2ab801c7a9ffb68",
       "signers": [
         "CF8A1AF502A2AA2D763BAE7E82B129927FA3303E"
       ]

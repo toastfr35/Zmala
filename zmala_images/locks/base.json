@@ -342,12 +342,12 @@
     },
     {
       "architecture": "all",
-      "archive": "firmware-brcm80211_1%3a20260519-1~bpo13+1+rpt1_all.deb",
-      "bytes": 5942028,
+      "archive": "firmware-brcm80211_1%3a20260519-1~bpo13+1+rpt2_all.deb",
+      "bytes": 5944552,
       "package": "firmware-brcm80211",
-      "sha256": "c25e13e84be8dbf58b6b3381b4a10ad7e9dbeae101579376f457e0f17e60d902",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20260519-1%7ebpo13%2b1%2brpt1_all.deb",
-      "version": "1:20260519-1~bpo13+1+rpt1"
+      "sha256": "9b590c64eaa4415140cdc3b6848ebe5e70231613aac62e39f7165b8637afb49d",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20260519-1%7ebpo13%2b1%2brpt2_all.deb",
+      "version": "1:20260519-1~bpo13+1+rpt2"
     },
     {
       "architecture": "arm64",
@@ -1539,12 +1539,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libssl3t64_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 3447484,
+      "archive": "libssl3t64_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 3455574,
       "package": "libssl3t64",
-      "sha256": "262d6d47024aa2277e7886396ffedb9c02a3ce6d09a07bf126b68214ace56d99",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/libssl3t64_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "29dfac5ec2411198758c73ea9985560f480046bcba10bb8d41a4d5a413efe56b",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/libssl3t64_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
@@ -1890,21 +1890,21 @@
     },
     {
       "architecture": "arm64",
-      "archive": "openssl-provider-legacy_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 325126,
+      "archive": "openssl-provider-legacy_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 330644,
       "package": "openssl-provider-legacy",
-      "sha256": "517441ee2e38cc5124db8921bb3d30c1dc371becf61c3fe492922d227a331ab0",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl-provider-legacy_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "ac8a7e6a85f94abc3378a8164509a2c097a598e7b6f43a6c0204f704b2891bde",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl-provider-legacy_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
-      "archive": "openssl_3.5.7-1~deb13u3+rpt1_arm64.deb",
-      "bytes": 1571574,
+      "archive": "openssl_3.5.9-1~deb13u1+rpt1_arm64.deb",
+      "bytes": 1582720,
       "package": "openssl",
-      "sha256": "44e8c1dfca6347e6a10bc5e93003af6d9097ed39b072ec621ad8fc743aca3b58",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl_3.5.7-1%7edeb13u3%2brpt1_arm64.deb",
-      "version": "3.5.7-1~deb13u3+rpt1"
+      "sha256": "bb0b4fa98cb59e3b9375de6cbea00483c49946f258bd71baae7537ebd190b611",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/o/openssl/openssl_3.5.9-1%7edeb13u1%2brpt1_arm64.deb",
+      "version": "3.5.9-1~deb13u1+rpt1"
     },
     {
       "architecture": "arm64",
@@ -2368,21 +2368,21 @@
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "fae629219bd1c601113a845425bda3a66e508d64a21c4b995d9157e26aa3ae11",
+      "sha256": "3d2bc2d836e53fc92b8077081b8ea4218ede6dc660971103e68fb006441bc989",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "43f0c7af4acfb2d59c64e15324bf772a991f20856b66fa41a6d54d24d51e9526",
+      "sha256": "8594c81c75d083bbbe1c10e5961a6f20be93ee52f2035cc6736abe6df3cef922",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
     },
     {
       "file": "archive.raspberrypi.com_debian_dists_trixie_InRelease",
-      "sha256": "a648354a68f03be959dc4dd8f5becd554a34c78f4870a361595d0f0bc2bd087b",
+      "sha256": "a5e6a4d7fe48c771c14b9ee229fb2fafdab57bc329e4fd78a2ab801c7a9ffb68",
       "signers": [
         "CF8A1AF502A2AA2D763BAE7E82B129927FA3303E"
       ]
