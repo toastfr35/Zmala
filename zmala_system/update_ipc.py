@@ -87,13 +87,14 @@ class LocalUI:
     def download_progress(self, percent):
         self.phase('updating', download_percent=percent)
 
-    def heartbeat(self, unit=NORMAL_SERVICE):
+    def heartbeat(self, unit=NORMAL_SERVICE, *, require_maintenance=True):
         try:
             value = record(self.app/'update.json', USER, 0o600)
             pid = value['pid']
             if (type(pid) is not int or pid < 2 or value['nonce'] != self.nonce
                     or not token(value['generation'], 32) or not fresh(self.clock(), value['heartbeat'], 4)
-                    or value.get('ready') is not True or value.get('maintenance') is not True):
+                    or value.get('ready') is not True
+                    or require_maintenance and value.get('maintenance') is not True):
                 return None
             process = self.proc/str(pid)
             if process.stat().st_uid != USER or (process/'cwd').resolve(strict=True) != self.app_root.resolve(strict=True):
@@ -108,11 +109,17 @@ class LocalUI:
 
     def claim(self, immediate, sleep=time.sleep):
         self.nonce = uuid.uuid4().hex
+        self.blockers = ['terminal']
         deadline = self.clock()+12
         while self.clock() < deadline:
             self.phase('request', immediate)
-            response = self.heartbeat()
-            if response and response.get('eligible') is True:
+            response = self.heartbeat(require_maintenance=False)
+            if response:
+                reasons = response.get('blockers')
+                if isinstance(reasons, list):
+                    self.blockers = [reason for reason in reasons if reason in
+                                     ('call', 'setup', 'settings', 'input', 'worker', 'usb', 'tv', 'idle')]
+            if response and response.get('maintenance') is True and response.get('eligible') is True:
                 language = response.get('language')
                 self.language = language if isinstance(language, str) and re.fullmatch('[a-z]{2}(-Hans)?', language) else 'en'
                 self.sleeping = response.get('sleeping') is True
