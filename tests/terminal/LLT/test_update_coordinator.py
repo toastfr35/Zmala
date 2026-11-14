@@ -3,11 +3,15 @@
 # @environment portable
 # @plan Simulate idle admission, installer success/failure, signed offer matching and healthy or failed trial boots with an in-memory boot environment and controlled clock. Admission and installation are mocked; health records are supplied by the fixture. Exercise transfer progress with controlled response bytes.
 # @pass Refused admission and injected installer failures never select a trial. Only the exact staged and consumed trial with stable simulated health can be confirmed. These assertions do not execute process authentication, installed-partition readback or candidate native/UI health.
+# Additional POSIX fixtures execute diagnostic heartbeat process/nonce authentication;
+# unfenced diagnostic records never admit installation. Manual timeout publishes a
+# matching error and suppresses the same automatic candidate without installing.
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+import os
 from unittest.mock import Mock, patch
 
 from zmala_system import boot_state, update_coordinator, update_install, update_ipc
@@ -18,6 +22,54 @@ OFFER = {'system_version': '0.4.2', 'terminal_version': '0.4.4', 'target': 'B',
 
 
 class CoordinatorTests(unittest.TestCase):
+    def test_diagnostic_heartbeat_cannot_grant_unfenced_admission(self):
+        now = [0]
+        ui = object.__new__(update_ipc.LocalUI)
+        ui.clock = lambda: now[0]
+        ui.phase = Mock()
+        ui.heartbeat = Mock(return_value={'eligible': True, 'maintenance': False, 'blockers': ['usb']})
+        self.assertFalse(ui.claim(True, sleep=lambda delay: now.__setitem__(0, now[0]+delay)))
+        self.assertEqual(now[0], 12)
+        self.assertEqual(ui.blockers, ['usb'])
+        ui.phase.assert_called_with('idle')
+
+    @unittest.skipUnless(os.name == 'posix', 'POSIX acknowledgement ownership and symlinks')
+    def test_unfenced_diagnostics_still_authenticate_process_and_nonce(self):
+        import json
+        with TemporaryDirectory() as directory, patch.object(update_ipc, 'USER', os.getuid()):
+            root = Path(directory)
+            process = root/'proc'/'11'
+            process.mkdir(parents=True)
+            app = root/'app'
+            app.mkdir()
+            (process/'cwd').symlink_to(app, target_is_directory=True)
+            (process/'cgroup').write_text('0::/system.slice/zmalacall-terminal.service\n')
+            ui = object.__new__(update_ipc.LocalUI)
+            ui.app, ui.app_root, ui.proc = app, app, root/'proc'
+            ui.nonce, ui.clock = 'a'*32, lambda: 100
+            data = {'pid':11, 'nonce':ui.nonce, 'generation':'b'*32, 'heartbeat':100,
+                    'ready':True, 'maintenance':False, 'eligible':False, 'blockers':['tv']}
+            status = app/'update.json'
+            status.write_text(json.dumps(data))
+            status.chmod(0o600)
+            self.assertIsNone(ui.heartbeat())
+            self.assertEqual(ui.heartbeat(require_maintenance=False)['blockers'], ['tv'])
+            data['nonce'] = 'c'*32
+            status.write_text(json.dumps(data))
+            self.assertIsNone(ui.heartbeat(require_maintenance=False))
+
+    def test_manual_admission_timeout_reports_blocker_without_installing(self):
+        self.owner.manual_identity = 'a'*32
+        self.owner.requested = OFFER
+        self.ui.claim.return_value = False
+        self.ui.blockers = ['usb']
+        self.assertFalse(self.owner.activate(OFFER, True))
+        self.ui.offer.assert_called_once_with('error', 'a'*32, blockers=['usb'])
+        self.install.assert_not_called()
+        self.restart.assert_not_called()
+        self.assertEqual(self.owner.blocked_release, OFFER['release'])
+        self.assertIsNone(self.owner.requested)
+
     def setUp(self):
         self.state = boot_state.State('terminal', 'A')
         self.slot = 'A'

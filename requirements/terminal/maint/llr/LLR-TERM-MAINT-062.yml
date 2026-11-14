@@ -35,6 +35,13 @@ text: Before installation, the coordinator shall obtain an acknowledgement for
   accepted acknowledgement. A manual apply request shall match the currently
   offered authenticated release and arrive within its ten-minute acceptance
   window. Immediate mode may waive only the ordinary inactivity delay.
+  The Terminal may safely relinquish an idle saved TV lease before admission;
+  this does not waive call, setup, worker, peripheral or input guards.
+  On manual admission timeout, publish an error for the original command with
+  bounded blocker codes from an authenticated heartbeat and suppress automatic
+  retries of that release in the current process until another explicit Apply.
+  Diagnostic heartbeats may be unfenced but shall satisfy the same ownership,
+  process, nonce and freshness checks. They shall never authorize installation.
   The coordinator shall reverify the downloaded bundle against all fields of
   the authorized offer, bind RAUC to the validated on-board inactive slot pair,
   and disable RAUC slot activation. It shall compare the readback SHA-256 of

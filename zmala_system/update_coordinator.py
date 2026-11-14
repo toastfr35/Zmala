@@ -88,6 +88,8 @@ class Coordinator:
         self.directory, self.ui, self.installed = directory, ui, installed
         self.control, self.install, self.restart, self.clock, self.sleep = control, install, restart, clock, sleep
         self.offered, self.expires = None, 0
+        self.manual_identity = None
+        self.blocked_release = None
         self.requested = None
         self.next_attempt = 0
         self.quiet_sleep_until = 0
@@ -159,6 +161,8 @@ class Coordinator:
             self.ui.offer('error', identity)
             return
         self.requested, self.offered = candidate, None
+        self.manual_identity = identity
+        self.blocked_release = None
         self.next_attempt = 0
         self.ui.offer('queued', identity)
 
@@ -174,6 +178,12 @@ class Coordinator:
     def activate(self, candidate, immediate):
         candidate = validate_candidate(candidate)
         if not self.ui.claim(immediate):
+            if immediate and self.manual_identity:
+                self.ui.offer('error', self.manual_identity, blockers=self.ui.blockers or ['terminal'])
+                logging.warning('Manual update handover blocked: %s', ', '.join(self.ui.blockers or ['terminal']))
+                self.blocked_release = candidate['release']
+                self.requested = None
+                self.manual_identity = None
             return False
         self.ui.download_progress(0)
         # Keep the fence even if cleanup itself fails. systemd restarts this
@@ -268,7 +278,7 @@ class Coordinator:
             if self.clock() >= self.next_attempt:
                 self.next_attempt = self.clock()+30
                 candidate = self.requested or self.automatic()
-                if candidate and self.admissible(candidate):
+                if candidate and candidate['release'] != self.blocked_release and self.admissible(candidate):
                     if self.activate(candidate, self.requested is not None):
                         return
                     if not self.admissible(candidate):

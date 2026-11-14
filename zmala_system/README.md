@@ -1,5 +1,12 @@
 # Shared Pi host runtime
 
+A manual Terminal OTA handover has a 12-second admission deadline. On refusal,
+the owner publishes a matching error with authenticated bounded blocker codes
+and does not automatically retry that release in the same process. A fresh
+verified offer and Apply can retry it. A different automatic release remains
+eligible. Diagnostic heartbeats use normal file/process/nonce/freshness validation;
+only a ready, eligible, maintenance-fenced acknowledgement can authorize installation.
+
 This package owns identity, storage and boot policy for the experimental image-managed
 server, terminal and combined roles. The storage and boot core has no UI, media
 or image-build dependencies. The standalone Terminal update health probe loads
