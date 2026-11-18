@@ -2142,12 +2142,12 @@
     },
     {
       "architecture": "all",
-      "archive": "rpi-eeprom_28.36-1_all.deb",
-      "bytes": 15050598,
+      "archive": "rpi-eeprom_28.37-1_all.deb",
+      "bytes": 15591342,
       "package": "rpi-eeprom",
-      "sha256": "46f3726ea2d76f836c8368cedf7cb151ce0bd0f4028da39e5d026959285a40b7",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/r/rpi-eeprom/rpi-eeprom_28.36-1_all.deb",
-      "version": "28.36-1"
+      "sha256": "c4f3afaa6e70af7a72028bf94268734d21f9fd31d80f6cd9610ca5ca77c0f33b",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/r/rpi-eeprom/rpi-eeprom_28.37-1_all.deb",
+      "version": "28.37-1"
     },
     {
       "architecture": "arm64",
@@ -2368,21 +2368,21 @@
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "3d2bc2d836e53fc92b8077081b8ea4218ede6dc660971103e68fb006441bc989",
+      "sha256": "46dfaadf0c3b98e5c6a4f69bf032a9e4c052a1b430ae828fab11df0ac4f57cbf",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "8594c81c75d083bbbe1c10e5961a6f20be93ee52f2035cc6736abe6df3cef922",
+      "sha256": "619dd69e766c1f8ea8dd5bb1741154960804a8b9849b021e14c8fd1c6af269ab",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
     },
     {
       "file": "archive.raspberrypi.com_debian_dists_trixie_InRelease",
-      "sha256": "a5e6a4d7fe48c771c14b9ee229fb2fafdab57bc329e4fd78a2ab801c7a9ffb68",
+      "sha256": "2402c33aef18295e70ec8c34f3de270e703330489e207037bcf1749578d92753",
       "signers": [
         "CF8A1AF502A2AA2D763BAE7E82B129927FA3303E"
       ]
