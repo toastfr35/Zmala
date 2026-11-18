@@ -5,29 +5,29 @@
   "roles": {
     "server": {
       "file": "server.json",
-      "sha256": "c3d5d8941fc0a28b9139c33baa7d82ddb847c20fbcf96ab8cff12e2b018080f5",
+      "sha256": "bfbbc740d856d55712c8b965bf768d879d11cc517ca297e28858e0b5a4fead65",
       "archives": 197,
-      "archive_bytes": 84432664
+      "archive_bytes": 84436344
     },
     "terminal": {
       "file": "terminal.json",
-      "sha256": "d478c39dcb1a937a4aad24d03a090567a306bd8750f3335ab616eefb4129e363",
+      "sha256": "b6d6d5ae4b0f5eb0decde9bf98533066777f3847b8b7b482dad854a6531bc8c9",
       "archives": 727,
-      "archive_bytes": 530719960
+      "archive_bytes": 530711512
     },
     "combined": {
       "file": "combined.json",
-      "sha256": "e3d0cd765bc053db78c846e67acd7d2ac146de28854570740932226c3a211d97",
+      "sha256": "8dc736ef0099b1977771290425b3e4f989b836f20e35ecba5030168975e96ac5",
       "archives": 742,
-      "archive_bytes": 543707016
+      "archive_bytes": 543702248
     }
   },
   "base": {
     "intent_file": "base-intent.json",
     "intent_sha256": "f7a3978a869197ad556e0448c812f0267b9ccdb33699136a6a73b7b4156be7d1",
     "lock_file": "base.json",
-    "lock_sha256": "fbe7b2199683db1d6fa88e31a71c031562f70b6b56952275b966186bc4b44f3d",
+    "lock_sha256": "ea25e36cdd05d254db44e5204c1828d4d2fc0c3fd98b4f9561c52bd0ebce1d91",
     "archives": 261,
-    "archive_bytes": 198193800
+    "archive_bytes": 198734544
   }
 }
