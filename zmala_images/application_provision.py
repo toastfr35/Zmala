@@ -73,6 +73,30 @@ def install_usb_power(root, records):
         f'[Service]\nEnvironment=ZMALA_USB_POWER=1\nExecStopPost=+{path} restore\n')
 
 
+def install_combined_activation(root):
+    marker = '/etc/zmalacall/operator/terminal/server-active'
+    helper = '/usr/local/libexec/zmala-activate-server'
+    put(root, 'etc/systemd/system/zmalacall-server.service.d/activation.conf',
+        f'[Unit]\nConditionPathExists={marker}\n[Service]\nEnvironment=ZMALA_COMBINED_SERVER=1\n')
+    put(root, helper[1:], f'''#!/bin/sh
+set -eu
+test "$#" -eq 0
+umask 022
+touch {marker}
+systemctl start zmalacall-server.service
+# Drop privileges before reading any server-owned path.
+exec /usr/sbin/runuser -u zmalaserver -- /bin/sh -c '
+    file=/var/lib/zmalacall-server/bootstrap/terminal.json
+    for attempt in $(seq 1 20); do
+        if test -s "$file"; then exec cat "$file"; fi
+        sleep 0.5
+    done
+    exit 1'
+''', 0o755)
+    put(root, 'etc/sudoers.d/zmala-activate-server',
+        f'zmalaterminal ALL=(root) NOPASSWD: {helper} ""\n', 0o440)
+
+
 def accounts(records, role):
     """Return fixed locked service identities, rejecting UID/name collisions."""
     argon_one = uses_argon(role)
@@ -127,6 +151,8 @@ def provision(root, records, role):
         mode = path.stat().st_mode & 0o777
         put(root, 'etc/'+name, body, mode)
     units, tmpfiles = [], []
+    if role == 'combined':
+        install_combined_activation(root)
     if role in ('server', 'combined'):
         selected = {name: body for name, body in records.items()
                     if name.startswith(('zmala_server/', 'build_tools/', 'vendor/terminal-contracts/'))}

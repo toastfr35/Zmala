@@ -766,6 +766,8 @@ separate private application and operator bindings, and one host identity and
 confirmed/trial boot record. Exact role checks reject standalone data/boot records.
 Offline application provisioning now creates the service users and installs both
 applications; regular-file assembly supplies a complete development disk layout.
+The combined server starts only after the terminal scans the Activate Server
+card. Activation survives reboot in the combined terminal operator binding.
 Joint health/admission and hardware boot qualification remain unfinished.
 Current installer workflows and release downloads are unchanged; user-guide
 changes belong with the eventual qualified installation workflow.
