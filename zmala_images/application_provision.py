@@ -77,7 +77,9 @@ def install_combined_activation(root):
     marker = '/etc/zmalacall/operator/terminal/server-active'
     helper = '/usr/local/libexec/zmala-activate-server'
     put(root, 'etc/systemd/system/zmalacall-server.service.d/activation.conf',
-        f'[Unit]\nConditionPathExists={marker}\n[Service]\nEnvironment=ZMALA_COMBINED_SERVER=1\n')
+        f'[Unit]\nConditionPathExists={marker}\n[Service]\n'
+        'EnvironmentFile=-/etc/zmalacall/operator/server/server.env\n'
+        'Environment=ZMALA_COMBINED_SERVER=1\n')
     put(root, helper[1:], f'''#!/bin/sh
 set -eu
 test "$#" -eq 0

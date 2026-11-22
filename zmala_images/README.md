@@ -767,7 +767,13 @@ confirmed/trial boot record. Exact role checks reject standalone data/boot recor
 Offline application provisioning now creates the service users and installs both
 applications; regular-file assembly supplies a complete development disk layout.
 The combined server starts only after the terminal scans the Activate Server
-card. Activation survives reboot in the combined terminal operator binding.
+card. Use Terminal 0.4.26 and Server 0.4.19 or later for this workflow.
+Activation survives reboot in the combined terminal operator binding.
+The optional root-owned `/etc/zmalacall/operator/server/server.env` supplies
+the Server guide's TLS and secure relay settings from persistent operator
+storage. Protect credentials and keys with the server service account's
+existing access policy. After changing the HTTPS origin, use Retry connection
+on the TV to pick up the local server's current enrollment export.
 Joint health/admission and hardware boot qualification remain unfinished.
 Current installer workflows and release downloads are unchanged; user-guide
 changes belong with the eventual qualified installation workflow.
