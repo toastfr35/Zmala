@@ -3,6 +3,9 @@
 The build specification applies to tooling and complements the installed
 runtime requirements in Doorstop.
 
+- Install both applications on the combined image and gate server startup on
+  a persistent operator-owned activation marker. The terminal may invoke only
+  the fixed activation command and receive its local device enrollment export.
 - Pin each application archive by component, version, source commit and
   SHA-256. Verify both the archive digest and embedded package identity.
 - Retain the exact dependency inputs used to provision the selected server,
