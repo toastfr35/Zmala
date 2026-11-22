@@ -71,7 +71,17 @@ const deadline = setTimeout(() => { console.error('Server smoke timed out'); pro
   });
   assert.equal(response.status, 200);
   assert.deepEqual(JSON.parse(response.body), {ok:true,persistence:true});
-  assert.ok(fs.statSync('/var/lib/zmalacall-server/bootstrap/terminal.json').size > 0);
+  const bootstrap = JSON.parse(fs.readFileSync('/var/lib/zmalacall-server/bootstrap/terminal.json'));
+  assert.ok(bootstrap.device_token);
+  if (process.env.ZMALA_COMBINED_SERVER === '1') {
+    const headers = {Authorization:'Bearer '+bootstrap.device_token};
+    const page = await fetch(bootstrap.server_url+'/api/device/server-configuration', {headers});
+    assert.equal(page.status, 200);
+    assert.equal((await page.json()).state, 'unconfigured');
+    const enrolled = await fetch(bootstrap.server_url+'/api/config', {headers});
+    assert.equal(enrolled.status, 200);
+    assert.equal((await enrolled.json()).device_id, bootstrap.device_id);
+  }
   console.log('ARM64 service UID startup, bootstrap publication and HTTP readiness passed');
   clearTimeout(deadline); process.kill(process.pid, 'SIGTERM');
 })().catch(error => { console.error(error); process.exit(1); });
@@ -79,6 +89,7 @@ const deadline = setTimeout(() => { console.error('Server smoke timed out'); pro
     try:
         command(['chroot', root, '/usr/bin/setpriv', '--reuid='+str(uid), '--regid='+str(uid), '--clear-groups',
                  '/usr/bin/env', 'NODE_ENV=production', 'VIDEOCALL_HOST=127.0.0.1',
+                 'ZMALA_COMBINED_SERVER='+str(int(role == 'combined')),
                  'ZMALA_ADMIN_PASSWORD_FILE=/var/lib/zmalacall-server/admin-password.json',
                  'ZMALA_BOOTSTRAP_EXPORT_DIRECTORY=/var/lib/zmalacall-server/bootstrap',
                  '/usr/bin/node', '-e', script], timeout=60)
