@@ -36,12 +36,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "base-files_13.8+deb13u7_arm64.deb",
-      "bytes": 88244,
+      "archive": "base-files_13.8+deb13u8_arm64.deb",
+      "bytes": 88320,
       "package": "base-files",
-      "sha256": "5330362213dc8b9327a56383104235c269797d5db2fd8688f535298d4c44e4d2",
-      "uri": "https://deb.debian.org/debian/pool/main/b/base-files/base-files_13.8%2bdeb13u7_arm64.deb",
-      "version": "13.8+deb13u7"
+      "sha256": "893616b7ce203a05a0528652f7d754cc5e3de7e8eff3b396f95383a5b8b1c668",
+      "uri": "https://deb.debian.org/debian/pool/main/b/base-files/base-files_13.8%2bdeb13u8_arm64.deb",
+      "version": "13.8+deb13u8"
     },
     {
       "architecture": "arm64",
@@ -139,7 +139,7 @@
       "bytes": 160720,
       "package": "ca-certificates",
       "sha256": "c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419%2bdeb13u1_all.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20250419%2bdeb13u1_all.deb",
       "version": "20250419+deb13u1"
     },
     {
@@ -1111,7 +1111,7 @@
       "bytes": 293896,
       "package": "libbrotli1",
       "sha256": "a8caceeddd3a407888234ef488e0a773299e05fac703c8695166a0a9bc86587f",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/b/brotli/libbrotli1_1.1.0-2%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/b/brotli/libbrotli1_1.1.0-2%2bdeb13u1_arm64.deb",
       "version": "1.1.0-2+deb13u1"
     },
     {
@@ -1345,7 +1345,7 @@
       "bytes": 354256,
       "package": "libcurl3t64-gnutls",
       "sha256": "313b1cc327ea0233b15e601f267c13a4922839fed8758eb0283553d335e4a0aa",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/c/curl/libcurl3t64-gnutls_8.14.1-2%2bdeb13u7_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/c/curl/libcurl3t64-gnutls_8.14.1-2%2bdeb13u7_arm64.deb",
       "version": "8.14.1-2+deb13u7"
     },
     {
@@ -1354,7 +1354,7 @@
       "bytes": 361184,
       "package": "libcurl4t64",
       "sha256": "264718feb6d2466fff82da4dd783a1f221ae73031fbda7a9e398cc5861fd2303",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/c/curl/libcurl4t64_8.14.1-2%2bdeb13u7_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/c/curl/libcurl4t64_8.14.1-2%2bdeb13u7_arm64.deb",
       "version": "8.14.1-2+deb13u7"
     },
     {
@@ -1530,12 +1530,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libegl-mesa0_26.2.6-1~bpo13+0~rpt2_arm64.deb",
-      "bytes": 164922,
+      "archive": "libegl-mesa0_26.2.7-1~bpo13+0~rpt1_arm64.deb",
+      "bytes": 164800,
       "package": "libegl-mesa0",
-      "sha256": "4cf07578a8d395c83c8d9bcea1c0cafec9888f427edbe6bc3b0f04e9a792777d",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libegl-mesa0_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt2"
+      "sha256": "f893d55263460d906a000fd851268d4eb47321554f14714eb291d2856c4b290e",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libegl-mesa0_26.2.7-1%7ebpo13%2b0%7erpt1_arm64.deb",
+      "version": "26.2.7-1~bpo13+0~rpt1"
     },
     {
       "architecture": "arm64",
@@ -1588,7 +1588,7 @@
       "bytes": 126560,
       "package": "libevent-core-2.1-7t64",
       "sha256": "6e278da8ab4c1b4e15689483a0727f76146d7b9d9b11df4cd53f90034a649517",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libe/libevent/libevent-core-2.1-7t64_2.1.13-stable-1%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libe/libevent/libevent-core-2.1-7t64_2.1.13-stable-1%7edeb13u1_arm64.deb",
       "version": "2.1.13-stable-1~deb13u1"
     },
     {
@@ -1597,7 +1597,7 @@
       "bytes": 55244,
       "package": "libevent-pthreads-2.1-7t64",
       "sha256": "a3d8272a08c30a0c64b5758dd12f67062a962d3e12127eb187b5d0bccaa31a9c",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libe/libevent/libevent-pthreads-2.1-7t64_2.1.13-stable-1%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libe/libevent/libevent-pthreads-2.1-7t64_2.1.13-stable-1%7edeb13u1_arm64.deb",
       "version": "2.1.13-stable-1~deb13u1"
     },
     {
@@ -1615,7 +1615,7 @@
       "bytes": 113920,
       "package": "libexpat1",
       "sha256": "d9e1c50fcdad079fe16d77f1578adcc763be1bf7f2da7fa8adca7010b0c84c83",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/e/expat/libexpat1_2.9.0-1%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/e/expat/libexpat1_2.9.0-1%7edeb13u1_arm64.deb",
       "version": "2.9.0-1~deb13u1"
     },
     {
@@ -1701,12 +1701,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libfreetype6_2.13.3+dfsg-1+deb13u1_arm64.deb",
-      "bytes": 422284,
+      "archive": "libfreetype6_2.13.3+dfsg-1+deb13u2_arm64.deb",
+      "bytes": 422360,
       "package": "libfreetype6",
-      "sha256": "0c426e83f1af816b9a4df9056fd2238463d1cd07969ee640965da9fb6ecaf107",
-      "uri": "https://deb.debian.org/debian/pool/main/f/freetype/libfreetype6_2.13.3%2bdfsg-1%2bdeb13u1_arm64.deb",
-      "version": "2.13.3+dfsg-1+deb13u1"
+      "sha256": "e743a5b04183fcc2fc8347abadcecb30c82528012bd446f8168195bd1552721a",
+      "uri": "https://deb.debian.org/debian/pool/main/f/freetype/libfreetype6_2.13.3%2bdfsg-1%2bdeb13u2_arm64.deb",
+      "version": "2.13.3+dfsg-1+deb13u2"
     },
     {
       "architecture": "arm64",
@@ -1755,12 +1755,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgbm1_26.2.6-1~bpo13+0~rpt2_arm64.deb",
-      "bytes": 65366,
+      "archive": "libgbm1_26.2.7-1~bpo13+0~rpt1_arm64.deb",
+      "bytes": 65334,
       "package": "libgbm1",
-      "sha256": "70ac59ff1218b289fe0fa316c9e3a08cd730b1ce98e69b78ae5162d1703fc580",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgbm1_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt2"
+      "sha256": "ed58824094db58325da94793bddee891ef7ae7e09ad204babe9f50cb914310f5",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgbm1_26.2.7-1%7ebpo13%2b0%7erpt1_arm64.deb",
+      "version": "26.2.7-1~bpo13+0~rpt1"
     },
     {
       "architecture": "arm64",
@@ -1791,12 +1791,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgd3_2.3.3-14~deb13u1_arm64.deb",
-      "bytes": 115120,
+      "archive": "libgd3_2.3.3-14~deb13u3_arm64.deb",
+      "bytes": 115604,
       "package": "libgd3",
-      "sha256": "8664657bfecdd25ba555d27781f1a40f6bf05053d249c2997be8e250f8f353e9",
-      "uri": "https://deb.debian.org/debian/pool/main/libg/libgd2/libgd3_2.3.3-14%7edeb13u1_arm64.deb",
-      "version": "2.3.3-14~deb13u1"
+      "sha256": "1747fbbae88276ce6b2f1a1bcd6139a5bf0f0a1ccb231b26f15e4de248736bb2",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libg/libgd2/libgd3_2.3.3-14%7edeb13u3_arm64.deb",
+      "version": "2.3.3-14~deb13u3"
     },
     {
       "architecture": "arm64",
@@ -1917,12 +1917,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgl1-mesa-dri_26.2.6-1~bpo13+0~rpt2_arm64.deb",
-      "bytes": 53546,
+      "archive": "libgl1-mesa-dri_26.2.7-1~bpo13+0~rpt1_arm64.deb",
+      "bytes": 53494,
       "package": "libgl1-mesa-dri",
-      "sha256": "066e6ffbf2259fe4fb42ced12c63adabfa9814ba59c95d922044c16ed2043748",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgl1-mesa-dri_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt2"
+      "sha256": "8d5455aaccfe8243879a9066727c0bdeffaa7a998ab0a12c5f425c0e69e10e62",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libgl1-mesa-dri_26.2.7-1%7ebpo13%2b0%7erpt1_arm64.deb",
+      "version": "26.2.7-1~bpo13+0~rpt1"
     },
     {
       "architecture": "arm64",
@@ -2034,12 +2034,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libglx-mesa0_26.2.6-1~bpo13+0~rpt2_arm64.deb",
-      "bytes": 152150,
+      "archive": "libglx-mesa0_26.2.7-1~bpo13+0~rpt1_arm64.deb",
+      "bytes": 151970,
       "package": "libglx-mesa0",
-      "sha256": "094543c99473e53f150cb82e491371bf36eb724de5e9d7b9235d717ac15e4353",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libglx-mesa0_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt2"
+      "sha256": "1ce5971b7cf5e7f5556477f318db4ad53d945c4170fc1037cabbacb33dc7d394",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/libglx-mesa0_26.2.7-1%7ebpo13%2b0%7erpt1_arm64.deb",
+      "version": "26.2.7-1~bpo13+0~rpt1"
     },
     {
       "architecture": "arm64",
@@ -2097,21 +2097,21 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgpgme11t64_1.24.2-3_arm64.deb",
-      "bytes": 328860,
+      "archive": "libgpgme11t64_1.24.2-3+deb13u1_arm64.deb",
+      "bytes": 329088,
       "package": "libgpgme11t64",
-      "sha256": "af1f36d7c88c0baf4139ba796fad3791cf45ac6c6103bb4194b7b167a94a39d0",
-      "uri": "https://deb.debian.org/debian/pool/main/g/gpgme1.0/libgpgme11t64_1.24.2-3_arm64.deb",
-      "version": "1.24.2-3"
+      "sha256": "ef220aa7b8437c08066d872e8a53af1f35217fb9f5f893f63c31a2ab05428e38",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/g/gpgme1.0/libgpgme11t64_1.24.2-3%2bdeb13u1_arm64.deb",
+      "version": "1.24.2-3+deb13u1"
     },
     {
       "architecture": "arm64",
-      "archive": "libgpgmepp6t64_1.24.2-3_arm64.deb",
-      "bytes": 327620,
+      "archive": "libgpgmepp6t64_1.24.2-3+deb13u1_arm64.deb",
+      "bytes": 327776,
       "package": "libgpgmepp6t64",
-      "sha256": "fcb993b006385fc5739a49eb07af9eef8137689b17ce8e3f1be06e46b9133bbc",
-      "uri": "https://deb.debian.org/debian/pool/main/g/gpgme1.0/libgpgmepp6t64_1.24.2-3_arm64.deb",
-      "version": "1.24.2-3"
+      "sha256": "c3a2b53ac0d2c9bb1b5a9100b65694c0637a6200fe3cefe65702583c51da6cfa",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/g/gpgme1.0/libgpgmepp6t64_1.24.2-3%2bdeb13u1_arm64.deb",
+      "version": "1.24.2-3+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -2155,7 +2155,7 @@
       "bytes": 148352,
       "package": "libgs-common",
       "sha256": "345d3eba04c00f652903e2aac59c5347ea74054e53fcf5d0dbc7500ea5e93a48",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/g/ghostscript/libgs-common_10.05.1%7edfsg-1%2bdeb13u3_all.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/g/ghostscript/libgs-common_10.05.1%7edfsg-1%2bdeb13u3_all.deb",
       "version": "10.05.1~dfsg-1+deb13u3"
     },
     {
@@ -2164,7 +2164,7 @@
       "bytes": 479360,
       "package": "libgs10-common",
       "sha256": "d068356a8e7285cf8e74d2c66b3c198822570120704becf7211beed2f05c094f",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/g/ghostscript/libgs10-common_10.05.1%7edfsg-1%2bdeb13u3_all.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/g/ghostscript/libgs10-common_10.05.1%7edfsg-1%2bdeb13u3_all.deb",
       "version": "10.05.1~dfsg-1+deb13u3"
     },
     {
@@ -2173,7 +2173,7 @@
       "bytes": 2357324,
       "package": "libgs10",
       "sha256": "8361ebee8f50378e00e3ba668979a683b872126c03db9d5e1862a6cce2ccd91e",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/g/ghostscript/libgs10_10.05.1%7edfsg-1%2bdeb13u3_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/g/ghostscript/libgs10_10.05.1%7edfsg-1%2bdeb13u3_arm64.deb",
       "version": "10.05.1~dfsg-1+deb13u3"
     },
     {
@@ -2187,12 +2187,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libgssapi-krb5-2_1.21.3-5+deb13u1_arm64.deb",
-      "bytes": 127624,
+      "archive": "libgssapi-krb5-2_1.21.3-5+deb13u2_arm64.deb",
+      "bytes": 127872,
       "package": "libgssapi-krb5-2",
-      "sha256": "70803e8f5b9dd0a7167671bdd0b3cd05642384c1fc49e8270d340d85bf6c7d4c",
-      "uri": "https://deb.debian.org/debian/pool/main/k/krb5/libgssapi-krb5-2_1.21.3-5%2bdeb13u1_arm64.deb",
-      "version": "1.21.3-5+deb13u1"
+      "sha256": "10eed2ae453ec56135bf23fbf8b2b19cc6536017a3fe7702814c2bc6e185bf8c",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/k/krb5/libgssapi-krb5-2_1.21.3-5%2bdeb13u2_arm64.deb",
+      "version": "1.21.3-5+deb13u2"
     },
     {
       "architecture": "arm64",
@@ -2272,7 +2272,7 @@
       "bytes": 22124,
       "package": "libheif-plugin-dav1d",
       "sha256": "5773e4c881fef1d6375bc128d591cdf0b23e8065435e56e26d9b9f05c8bd4b2e",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libh/libheif/libheif-plugin-dav1d_1.23.6-2%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libh/libheif/libheif-plugin-dav1d_1.23.6-2%7edeb13u1_arm64.deb",
       "version": "1.23.6-2~deb13u1"
     },
     {
@@ -2281,7 +2281,7 @@
       "bytes": 20144,
       "package": "libheif-plugin-libde265",
       "sha256": "0dd5754422872ddfdd318dbf3f4d738aaf0e2ed5515bf4dd903d3496f1687765",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libh/libheif/libheif-plugin-libde265_1.23.6-2%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libh/libheif/libheif-plugin-libde265_1.23.6-2%7edeb13u1_arm64.deb",
       "version": "1.23.6-2~deb13u1"
     },
     {
@@ -2290,7 +2290,7 @@
       "bytes": 710288,
       "package": "libheif1",
       "sha256": "6b8ec2479782237598e37a1e36c0c7733d57aeccc81233b1dd003c62a6f13ad8",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libh/libheif/libheif1_1.23.6-2%7edeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libh/libheif/libheif1_1.23.6-2%7edeb13u1_arm64.deb",
       "version": "1.23.6-2~deb13u1"
     },
     {
@@ -2533,7 +2533,7 @@
       "bytes": 59880,
       "package": "libjbig2dec0",
       "sha256": "9dce9b15737e5f76595b698482881e90a38369d18e1589587eab5f255513514a",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/j/jbig2dec/libjbig2dec0_0.20-1%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/j/jbig2dec/libjbig2dec0_0.20-1%2bdeb13u1_arm64.deb",
       "version": "0.20-1+deb13u1"
     },
     {
@@ -2587,17 +2587,17 @@
       "bytes": 886772,
       "package": "libjxl0.11",
       "sha256": "b2a7a44db46cc9519b8ec60ee4c274e2bf1d2029a0d591e57e2885dced4e4080",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/j/jpeg-xl/libjxl0.11_0.11.2-0.1%7edeb13u3_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/j/jpeg-xl/libjxl0.11_0.11.2-0.1%7edeb13u3_arm64.deb",
       "version": "0.11.2-0.1~deb13u3"
     },
     {
       "architecture": "arm64",
-      "archive": "libk5crypto3_1.21.3-5+deb13u1_arm64.deb",
-      "bytes": 81416,
+      "archive": "libk5crypto3_1.21.3-5+deb13u2_arm64.deb",
+      "bytes": 82180,
       "package": "libk5crypto3",
-      "sha256": "2453e8d4fa3b91b868d5bc10e84a15ad9c7bc4e4cb49379cb1f560bdce50db4a",
-      "uri": "https://deb.debian.org/debian/pool/main/k/krb5/libk5crypto3_1.21.3-5%2bdeb13u1_arm64.deb",
-      "version": "1.21.3-5+deb13u1"
+      "sha256": "1982449c930a9b52de8f976cb53af9e8aafb4382e63d7f619659a1e408a2cc5c",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/k/krb5/libk5crypto3_1.21.3-5%2bdeb13u2_arm64.deb",
+      "version": "1.21.3-5+deb13u2"
     },
     {
       "architecture": "arm64",
@@ -2655,21 +2655,21 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libkrb5-3_1.21.3-5+deb13u1_arm64.deb",
-      "bytes": 308256,
+      "archive": "libkrb5-3_1.21.3-5+deb13u2_arm64.deb",
+      "bytes": 309152,
       "package": "libkrb5-3",
-      "sha256": "1f5c46480abf894f662d894696c8a6c6510c2b20616cd453e88b27b11d3be25d",
-      "uri": "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5-3_1.21.3-5%2bdeb13u1_arm64.deb",
-      "version": "1.21.3-5+deb13u1"
+      "sha256": "613608b23bf38abc0ddbf167e6498e443e3cfb3d48e397f01a1af4d3497779f7",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/k/krb5/libkrb5-3_1.21.3-5%2bdeb13u2_arm64.deb",
+      "version": "1.21.3-5+deb13u2"
     },
     {
       "architecture": "arm64",
-      "archive": "libkrb5support0_1.21.3-5+deb13u1_arm64.deb",
-      "bytes": 32508,
+      "archive": "libkrb5support0_1.21.3-5+deb13u2_arm64.deb",
+      "bytes": 33236,
       "package": "libkrb5support0",
-      "sha256": "6381bcb54e58854f9ebac2dfa580c3d6112d01b4ca3f725e7263b9374f79608e",
-      "uri": "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5support0_1.21.3-5%2bdeb13u1_arm64.deb",
-      "version": "1.21.3-5+deb13u1"
+      "sha256": "637bc4633e83c7d46c08aa00e1680440bd63a1329e5e552955dab59579ddf1d4",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/k/krb5/libkrb5support0_1.21.3-5%2bdeb13u2_arm64.deb",
+      "version": "1.21.3-5+deb13u2"
     },
     {
       "architecture": "arm64",
@@ -2830,17 +2830,17 @@
       "bytes": 302984,
       "package": "liblzma5",
       "sha256": "88f3aa499dc30edf01b9209ab40f11e37edfbecef971f84f4721de1874ed4827",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/liblzma5_5.8.1-1%2bdeb13u2_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/x/xz-utils/liblzma5_5.8.1-1%2bdeb13u2_arm64.deb",
       "version": "5.8.1-1+deb13u2"
     },
     {
       "architecture": "arm64",
-      "archive": "libmariadb3_1%3a11.8.6-0+deb13u1_arm64.deb",
-      "bytes": 175040,
+      "archive": "libmariadb3_1%3a11.8.9+ds-0+deb13u1_arm64.deb",
+      "bytes": 174520,
       "package": "libmariadb3",
-      "sha256": "29acd0080b3ea32440a8ebd0445bb13e88ff564c408faf2bfb70c129c2048503",
-      "uri": "https://deb.debian.org/debian/pool/main/m/mariadb/libmariadb3_11.8.6-0%2bdeb13u1_arm64.deb",
-      "version": "1:11.8.6-0+deb13u1"
+      "sha256": "06670eb69e85a8c6b593103ff07a5173a4e9a59e00474f4e3f0e990271bcbf6e",
+      "uri": "https://deb.debian.org/debian/pool/main/m/mariadb/libmariadb3_11.8.9%2bds-0%2bdeb13u1_arm64.deb",
+      "version": "1:11.8.9+ds-0+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -2920,7 +2920,7 @@
       "bytes": 52604,
       "package": "libminizip1t64",
       "sha256": "6e599767b8bae6fa858195c474c6eeab8230dd71c0a6a22dbec2586ff9362fbe",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/z/zlib/libminizip1t64_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/z/zlib/libminizip1t64_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
       "version": "1:1.3.dfsg+really1.3.1-1+deb13u1"
     },
     {
@@ -3078,12 +3078,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libnghttp2-14_1.64.0-1.1+deb13u1_arm64.deb",
-      "bytes": 71604,
+      "archive": "libnghttp2-14_1.64.0-1.1+deb13u2_arm64.deb",
+      "bytes": 71608,
       "package": "libnghttp2-14",
-      "sha256": "ca222b98d5bef2193c05a1e736d0619798ba7a8f8e92526f3e1d06edcd0bf751",
-      "uri": "https://deb.debian.org/debian/pool/main/n/nghttp2/libnghttp2-14_1.64.0-1.1%2bdeb13u1_arm64.deb",
-      "version": "1.64.0-1.1+deb13u1"
+      "sha256": "968f022ccb34f89c7ac4df0567b4d916f05f9235ad39fe2cf1ab6a12bacf5d80",
+      "uri": "https://deb.debian.org/debian/pool/main/n/nghttp2/libnghttp2-14_1.64.0-1.1%2bdeb13u2_arm64.deb",
+      "version": "1.64.0-1.1+deb13u2"
     },
     {
       "architecture": "arm64",
@@ -3181,7 +3181,7 @@
       "bytes": 1290684,
       "package": "libnss3",
       "sha256": "71ec50f97b4e5df10609e521559cfccf96f29d73681284e9a48edd4400d5a0a5",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/n/nss/libnss3_3.110-1%2bdeb13u5_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/n/nss/libnss3_3.110-1%2bdeb13u5_arm64.deb",
       "version": "2:3.110-1+deb13u5"
     },
     {
@@ -3402,12 +3402,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libopenexr-3-1-30_3.2.12-1~deb13u1_arm64.deb",
-      "bytes": 914612,
+      "archive": "libopenexr-3-1-30_3.2.12-1~deb13u2_arm64.deb",
+      "bytes": 913380,
       "package": "libopenexr-3-1-30",
-      "sha256": "09198a782b28e443b2344f288c2ffddcde54ee8d2ab907979e8468035f04b38d",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/o/openexr/libopenexr-3-1-30_3.2.12-1%7edeb13u1_arm64.deb",
-      "version": "3.2.12-1~deb13u1"
+      "sha256": "907a9deccec424d9f381d740bf30cdd7f4c7577f7b3b16541a8cd9b06cbb77e2",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/o/openexr/libopenexr-3-1-30_3.2.12-1%7edeb13u2_arm64.deb",
+      "version": "3.2.12-1~deb13u2"
     },
     {
       "architecture": "arm64",
@@ -3622,7 +3622,7 @@
       "bytes": 247336,
       "package": "libpcre2-16-0",
       "sha256": "6aefea24fc8345e56bdf69a3f36190a4b852d8d000a4ea960888ee3ebedeb13b",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-16-0_10.46-1%7edeb13u3_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/p/pcre2/libpcre2-16-0_10.46-1%7edeb13u3_arm64.deb",
       "version": "10.46-1~deb13u3"
     },
     {
@@ -3631,7 +3631,7 @@
       "bytes": 262648,
       "package": "libpcre2-8-0",
       "sha256": "1a02b7129990690ea095fd35d7ace6853742923d158019e1fb4ef27efd2c51a7",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-8-0_10.46-1%7edeb13u3_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/p/pcre2/libpcre2-8-0_10.46-1%7edeb13u3_arm64.deb",
       "version": "10.46-1~deb13u3"
     },
     {
@@ -3703,7 +3703,7 @@
       "bytes": 275220,
       "package": "libpng16-16t64",
       "sha256": "57177299a638e30032a7191cc32a1b25fe4de7565164d770685d6d7f56771317",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libp/libpng1.6/libpng16-16t64_1.6.48-1%2bdeb13u6_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libp/libpng1.6/libpng16-16t64_1.6.48-1%2bdeb13u6_arm64.deb",
       "version": "1.6.48-1+deb13u6"
     },
     {
@@ -3739,7 +3739,7 @@
       "bytes": 228808,
       "package": "libpq5",
       "sha256": "bd9032e803a1513fa85aea93e9b239cf4ecbebf9ec0f87b5ecd70448f9c1c3bb",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/p/postgresql-17/libpq5_17.12-0%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/p/postgresql-17/libpq5_17.12-0%2bdeb13u1_arm64.deb",
       "version": "17.12-0+deb13u1"
     },
     {
@@ -3982,7 +3982,7 @@
       "bytes": 1583652,
       "package": "librsvg2-2",
       "sha256": "f0ce936ee724964f62d7c31a4f826a5f13e13b7d44cd44ccae2f241c1b08ad2b",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libr/librsvg/librsvg2-2_2.60.0%2bdfsg-1%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/libr/librsvg/librsvg2-2_2.60.0%2bdfsg-1%2bdeb13u1_arm64.deb",
       "version": "2.60.0+dfsg-1+deb13u1"
     },
     {
@@ -5517,12 +5517,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "libzstd1_1.5.7+dfsg-1_arm64.deb",
-      "bytes": 266052,
+      "archive": "libzstd1_1.5.7+dfsg-1+deb13u1_arm64.deb",
+      "bytes": 266336,
       "package": "libzstd1",
-      "sha256": "924540bd59fdbfa77a0604360efdaca54411a43daf11c7e002a3c64791b67448",
-      "uri": "https://deb.debian.org/debian/pool/main/libz/libzstd/libzstd1_1.5.7%2bdfsg-1_arm64.deb",
-      "version": "1.5.7+dfsg-1"
+      "sha256": "ab5ad90f986b315bfa12be50f438aa3453e32da3b29540844d2d847800d2ce08",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/libz/libzstd/libzstd1_1.5.7%2bdfsg-1%2bdeb13u1_arm64.deb",
+      "version": "1.5.7+dfsg-1+deb13u1"
     },
     {
       "architecture": "all",
@@ -5580,12 +5580,12 @@
     },
     {
       "architecture": "all",
-      "archive": "login.defs_1%3a4.17.4-2_all.deb",
-      "bytes": 186124,
+      "archive": "login.defs_1%3a4.17.4-2+deb13u1_all.deb",
+      "bytes": 186196,
       "package": "login.defs",
-      "sha256": "b4bbb8242cbf5588de7aafeb9d578a3dee1db2891f444ab454fd30bd80ccf2b4",
-      "uri": "https://deb.debian.org/debian/pool/main/s/shadow/login.defs_4.17.4-2_all.deb",
-      "version": "1:4.17.4-2"
+      "sha256": "5573474d7bdfab60b27abdb6cbd5c5d4bf898e86d17fd8956eed6a4ebf1a4246",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/s/shadow/login.defs_4.17.4-2%2bdeb13u1_all.deb",
+      "version": "1:4.17.4-2+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -5616,12 +5616,12 @@
     },
     {
       "architecture": "all",
-      "archive": "mariadb-common_1%3a11.8.6-0+deb13u1_all.deb",
-      "bytes": 29544,
+      "archive": "mariadb-common_1%3a11.8.9+ds-0+deb13u1_all.deb",
+      "bytes": 30540,
       "package": "mariadb-common",
-      "sha256": "b5116ff56a60d471332d45bfd4ec50391fdcf5a40747bf7fe23ec8551cb71f9c",
-      "uri": "https://deb.debian.org/debian/pool/main/m/mariadb/mariadb-common_11.8.6-0%2bdeb13u1_all.deb",
-      "version": "1:11.8.6-0+deb13u1"
+      "sha256": "6e7b81b9edd56b40830e04b7fbe9711c76d7d6657199486a1ee59938cf54a2a4",
+      "uri": "https://deb.debian.org/debian/pool/main/m/mariadb/mariadb-common_11.8.9%2bds-0%2bdeb13u1_all.deb",
+      "version": "1:11.8.9+ds-0+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -5661,12 +5661,12 @@
     },
     {
       "architecture": "arm64",
-      "archive": "mesa-libgallium_26.2.6-1~bpo13+0~rpt2_arm64.deb",
-      "bytes": 16679412,
+      "archive": "mesa-libgallium_26.2.7-1~bpo13+0~rpt1_arm64.deb",
+      "bytes": 16672582,
       "package": "mesa-libgallium",
-      "sha256": "783a3d57eb4d1074e6c58e097477b62cf54369fc983c86ba4f6c4cfc79d19ff9",
-      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/mesa-libgallium_26.2.6-1%7ebpo13%2b0%7erpt2_arm64.deb",
-      "version": "26.2.6-1~bpo13+0~rpt2"
+      "sha256": "d3d0b68e921b7974228f3a37f9dab1c9d3eefbb9b5d7b1e5eb254a1fc9cd0682",
+      "uri": "https://archive.raspberrypi.com/debian/pool/main/m/mesa/mesa-libgallium_26.2.7-1%7ebpo13%2b0%7erpt1_arm64.deb",
+      "version": "26.2.7-1~bpo13+0~rpt1"
     },
     {
       "architecture": "arm64",
@@ -5796,21 +5796,21 @@
     },
     {
       "architecture": "arm64",
-      "archive": "passwd_1%3a4.17.4-2_arm64.deb",
-      "bytes": 1205920,
+      "archive": "passwd_1%3a4.17.4-2+deb13u1_arm64.deb",
+      "bytes": 1206524,
       "package": "passwd",
-      "sha256": "a6863055a3d53bf805dd0048b836e4b7a3d14a899b832a50d577b047da4202d8",
-      "uri": "https://deb.debian.org/debian/pool/main/s/shadow/passwd_4.17.4-2_arm64.deb",
-      "version": "1:4.17.4-2"
+      "sha256": "49acfe766c3dea4f760e330ff9f1142c052ba2198442a35ad7d22ecf65508f6f",
+      "uri": "https://deb.debian.org/debian-security/pool/updates/main/s/shadow/passwd_4.17.4-2%2bdeb13u1_arm64.deb",
+      "version": "1:4.17.4-2+deb13u1"
     },
     {
       "architecture": "arm64",
-      "archive": "patch_2.8-2_arm64.deb",
-      "bytes": 128220,
+      "archive": "patch_2.8-2+deb13u1_arm64.deb",
+      "bytes": 128496,
       "package": "patch",
-      "sha256": "182ad723623dcd02dfe5054f3515a26d8bf4a9cce717f03e3e514c02cb9e59e8",
-      "uri": "https://deb.debian.org/debian/pool/main/p/patch/patch_2.8-2_arm64.deb",
-      "version": "2.8-2"
+      "sha256": "ee524dcd15b062ff762cdc1db1724d7850358d97b94b1db38ed7fdcce8e8adaa",
+      "uri": "https://deb.debian.org/debian/pool/main/p/patch/patch_2.8-2%2bdeb13u1_arm64.deb",
+      "version": "2.8-2+deb13u1"
     },
     {
       "architecture": "arm64",
@@ -6538,7 +6538,7 @@
       "bytes": 657952,
       "package": "xz-utils",
       "sha256": "d2151cc127dfc9948255ed40c271ff0683d9cf9553933a8b94cb29068ab5e715",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/x/xz-utils/xz-utils_5.8.1-1%2bdeb13u2_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/x/xz-utils/xz-utils_5.8.1-1%2bdeb13u2_arm64.deb",
       "version": "5.8.1-1+deb13u2"
     },
     {
@@ -6547,7 +6547,7 @@
       "bytes": 85028,
       "package": "zlib1g",
       "sha256": "0e41b3d7ad8ad7fcd36dd4d61ca91a70018478fc4af652e044f4be770784ddff",
-      "uri": "https://deb.debian.org/debian-security/pool/updates/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
+      "uri": "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.3.dfsg%2breally1.3.1-1%2bdeb13u1_arm64.deb",
       "version": "1:1.3.dfsg+really1.3.1-1+deb13u1"
     }
   ],
@@ -6555,28 +6555,28 @@
   "repositories": [
     {
       "file": "deb.debian.org_debian_dists_trixie_InRelease",
-      "sha256": "0584fba32e13e0ab8285fb16c27adea1ec03a73669c18702821094fd6ca86675",
+      "sha256": "bfacad4ca61899ce20d4a0d439f29339f66541561b67506364efb88e27dee870",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian_dists_trixie-updates_InRelease",
-      "sha256": "3d2bc2d836e53fc92b8077081b8ea4218ede6dc660971103e68fb006441bc989",
+      "sha256": "f0b56c18872dceecac99019258464b938d6411886386aa7e1907c1a575a7707a",
       "signers": [
         "4CB50190207B4758A3F73A796ED0E7B82643E131"
       ]
     },
     {
       "file": "deb.debian.org_debian-security_dists_trixie-security_InRelease",
-      "sha256": "8594c81c75d083bbbe1c10e5961a6f20be93ee52f2035cc6736abe6df3cef922",
+      "sha256": "937672d9cba7b37b3efdfc852f2961fe060fa76cee8d189786fa9c1c4d84e707",
       "signers": [
         "B0CAB9266E8C3929798B3EEEBDE6D2B9216EC7A8"
       ]
     },
     {
       "file": "archive.raspberrypi.com_debian_dists_trixie_InRelease",
-      "sha256": "a5e6a4d7fe48c771c14b9ee229fb2fafdab57bc329e4fd78a2ab801c7a9ffb68",
+      "sha256": "74ac9231cb3a9563564682389ade13f9ad9e886a74b580f471d583a0e5ff47d8",
       "signers": [
         "CF8A1AF502A2AA2D763BAE7E82B129927FA3303E"
       ]
